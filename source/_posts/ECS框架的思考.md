@@ -36,11 +36,30 @@ categories:
 3.应用层差别
 
 * Unity ECS:
-在LUA层这边，可以自由的组建Component数据到Table中，再将此数据以以下两种形式装载：
 	*A: ECS.TypeManager.RegisterType("MyComponentData", {value=0}) --装载时即指定此Component数据（适合全局）
 	*B: 在拥有Entity时，ECS.EntityManager:SetComponentData(entity, "MyComponentData", {value=123}) --通过设置entity里的数据设置（适合局部修改）
+    LUA: Inject方式
+    *A：使用Inject函数将Component名字注入
+    *B：在SystemUpdate中接收处理，使用注入的别名+数组索引号取出对象
 	
 * ECSGameEngine:  
 	* A： 定义一个类，继承自EntityComponent
 	* B:  找到一个Entity来挂载或定义一个新的Entity类，继承自Entity
 	* C:  System需要添加些entity，再通过此entity拿到component
+
+4.LUA层的实践过程
+
+* 创建ArcheType的过程
+* 1. 入口：EntityManager - CreateArchetype(types)。 
+    > 调用ComponentTypeInArcheType，创建一个Entity类型的type放在其第一位。
+    > 原types数组内容往后面放入当cachedArcheTypes中，设置长度+1
+* 2. 处理者： ArcheTypeManager。 cachedArcheTypes和长度，传入GetExistingArchetype() 看是否可拿到ArcheType对象。
+* 3. 只有当2不同拿到对象时，才执行此步！ 处理者：ArcheTypeManager。 
+将cacheArcheTypes和长度传入GetOrCreateArchetype()执行拿到ArcheType对象
+
+* 4. 入口：ArchetypeManager - CreateArchetypeInternal() 
+    > 创建新的table，设置chunk大小，types，及把当前type设为PrevArchetype
+    > 处理者：EntityGroupManager- AddArchetypeIfMatching 
+
+* 5. 入口：EntityGroupManager - AddArchetypeIfMatching(type) 
+    > 取出lastGroupData，默认从ComponentSystem-GetComponentGroup创建
