@@ -79,7 +79,7 @@ theme: 3-hexo
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: git@ah.github.com:AveryHuo/AveryHuo.github.io.git
+  repository: git@github.com:AveryHuo/AveryHuo.github.io.git
   branch: master
 
 # mermaid chart

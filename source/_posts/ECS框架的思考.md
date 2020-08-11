@@ -43,4 +43,4 @@ categories:
 * ECSGameEngine:  
 	* A： 定义一个类，继承自EntityComponent
 	* B:  找到一个Entity来挂载或定义一个新的Entity类，继承自Entity
-	* C: 
+	* C:  System需要添加些entity，再通过此entity拿到component
