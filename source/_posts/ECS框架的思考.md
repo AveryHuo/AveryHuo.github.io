@@ -63,3 +63,12 @@ categories:
 
 * 5. 入口：EntityGroupManager - AddArchetypeIfMatching(type) 
     > 取出lastGroupData，默认从ComponentSystem-GetComponentGroup创建
+    > 将type与ComponentGroup所属的archetype对应起来 
+    > IndexInArchetype存储上对应的类型
+
+* System中拿数据的过程
+* 1. 入口：ComponentSystem - GetComponentGroup({}) 
+    System的Awake回调函数中添加GetComponentGroup，注册指定的archetype名，并得到group对象
+    
+    
+* 2. [在另一个地方创建好此Archetype的Entity后] 使用此group对象的ToComponentDataArray({})，获取到所有含些component数据。
