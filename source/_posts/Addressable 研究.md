@@ -40,14 +40,18 @@ Packed Mode：需要额外步骤打包AssetBundle，运行时资源也是在Asse
 
 
 ## 总结：
+* 1. 出包时将自动带上catalog.json在包内，出包的时候不用带 catalogxxx.json 和catalog.hash文件
+* 2. 可使用接口随时重加载catalog文件。如：
 
-> * 指定本地和服务端资源：设置为Build RemoteCatalog时，才为服务端资源，即不跟随包打出。
-> * build出的包带资源，但此资源要热更怎么办？
->  1. 先将资源标注成Local build的路径形式（一定要成对），这样打出的包就会被带到手机包里
->  2. Content Update Restriction一定要选上Cannot Change Post Release， 指明此资源是固定资源在外里的
->  3. 出过一个版本后，使用Tools下的Check for Content Update Restriction，找出变更的固定资源到Content Update的分组中
->  4. 使用Build -> Update Previous build 更新之前的版本即可完成来更新。
-> * 那么如果已经指明此为remote资源的话，如果更新呢？ 那很简单了，直接使用Build -> Update previous build就行了。因为路径已经指明到远端，此时打开会自动更新成最新的。
-> * 注意这两个不要轻易改动。Asset Provider与AssetBundle Provider, 改动后一定要重新生成资源（Build-> New Build）。 一般使用Assets from Bundles Provider 与Assetbundle Provider。待深入研究才知道区别。
+``` csharp
+//注意： 一定要先清除所有resoucelocators
+Addressables.ClearResourceLocators();
+//重加载下载好的catalog文件
+await Addressables.LoadContentCatalogAsync(Path.Combine(ResourceConfig.GetLocalBundlePath(), "catalog.json"),true).Task;
+```
 
-> Addressable的比对是使用hash,json两个文件及新的更新文件决定的，所以更新下来的文件必须放在一个地方，这个地方可以是服务端的地址，也可以是本地，这个可以在更新后用代码实现。
+3. 因此 ： 流程可采用如下的方式：
+ > 1. 设置好assetbundle provider，这里仍用旧的方式，对资源加载时的路径进行跳转限制，优先找SD卡资源，再找包体资源。
+ > 2. 出APK包，在 catalog打完包，在资源中不需要带，直接删除掉。资源+version.txt即可
+ > 3. 出资源包时，带上新名字的catalog文件作为清单。
+ > 4.下载模块完全用自己实现！ 先加载SD卡的catalog文件，没有，则默认用包内的。 如果有新的，再次调用加载catalog，这样读取就是最新的。
