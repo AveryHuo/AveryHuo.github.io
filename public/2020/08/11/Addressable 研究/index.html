@@ -325,7 +325,7 @@
     <div><a class="about  hasFriend  site_url"  href="/about">关于</a><a style="width: 50%"  class="friends">友链</a></div>
 </div>
 <input type="hidden" id="yelog_site_posts_number" value="61">
-<input type="hidden" id="yelog_site_word_count" value="51.4k">
+<input type="hidden" id="yelog_site_word_count" value="51.3k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -952,12 +952,12 @@
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2020-08-11 09:59:40'>2020-08-11 09:59</time>
+        创建时间:<time class="date" title='更新时间: 2020-09-07 21:27:21'>2020-08-11 09:59</time>
         
     </div>
     <div class="article-meta">
         
-        <span>字数:692</span>
+        <span>字数:574</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -1011,23 +1011,31 @@
 <h2 id="迁移指南"><a href="#迁移指南" class="headerlink" title="迁移指南"></a>迁移指南</h2><p><img src="/img/1579081015473.png" alt="从自己框架移植"></p>
 <p><img src="/img/1579081031342.png" alt="从Resources移植"></p>
 <h2 id="使用注意项："><a href="#使用注意项：" class="headerlink" title="使用注意项："></a>使用注意项：</h2><p>1.每调用一次Addressables.Instantiate方法，会将该Asset的引用计数加一；而Addressables.ReleaseInstance会减少这个引用计数。如果你使用Object.Destroy释放了它，则原始资源会一直存在于内存中。所以应当避免使用Object.Destroy方法了~<br>2.非使用 Addresables.Instantiate 方法实例化出来的对象，如使用Unity自带的Instantiate实例出来的对象，也可以使用Addressables.ReleaseInstance来释放，这并不会对计数有影响，只是单纯的释放。<br>3.任何通过Addresables.Instantiate 方法实例化出来的对象，在切换场景的时候，如果没有标记为 DontDestroyOnLoad ,则会被自动调用Addressables.ReleaseInstance来释放掉。</p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><blockquote>
-<ul>
-<li>指定本地和服务端资源：设置为Build RemoteCatalog时，才为服务端资源，即不跟随包打出。</li>
-<li>build出的包带资源，但此资源要热更怎么办？<ol>
-<li>先将资源标注成Local build的路径形式（一定要成对），这样打出的包就会被带到手机包里</li>
-<li>Content Update Restriction一定要选上Cannot Change Post Release， 指明此资源是固定资源在外里的</li>
-<li>出过一个版本后，使用Tools下的Check for Content Update Restriction，找出变更的固定资源到Content Update的分组中</li>
-<li>使用Build -&gt; Update Previous build 更新之前的版本即可完成来更新。</li>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><ul>
+<li><ol>
+<li>出包时将自动带上catalog.json在包内，出包的时候不用带 catalogxxx.json 和catalog.hash文件</li>
 </ol>
 </li>
-<li>那么如果已经指明此为remote资源的话，如果更新呢？ 那很简单了，直接使用Build -&gt; Update previous build就行了。因为路径已经指明到远端，此时打开会自动更新成最新的。</li>
-<li>注意这两个不要轻易改动。Asset Provider与AssetBundle Provider, 改动后一定要重新生成资源（Build-&gt; New Build）。 一般使用Assets from Bundles Provider 与Assetbundle Provider。待深入研究才知道区别。</li>
+<li><ol start="2">
+<li>可使用接口随时重加载catalog文件。如：</li>
+</ol>
+</li>
 </ul>
+<pre><code class="csharp">//注意： 一定要先清除所有resoucelocators
+Addressables.ClearResourceLocators();
+//重加载下载好的catalog文件
+await Addressables.LoadContentCatalogAsync(Path.Combine(ResourceConfig.GetLocalBundlePath(), &quot;catalog.json&quot;),true).Task;</code></pre>
+<ol start="3">
+<li>因此 ： 流程可采用如下的方式：<blockquote>
+<ol>
+<li>设置好assetbundle provider，这里仍用旧的方式，对资源加载时的路径进行跳转限制，优先找SD卡资源，再找包体资源。</li>
+<li>出APK包，在 catalog打完包，在资源中不需要带，直接删除掉。资源+version.txt即可</li>
+<li>出资源包时，带上新名字的catalog文件作为清单。</li>
+<li>下载模块完全用自己实现！ 先加载SD卡的catalog文件，没有，则默认用包内的。 如果有新的，再次调用加载catalog，这样读取就是最新的。</li>
+</ol>
 </blockquote>
-<blockquote>
-<p>Addressable的比对是使用hash,json两个文件及新的更新文件决定的，所以更新下来的文件必须放在一个地方，这个地方可以是服务端的地址，也可以是本地，这个可以在更新后用代码实现。</p>
-</blockquote>
+</li>
+</ol>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
@@ -1042,10 +1050,10 @@
 
 <div class="article_copyright">
     <p><span class="copy-title">文章标题:</span>Addressable 研究</p>
-    <p><span class="copy-title">文章字数:</span><span class="post-count">692</span></p>
+    <p><span class="copy-title">文章字数:</span><span class="post-count">574</span></p>
     <p><span class="copy-title">本文作者:</span><a  title="Avery Huo">Avery Huo</a></p>
     <p><span class="copy-title">发布时间:</span>2020-08-11, 09:59:40</p>
-    <p><span class="copy-title">最后更新:</span>2020-08-11, 09:59:40</p>
+    <p><span class="copy-title">最后更新:</span>2020-09-07, 21:27:21</p>
     <span class="copy-title">原始链接:</span><a class="post-url" href="/2020/08/11/Addressable 研究/" title="Addressable 研究">https://AveryHuo.github.io/2020/08/11/Addressable 研究/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
