@@ -51,7 +51,7 @@ await Addressables.LoadContentCatalogAsync(Path.Combine(ResourceConfig.GetLocalB
 ```
 
 3. 因此 ： 流程可采用如下的方式：
- > 1. 设置好assetbundle provider，这里仍用旧的方式，对资源加载时的路径进行跳转限制，优先找SD卡资源，再找包体资源。
+ > 1. 将设置好assetbundle provider，这里仍用旧的方式，对资源加载时的路径进行跳转限制，优先找SD卡资源，再找包体资源。
  > 2. 出APK包，在 catalog打完包，在资源中不需要带，直接删除掉。资源+version.txt即可
  > 3. 出资源包时，带上新名字的catalog文件作为清单。
  > 4.下载模块完全用自己实现！ 先加载SD卡的catalog文件，没有，则默认用包内的。 如果有新的，再次调用加载catalog，这样读取就是最新的。
