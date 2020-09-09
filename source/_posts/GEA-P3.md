@@ -1,5 +1,5 @@
 ---
-title: Game Engine Architecture - Foundations Part3
+title: GEA-P3
 categories:
 - IT阅读
 tags: 
