@@ -78,12 +78,12 @@ class ModifyJsonFileHandler(BaseHandler):
 ## 6.[Python] 执行流程：B_CREATE_ANDROID_APP 
 * 生成安卓 apk。
  
- ## 7.上传资源： [Python]: H_UPLOAD_CDN_COMPRESS
+## 7.上传资源： [Python]: H_UPLOAD_CDN_COMPRESS
  * 上传本地生成的diff.txt中的文件到cdn
  * 内容示例如下：
   ![diff文件内容](/img/1600238267260.png)
  
- ## 8.打补丁包： [Python]：H_GENERATE_PATCH_CDN_COMPRESS
+## 8.打补丁包： [Python]：H_GENERATE_PATCH_CDN_COMPRESS
  * 输入参数: 起始版本，目标版本
  * 1. 获取两个版本的version文件
  * 2. 获取version中的catalogs, resources文件列表，以目标版本为准，起始版本中不同的记录到diff列表中
@@ -112,7 +112,7 @@ class ModifyJsonFileHandler(BaseHandler):
 * server文件： {mCenterUrl}static/server/{mChannelKey}.json
  
  
- ## 4. 判断是否需要强更？[非Editor]
+## 4. 判断是否需要强更？[非Editor]
  * DownloadApp System执行
  * 服务端给的APP版本号，如果比appVersionInPack要大，则强更，跳转到下载地址
   
@@ -135,8 +135,9 @@ class ModifyJsonFileHandler(BaseHandler):
   1.mCoreUpdateDic与mAfterUpdateDic为空？ ： 将服务端的version文件复制到本地sd下
   2.进行下载，并记录catelog文件名称，完成后，再次检测mCoreUpdateDic与mAfterUpdateDic，循环直到1成立
   
- ## 6. [再次]加载Addressable的Catelog
+
+## 6. [再次]加载Addressable的Catelog
  * DownloadUpdateFiles System执行
  * 设置当前资源版本号为服务端
  
- ## 7. 进入登录，执行LoginPreload, InitLua, EnterLogin进入游戏
+## 7. 进入登录，执行LoginPreload, InitLua, EnterLogin进入游戏
