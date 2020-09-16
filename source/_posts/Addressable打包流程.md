@@ -141,3 +141,6 @@ class ModifyJsonFileHandler(BaseHandler):
  * 设置当前资源版本号为服务端
  
 ## 7. 进入登录，执行LoginPreload, InitLua, EnterLogin进入游戏
+
+# 总体流程概述 
+![总体流程概述 ](/img/1600240709174.png)
