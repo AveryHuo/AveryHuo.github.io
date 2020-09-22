@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>Avery的城堡</title>
-  <meta name="keywords" content>
-  <meta name="description" content="Avery的城堡">
+  <title>Addressable打包流程 | Avery的城堡</title>
+  <meta name="keywords" content=" CI ">
+  <meta name="description" content="Addressable打包流程 | Avery的城堡">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="这是关于我，有空再加吧">
 <meta name="keywords" content="Learn+Study">
@@ -53,7 +53,7 @@
 </div>
 
 <body>
-<aside class="nav mobile">
+<aside class="nav">
     <div class="nav-left">
         <a href="/" class="avatar_target">
     <img class="avatar" src="/img/my.jpeg" />
@@ -950,12 +950,68 @@
         </div>
     </div>
 </aside>
-<div class="post index">
+<div class="post">
     <div class="pjax">
-        <article class="index">
-            <div class="toc-ref">
+        <article id="post-Addressable打包流程" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Why-Blog"><span class="toc-text">Why Blog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么有这个博客"><span class="toc-text">为什么有这个博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于我"><span class="toc-text">关于我</span></a></li></ol></li></ol>
+        <h1 class="article-title">Addressable打包流程</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            
+                <a  data-rel="工作相关">工作相关</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            
+            <a class="color3">CI</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2020-09-22 21:20:32'>2020-09-22 21:20</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>字数:948</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+        <span class="top-comment" title="跳转至评论区">
+            <a href="#comments">
+                评论:<span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </a>
+        </span>
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#安卓打包流程"><span class="toc-text">安卓打包流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Python-添加配置"><span class="toc-text">1. [Python]  添加配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Python-执行流程：-B-PACK-RES-Unity-PackAllRes"><span class="toc-text">2. [Python]  执行流程： B_PACK_RES  [Unity] :PackAllRes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Python-执行流程：B-CREATE-PUBLISH-Unity-UpdateVersionAndPublishFile"><span class="toc-text">3.[Python] 执行流程：B_CREATE_PUBLISH [Unity]: UpdateVersionAndPublishFile</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Python-执行流程：B-BUILD-PROJECT-Unity-BuildProject"><span class="toc-text">4.[Python] 执行流程：B_BUILD_PROJECT [Unity]: BuildProject</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Python-执行流程：B-COMMIT-MOBILE"><span class="toc-text">5.[Python] 执行流程：B_COMMIT_MOBILE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Python-执行流程：B-CREATE-ANDROID-APP"><span class="toc-text">6.[Python] 执行流程：B_CREATE_ANDROID_APP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-上传资源：-Python-H-UPLOAD-CDN-COMPRESS"><span class="toc-text">7.上传资源： [Python]: H_UPLOAD_CDN_COMPRESS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-打补丁包：-Python-：H-GENERATE-PATCH-CDN-COMPRESS"><span class="toc-text">8.打补丁包： [Python]：H_GENERATE_PATCH_CDN_COMPRESS</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#加载流程"><span class="toc-text">加载流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-获取所有项目内版本号及version文件"><span class="toc-text">1. 获取所有项目内版本号及version文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-加载Addressable的Catelog"><span class="toc-text">2. 加载Addressable的Catelog</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-加载服务端的md5文件，notice文件，server文件，version文件"><span class="toc-text">3. 加载服务端的md5文件，notice文件，server文件，version文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-判断是否需要强更？-非Editor"><span class="toc-text">4. 判断是否需要强更？[非Editor]</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-更新资源文件-非Editor"><span class="toc-text">5. 更新资源文件 [非Editor]</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-再次-加载Addressable的Catelog"><span class="toc-text">6. [再次]加载Addressable的Catelog</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-进入登录，执行LoginPreload-InitLua-EnterLogin进入游戏"><span class="toc-text">7. 进入登录，执行LoginPreload, InitLua, EnterLogin进入游戏</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总体流程概述"><span class="toc-text">总体流程概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CI后台系统"><span class="toc-text">CI后台系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SVN资源目录结构"><span class="toc-text">SVN资源目录结构</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -968,36 +1024,189 @@
     }
 </style>
 </div>
-            <h1 id="Why-Blog"><a href="#Why-Blog" class="headerlink" title="Why Blog"></a>Why Blog</h1><h2 id="为什么有这个博客"><a href="#为什么有这个博客" class="headerlink" title="为什么有这个博客"></a>为什么有这个博客</h2><blockquote>
-<p>并非为了博客来有这个网站，实际上是做一个日记本</p>
-</blockquote>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="安卓打包流程"><a href="#安卓打包流程" class="headerlink" title="安卓打包流程"></a>安卓打包流程</h1><h2 id="1-Python-添加配置"><a href="#1-Python-添加配置" class="headerlink" title="1. [Python]  添加配置"></a>1. [Python]  添加配置</h2><ul>
+<li><p>1.添加项目配置 vms/config/config.txt</p>
+</li>
+<li><p>2.新建一个config文件到 vms/config/platform_{project}_{branch/version}.txt</p>
 <blockquote>
-<p>有时看书学习，都可以将自己的内容放在这里</p>
+<p>2的文件 将作为打包后项目带出去的platform.txt的模板<br>platform.txt在打包流程中 判断 branch是否以t开头，是则用1，否则用第一个字符设置为platformId</p>
 </blockquote>
-<h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p><strong>AveryHuo</strong> 是Avery的个人站。</p>
-<p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。</p>
-<p>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
-<p>主要功能：</p>
-<ul>
-<li>搜索支持文章标题、标签(#标签)、作者(@作者)</li>
-<li>pad/手机等移动端适配</li>
-<li>页面全局快捷键 <a href='http://yelog.org/2017/03/24/3-hexo-shortcuts/'>3-hexo快捷键说明</a></li>
+</li>
 </ul>
+<pre><code class="python"> -------------------------------------------------
+   File Name：     ModifyJsonFileHandler
+   Author :       hujunhao
+   date：          2018/3/16 16:03
+   Description : 修改platform.txt文件
+-------------------------------------------------
+&quot;&quot;&quot;
+class ModifyJsonFileHandler(BaseHandler):
+    def __init__(self):
+        super(ModifyJsonFileHandler, self).__init__(constants.H_MODIFY_JSON_FILE)
+        pass
 
-        </article>
-        
-        <p>
-            <a  class="dashang" onclick="dashangToggle()">赏</a>
-        </p>
-        
-        
+    def excute(self, args):
+        version = args[0]
+        publish_path = args[1]
+        plat_path = args[2]
+        to_path = args[3]
+
+        cur_date_time = datetime.datetime.now()
+        cur_date_time.strftime(&#39;%m%d%H%M&#39;)
+        publish_data = script.configMgr.load_file(publish_path)
+        ver_str = &#39;%s_%s_%s_%s&#39; % (
+            version, publish_data[&#39;appVersion&#39;], publish_data[&#39;resVersion&#39;], cur_date_time.strftime(&#39;%m%d%H%M&#39;))
+
+        plat_data = script.configMgr.load_file(plat_path)
+        plat_data[&#39;verInfo&#39;] = ver_str
+
+        # M by Yuk 2018-08-03
+        # 修复不同platformId被覆盖回默认platformId的bug
+        # platformId 取分支号
+        platformId = str(version[0])
+        if platformId == &#39;t&#39; or platformId == &#39;0&#39;:
+            platformId = 1
+            pass
+        plat_data[&#39;platformId&#39;] = platformId
+
+        script.configMgr.save_file(plat_data, to_path)
+
+        return True
+
+    pass
+</code></pre>
+<h2 id="2-Python-执行流程：-B-PACK-RES-Unity-PackAllRes"><a href="#2-Python-执行流程：-B-PACK-RES-Unity-PackAllRes" class="headerlink" title="2. [Python]  执行流程： B_PACK_RES  [Unity] :PackAllRes"></a>2. [Python]  执行流程： B_PACK_RES  [Unity] :PackAllRes</h2><ul>
+<li>打包所有资源</li>
+<li>设置目录： res_ab: output\testsg\output\res\res_ab</li>
+</ul>
+<h2 id="3-Python-执行流程：B-CREATE-PUBLISH-Unity-UpdateVersionAndPublishFile"><a href="#3-Python-执行流程：B-CREATE-PUBLISH-Unity-UpdateVersionAndPublishFile" class="headerlink" title="3.[Python] 执行流程：B_CREATE_PUBLISH [Unity]: UpdateVersionAndPublishFile"></a>3.[Python] 执行流程：B_CREATE_PUBLISH [Unity]: UpdateVersionAndPublishFile</h2><ul>
+<li>创建项目内的publish.txt和xxx_version.txt</li>
+</ul>
+<h2 id="4-Python-执行流程：B-BUILD-PROJECT-Unity-BuildProject"><a href="#4-Python-执行流程：B-BUILD-PROJECT-Unity-BuildProject" class="headerlink" title="4.[Python] 执行流程：B_BUILD_PROJECT [Unity]: BuildProject"></a>4.[Python] 执行流程：B_BUILD_PROJECT [Unity]: BuildProject</h2><ul>
+<li>生成安卓工程</li>
+<li>将调用Unity中对Manifest文件已经修改</li>
+</ul>
+<h2 id="5-Python-执行流程：B-COMMIT-MOBILE"><a href="#5-Python-执行流程：B-COMMIT-MOBILE" class="headerlink" title="5.[Python] 执行流程：B_COMMIT_MOBILE"></a>5.[Python] 执行流程：B_COMMIT_MOBILE</h2><ul>
+<li>将资源提交到SVN</li>
+</ul>
+<h2 id="6-Python-执行流程：B-CREATE-ANDROID-APP"><a href="#6-Python-执行流程：B-CREATE-ANDROID-APP" class="headerlink" title="6.[Python] 执行流程：B_CREATE_ANDROID_APP"></a>6.[Python] 执行流程：B_CREATE_ANDROID_APP</h2><ul>
+<li>生成安卓 apk。</li>
+</ul>
+<h2 id="7-上传资源：-Python-H-UPLOAD-CDN-COMPRESS"><a href="#7-上传资源：-Python-H-UPLOAD-CDN-COMPRESS" class="headerlink" title="7.上传资源： [Python]: H_UPLOAD_CDN_COMPRESS"></a>7.上传资源： [Python]: H_UPLOAD_CDN_COMPRESS</h2><ul>
+<li>上传本地生成的diff.txt中的文件到cdn</li>
+<li>内容示例如下：<br><img src="/img/1600238267260.png" alt="diff文件内容"></li>
+</ul>
+<h2 id="8-打补丁包：-Python-：H-GENERATE-PATCH-CDN-COMPRESS"><a href="#8-打补丁包：-Python-：H-GENERATE-PATCH-CDN-COMPRESS" class="headerlink" title="8.打补丁包： [Python]：H_GENERATE_PATCH_CDN_COMPRESS"></a>8.打补丁包： [Python]：H_GENERATE_PATCH_CDN_COMPRESS</h2><ul>
+<li>输入参数: 起始版本，目标版本</li>
+<li><ol>
+<li>获取两个版本的version文件</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>获取version中的catalogs, resources文件列表，以目标版本为准，起始版本中不同的记录到diff列表中</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>将diff列表中的文件遍历出，并压缩为 [start_version]_[target_version]patch.7z</li>
+</ol>
+</li>
+<li>4.在目标版本的version文件中，添加压缩文件名到patchs字段</li>
+<li><ol start="5">
+<li>上传修改后的新的version文件</li>
+</ol>
+</li>
+<li>结果如图：<br><img src="/img/1600238404872.png" alt="生成的364-384的补丁包"></li>
+</ul>
+<h1 id="加载流程"><a href="#加载流程" class="headerlink" title="加载流程"></a>加载流程</h1><h2 id="1-获取所有项目内版本号及version文件"><a href="#1-获取所有项目内版本号及version文件" class="headerlink" title="1. 获取所有项目内版本号及version文件"></a>1. 获取所有项目内版本号及version文件</h2><ul>
+<li><p>GetLocalVersion 的System执行， 如图获取 resVersionInPack, resVersionInSD, appVersionInPack<br><img src="/img/1600233059102.png" alt="加载本地的版本号信息"></p>
+<h2 id="2-加载Addressable的Catelog"><a href="#2-加载Addressable的Catelog" class="headerlink" title="2. 加载Addressable的Catelog"></a>2. 加载Addressable的Catelog</h2><ul>
+<li>GetLocalVersion System结束时调用</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-加载服务端的md5文件，notice文件，server文件，version文件"><a href="#3-加载服务端的md5文件，notice文件，server文件，version文件" class="headerlink" title="3. 加载服务端的md5文件，notice文件，server文件，version文件"></a>3. 加载服务端的md5文件，notice文件，server文件，version文件</h2><ul>
+<li><p>GetServerList System执行</p>
+</li>
+<li><ul>
+<li>Server的根地址： 包体内的plaform.txt指明的serverKey, mCenterUrl</li>
+</ul>
+</li>
+<li><p>md5文件: {mCenterUrl}static/md5/{mChannel}.json。 从其中获取如图内容<br><img src="/img/1600236947016.png" alt="md5文件内容"></p>
+</li>
+<li><p>notice文件： {mCenterUrl}static/notice/login/{mChannelKey}.json</p>
+</li>
+<li><p>server文件： {mCenterUrl}static/server/{mChannelKey}.json</p>
+</li>
+</ul>
+<h2 id="4-判断是否需要强更？-非Editor"><a href="#4-判断是否需要强更？-非Editor" class="headerlink" title="4. 判断是否需要强更？[非Editor]"></a>4. 判断是否需要强更？[非Editor]</h2><ul>
+<li>DownloadApp System执行</li>
+<li>服务端给的APP版本号，如果比appVersionInPack要大，则强更，跳转到下载地址</li>
+</ul>
+<h2 id="5-更新资源文件-非Editor"><a href="#5-更新资源文件-非Editor" class="headerlink" title="5. 更新资源文件 [非Editor]"></a>5. 更新资源文件 [非Editor]</h2><ul>
+<li><p>DownloadUpdateFiles System执行</p>
+</li>
+<li><p>服务端的res版本号，如果比(resVersionInPack与resVersionInSD中的最大者)大，则下载服务端的version文件</p>
+</li>
+<li><p>服务端version文件： cdnUrl / Resources/[Android/iOS/Windows/Mac]/xxx_version.7z</p>
+</li>
+<li><p>下载服务端版本文件并解压</p>
+</li>
+<li><p>1.查找patches列表，如果存在 [resVersionInPack]_[服务端res_version]patch.7z 文件名，则进入补丁包快速下载流程</p>
+</li>
+<li><p>2.未找到对应的patches记录，进入资源列表下载流程。</p>
+<blockquote>
+<p>A: 补丁包快速下载流程：</p>
+<ol>
+<li>补丁包地址： cdnUrl / Resources/[Android/iOS/Windows/Mac]/[resVersionInPack]_[服务端res_version]patch.7z</li>
+<li>解压补丁包到persistantData下，记录最新catalog名称，完成下载流程<br>B: 资源下载流程:<br>对比得到 mCoreUpdateDic 必更资源列表，mAfterUpdateDic 随后（运行时）更新的资源列表<br>结果： </li>
+<li>mCoreUpdateDic与mAfterUpdateDic为空？ ： 将服务端的version文件复制到本地sd下</li>
+<li>进行下载，并记录catelog文件名称，完成后，再次检测mCoreUpdateDic与mAfterUpdateDic，循环直到1成立</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h2 id="6-再次-加载Addressable的Catelog"><a href="#6-再次-加载Addressable的Catelog" class="headerlink" title="6. [再次]加载Addressable的Catelog"></a>6. [再次]加载Addressable的Catelog</h2><ul>
+<li>DownloadUpdateFiles System执行</li>
+<li>设置当前资源版本号为服务端</li>
+</ul>
+<h2 id="7-进入登录，执行LoginPreload-InitLua-EnterLogin进入游戏"><a href="#7-进入登录，执行LoginPreload-InitLua-EnterLogin进入游戏" class="headerlink" title="7. 进入登录，执行LoginPreload, InitLua, EnterLogin进入游戏"></a>7. 进入登录，执行LoginPreload, InitLua, EnterLogin进入游戏</h2><h1 id="总体流程概述"><a href="#总体流程概述" class="headerlink" title="总体流程概述"></a>总体流程概述</h1><p><img src="/img/1600240709174.png" alt="总体流程概述 "></p>
+<h1 id="CI后台系统"><a href="#CI后台系统" class="headerlink" title="CI后台系统"></a>CI后台系统</h1><h2 id="SVN资源目录结构"><a href="#SVN资源目录结构" class="headerlink" title="SVN资源目录结构"></a>SVN资源目录结构</h2><p><img src="/img/1600395139064.png" alt="结构示例"></p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a  class="dashang" onclick="dashangToggle()">赏</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>Addressable打包流程</p>
+    <p><span class="copy-title">文章字数:</span><span class="post-count">948</span></p>
+    <p><span class="copy-title">本文作者:</span><a  title="霍家鹏">霍家鹏</a></p>
+    <p><span class="copy-title">发布时间:</span>2020-09-22, 21:20:32</p>
+    <p><span class="copy-title">最后更新:</span>2020-09-22, 21:20:32</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2020/09/22/Addressable打包流程/" title="Addressable打包流程">http://www.hjp.wiki/2020/09/22/Addressable打包流程/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
     <section id="comments" class="disqus">
     <style> aside.comment-bar { margin: auto 30px; }</style>
     <div id="disqus_thread"></div>
     <script>
         var disqus_config = function(){
-            this.page.url = 'http://www.hjp.wiki/';
-            this.page.identifier = 'categories/图形学/index.html';
+            this.page.url = 'http://www.hjp.wiki/2020/09/22/Addressable打包流程/';
+            this.page.identifier = '2020/09/22/Addressable打包流程/';
         };
         var loadComment = function(){
             var d = document, s = d.createElement('script');
@@ -1013,8 +1222,15 @@
 </section>
 
 <!-- Add comment count-->
-<span class="disqus-comment-count" style="display: none" data-disqus-identifier="categories/图形学/index.html"></span>
-<span class="disqus-comment-count" style="display: none" data-disqus-url=""></span>
+<span class="disqus-comment-count" style="display: none" data-disqus-identifier="2020/09/22/Addressable打包流程/"></span>
+<span class="disqus-comment-count" style="display: none" data-disqus-url="http://www.hjp.wiki/2020/09/22/Addressable打包流程/"></span>
+
+
+
+    
+
+
+
 
     </div>
     <div class="copyright">
