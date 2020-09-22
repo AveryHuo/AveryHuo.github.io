@@ -144,3 +144,8 @@ class ModifyJsonFileHandler(BaseHandler):
 
 # 总体流程概述 
 ![总体流程概述 ](/img/1600240709174.png)
+
+# CI后台系统
+
+## SVN资源目录结构
+![结构示例](/img/1600395139064.png)
