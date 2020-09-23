@@ -1227,21 +1227,16 @@ class ModifyJsonFileHandler(BaseHandler):
 
 
 
-    <div id="comments"></div>
-<link rel="stylesheet" href="https://jjeejj.github.io/css/gitment.css">
-<script src="/js/gitment.js"></script>
-<script>
-    var gitment = new Gitment({
-        id: 'http://www.hjp.wiki/2020/09/22/Addressable打包流程/', // 可选。默认为 location.href
-        owner: 'AveryHuo',
-        repo: 'AveryHuo.github.io',
-        oauth: {
-            client_id: 'd1f648aedf12ef670b14',
-            client_secret: '45c00de8643f55217b4fa2cebaec9088369c4a24',
-        },
-    })
-    gitment.render('comments')
-</script>
+    <div id="comments">
+    <script src="https://utteranc.es/client.js"
+            repo="AveryHuo/AveryHuo.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            label="utteranc"
+            crossorigin="anonymous"
+            async>
+    </script>
+</div>
 
 
 
