@@ -24,7 +24,7 @@
 
 <link href="/css/style.css?v=1.1.0" rel="stylesheet">
 
-<link href="/css/hl_theme/atom-light.css?v=1.1.0" rel="stylesheet">
+<link href="/css/hl_theme/sublime.css?v=1.1.0" rel="stylesheet">
 
 <link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
 
@@ -39,14 +39,12 @@
 <script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
 
 
-<script id="dsq-count-scr" src="//.disqus.com/count.js" async></script>
-
 
 <script src="/js/iconfont.js?v=1.1.0"></script>
 
 </head>
 <div style="display: none">
-  <input class="theme_disqus_on" value="true">
+  <input class="theme_disqus_on" value="false">
   <input class="theme_preload_comment" value="true">
   <input class="theme_blog_path" value>
   <input id="theme_shortcut" value="true">
@@ -442,6 +440,10 @@
 
 </div>
 
+    
+    <div id="local-search-result">
+
+    </div>
     
     <nav id="title-list-nav">
         
@@ -1013,30 +1015,22 @@
         </p>
         
         
-    <section id="comments" class="disqus">
-    <style> aside.comment-bar { margin: auto 30px; }</style>
-    <div id="disqus_thread"></div>
-    <script>
-        var disqus_config = function(){
-            this.page.url = 'http://www.hjp.wiki/';
-            this.page.identifier = 'archives/2020/page/6/index.html';
-        };
-        var loadComment = function(){
-            var d = document, s = d.createElement('script');
-            s.src = '//.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        }
-    </script>
-    
-    <script> loadComment(); </script>
+    <div id="comments"></div>
+<link rel="stylesheet" href="https://jjeejj.github.io/css/gitment.css">
+<script src="/js/gitment.js"></script>
+<script>
+    var gitment = new Gitment({
+        id: 'http://www.hjp.wiki/', // 可选。默认为 location.href
+        owner: 'AveryHuo',
+        repo: 'AveryHuo.github.io',
+        oauth: {
+            client_id: 'd1f648aedf12ef670b14',
+            client_secret: '45c00de8643f55217b4fa2cebaec9088369c4a24',
+        },
+    })
+    gitment.render('comments')
+</script>
 
-
-</section>
-
-<!-- Add comment count-->
-<span class="disqus-comment-count" style="display: none" data-disqus-identifier="archives/2020/page/6/index.html"></span>
-<span class="disqus-comment-count" style="display: none" data-disqus-url=""></span>
 
     </div>
     <div class="copyright">
@@ -1230,5 +1224,36 @@
 
 
 
-
+<div id="musicMouseDrag" style="position:fixed; z-index: 9999; bottom: 0; right: 0;">
+    <div id="musicDragArea" style="position: absolute; top: 0; left: 0; width: 100%;height: 10px;cursor: move; z-index: 10;"></div>
+	<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=209804&auto=1&height=66"></iframe>
+</div>
+<!-- 以下代码是为了支持随时拖动音乐控件的位置，如没有需求，可去掉下面代码 -->
+<script>
+var $DOC = $(document)
+$('#musicMouseDrag').on ('mousedown', function (e) {
+// 阻止文本选中
+$DOC.bind ("selectstart", function () {
+return false;
+});
+$('#musicDragArea').css ('height', '100%');
+var $moveTarget = $('#musicMouseDrag');
+$moveTarget.css ('border', '1px dashed grey')
+var div_x = e.pageX - $moveTarget.offset ().left;
+var div_y = e.pageY - $moveTarget.offset ().top;
+$DOC.on ('mousemove', function (e) {
+var targetX = e.pageX - div_x;
+var targetY = e.pageY - div_y;
+targetX = targetX < 0 ? 0 : (targetX + $moveTarget.outerWidth () >= window.innerWidth) ? window.innerWidth - $moveTarget.outerWidth () : targetX;
+targetY = targetY < 0 ? 0 : (targetY + $moveTarget.outerHeight () >= window.innerHeight) ? window.innerHeight - $moveTarget.outerHeight () : targetY;
+$moveTarget.css ({'left': targetX + 'px', 'top': targetY + 'px', 'bottom': 'inherit', 'right': 'inherit'})
+}).on ('mouseup', function () {
+$DOC.unbind ("selectstart");
+$DOC.off ('mousemove')
+$DOC.off ('mouseup')
+$moveTarget.css ('border', 'none')
+$('#musicDragArea').css ('height', '10px');
+})
+})
+</script>
 </html>
