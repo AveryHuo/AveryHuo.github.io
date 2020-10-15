@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>线性代数-笔记1 | Avery的城堡</title>
-  <meta name="keywords" content>
-  <meta name="description" content="线性代数-笔记1 | Avery的城堡">
+  <title>GEA-P3 | Avery的城堡</title>
+  <meta name="keywords" content=" Game ">
+  <meta name="description" content="GEA-P3 | Avery的城堡">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="这是关于我，有空再加吧">
 <meta name="keywords" content="Learn+Study">
@@ -984,9 +984,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-线性代数-笔记1" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-GEA-P3" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">线性代数-笔记1</h1>
+        <h1 class="article-title">GEA-P3</h1>
     
     <div class="article-meta">
         
@@ -996,20 +996,27 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="数学">数学</a>
+            <a  data-rel="IT阅读">IT阅读</a>
             
         </span>
         
         
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color5">Game</a>
+            
+        </span>
+        
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-09-08 11:23:20'>2020-09-08 11:23</time>
+            Created At : <time class="date" title='Updated At: 2020-10-15 20:46:56'>2020-10-15 20:46</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:392</span>
+        <span>Count:360</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -1039,7 +1046,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#第一章、线性代数中的线性方程组"><span class="toc-text">第一章、线性代数中的线性方程组</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#null"><span class="toc-text"></span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#3-引擎基础"><span class="toc-text">3 引擎基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-C-Review-and-Best-Practive"><span class="toc-text">(3.1) C++ Review and Best Practive</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Multiple-Inheritance-MI"><span class="toc-text">Multiple Inheritance(MI)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Composition-and-Aggregation"><span class="toc-text">Composition and Aggregation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Coding-Standards"><span class="toc-text">Coding Standards</span></a></li></ol></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -1055,18 +1062,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="第一章、线性代数中的线性方程组"><a href="#第一章、线性代数中的线性方程组" class="headerlink" title="第一章、线性代数中的线性方程组"></a>第一章、线性代数中的线性方程组</h4><h5 id=""><a href="#" class="headerlink" title=""></a></h5><p>1.线性方程组等价⇔解集相同⇔增广矩阵行等价<br>2.线性方程组的解：null/one/infinite<br>3.线性方程组相容：有解（one/infinite）<br>4.行初等变换：<br>倍加：加上另一行的倍数<br>对换：两行互换<br>倍乘：一行各元素乘一个标量<br>5.行初等变换是可逆的<br>6.（行）阶梯形矩阵（缩写为REF）<br>每一非零行在每一零行之上<br>下方的行的先导元素在右方</p>
+        <h1 id="3-引擎基础"><a href="#3-引擎基础" class="headerlink" title="3 引擎基础"></a>3 引擎基础</h1><h2 id="3-1-C-Review-and-Best-Practive"><a href="#3-1-C-Review-and-Best-Practive" class="headerlink" title="(3.1) C++ Review and Best Practive"></a>(3.1) C++ Review and Best Practive</h2><p>imperative languages: C<br>object-oriented languages: C# , Java<br>scripting languages: python lua,perl<br>functional languages: Lisp, scheme, F# </p>
+<h3 id="Multiple-Inheritance-MI"><a href="#Multiple-Inheritance-MI" class="headerlink" title="Multiple Inheritance(MI)"></a>Multiple Inheritance(MI)</h3><p>Most C++ software developers avoid multiple inheritance completely or<br>only permit it in a limited form. </p>
 <blockquote>
-<p>推论：先导元素（一行的最左非零元素）所在列的下面全是零</p>
+<p>多继承容易让结构混乱，提升技术难度，引发deadly diamond问题（当父类们存在相同函数时，子类不知道实现哪个？）<br>实际应用中，多继承应继承自无父的类对象<br>Most C++ software developers avoid multiple inheritance completely or<br>only permit it in a limited form. A common rule of thumb is to allow only<br>simple, parentless classes to be multiply inherited into an otherwise strictly<br>single-inheritance hierarchy. Such classes are sometimes called mix-in classes<br>because they can be used to introduce new functionality at arbitrary points in<br>a class tree. </p>
 </blockquote>
-<p>7.简化（行）阶梯形（缩写为RREF）<br>先导元素都是1<br>先导元素是所在列唯一的非零元素<br>简化阶梯形是唯一的</p>
-<ol start="8">
-<li>主元位置：阶梯形中先导元素的位置；主元列*：含主元位置的列<br>主元列对应基本变量，非主元列对应自由变量</li>
-<li>线性方程组相容⇔增广矩阵最右列不是主元列（没有0=b情况出现，其中b为非零常数）</li>
-<li><strong>向量方程</strong>： 以向量的方式代表一个单列矩阵，如：（3，-1）对应2x1列矩阵</li>
-<li>证明某个向量c在其他两个向量a,b组成的面上，只需要证明存在r1,r2为实数让c = r1a + r2b成立。</li>
-<li>向量方程与矩阵方程：<br>向量方程以向量加未知数的形式组成部成方程。矩阵方程将方程组写成矩阵 乘 向量组成的方程。</li>
-</ol>
+<p><img src="./img/1575255814499.png" alt="Deadly diamond"><br><img src="/img/1575255482902.png" alt="Mix-in class"></p>
+<h3 id="Composition-and-Aggregation"><a href="#Composition-and-Aggregation" class="headerlink" title="Composition and Aggregation"></a>Composition and Aggregation</h3><p>组合和聚合<br>has-a, uses-a</p>
+<h3 id="Coding-Standards"><a href="#Coding-Standards" class="headerlink" title="Coding Standards"></a>Coding Standards</h3><p>代码规范</p>
+<blockquote>
+<p>1.Some standards make the code more readable, understandable and maintainable.<br>2. Other conventions help to prevent programmers from shooting themselves in the foot. For example, a coding standard might encourage the<br>programmer to use only a smaller, more testable and less error-prone<br>subset of the whole language. The C++ language is rife with possibilities for abuse, so this kind of coding standard is particularly important<br>when using C++.</p>
+</blockquote>
+<blockquote>
+<p>Interfaces are king. 接口保持干净，整洁<br>Good names encourage understanding and avoid confusion.  命名要求规范<br>Don’t clutter the global namespace. C++中避免互包等混乱<br>Follow C++ best practices. Books like the Effective C++ series by Scott Meyers [31,32], Meyers’ Effective STL [33] and Large-Scale C++ Software Design3.1. C++ Review and Best Practices 105<br>by John Lakos [27] provide excellent guidelines that will help keep you<br>out of trouble.   关注最好的代码<br>Be consistent.  坚定规范要求<br>Make errors stick out. 让错误更易在代码中查觉。</p>
+</blockquote>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
@@ -1080,12 +1089,12 @@
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">Title:</span>线性代数-笔记1</p>
-    <p><span class="copy-title">Count:</span><span class="post-count">392</span></p>
+    <p><span class="copy-title">Title:</span>GEA-P3</p>
+    <p><span class="copy-title">Count:</span><span class="post-count">360</span></p>
     <p><span class="copy-title">Author:</span><a  title="霍家鹏">霍家鹏</a></p>
-    <p><span class="copy-title">Created At:</span>2020-09-08, 11:23:20</p>
-    <p><span class="copy-title">Updated At:</span>2020-09-08, 11:23:20</p>
-    <span class="copy-title">Url:</span><a class="post-url" href="/2020/09/08/线性代数-笔记1/" title="线性代数-笔记1">http://www.hjp.wiki/2020/09/08/线性代数-笔记1/</a>
+    <p><span class="copy-title">Created At:</span>2020-10-15, 20:46:56</p>
+    <p><span class="copy-title">Updated At:</span>2020-10-15, 20:46:56</p>
+    <span class="copy-title">Url:</span><a class="post-url" href="/2020/10/15/GEA-P3/" title="GEA-P3">http://www.hjp.wiki/2020/10/15/GEA-P3/</a>
     <p>
         <span class="copy-title">Copyright:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">AveryHuo</a> Reprint please keep the original link and author.
     </p>
