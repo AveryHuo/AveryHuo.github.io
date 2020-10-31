@@ -24,7 +24,7 @@
 
 <link href="/css/style.css?v=1.1.0" rel="stylesheet">
 
-<link href="/css/hl_theme/sublime.css?v=1.1.0" rel="stylesheet">
+<link href="/css/hl_theme/atom-dark.css?v=1.1.0" rel="stylesheet">
 
 <link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
 
@@ -67,14 +67,6 @@
 <div class="icon">
     
         
-        <a title="rss" href="/atom.xml" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-rss"></use>
-                </svg>
-            
-        </a>
-        
     
         
         <a title="github" href="https://github.com/AveryHuo" target="_blank">
@@ -87,13 +79,11 @@
         
     
         
-        <a title="facebook" href="https://www.facebook.com/faker.tops" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-facebook"></use>
-                </svg>
-            
-        </a>
+    
+        
+    
+        
+    
         
     
         
@@ -101,37 +91,7 @@
         
     
         
-        <a title="instagram" href="https://www.facebook.com/faker.tops" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-instagram"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-        <a title="reddit" href="https://www.reddit.com/user/yelog/" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-reddit"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-        <a title="weibo" href="http://weibo.com/u/2307534817" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-weibo"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-        <a title="jianshu" href="https://www.jianshu.com/u/ff56736de7cf" target="_blank">
+        <a title="jianshu" href="https://www.jianshu.com/u/96df2dd41ded" target="_blank">
             
                 <svg class="iconfont-svg" aria-hidden="true">
                     <use xlink:href="#icon-jianshu"></use>
@@ -141,7 +101,7 @@
         
     
         
-        <a title="zhihu" href="https://www.zhihu.com/people/jaytp/activities" target="_blank">
+        <a title="zhihu" href="https://www.zhihu.com/people/alvinxiao-peng" target="_blank">
             
                 <svg class="iconfont-svg" aria-hidden="true">
                     <use xlink:href="#icon-zhihu"></use>
@@ -153,7 +113,7 @@
         
     
         
-        <a title="oschina" href="https://my.oschina.net/yelog" target="_blank">
+        <a title="oschina" href="https://my.oschina.net/u/138823" target="_blank">
             
                 <svg class="iconfont-svg" aria-hidden="true">
                     <use xlink:href="#icon-oschina"></use>
@@ -214,7 +174,7 @@
     
         
             
-            <li><div data-rel="工作相关">工作相关<small>(2)</small></div>
+            <li><div data-rel="IT阅读">IT阅读<small>(5)</small></div>
                 
             </li>
             
@@ -222,7 +182,7 @@
     
         
             
-            <li><div data-rel="公司">公司<small>(4)</small></div>
+            <li><div data-rel="Unity">Unity<small>(7)</small></div>
                 
             </li>
             
@@ -262,6 +222,30 @@
     
         
             
+            <li><div data-rel="CPlusPlus">CPlusPlus<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Python">Python<small>(16)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Unity学习">Unity学习<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
             <li><div data-rel="英语学习">英语学习<small>(9)</small></div>
                 
             </li>
@@ -278,7 +262,7 @@
     
         
             
-            <li><div data-rel="CPlusPlus">CPlusPlus<small>(3)</small></div>
+            <li><div data-rel="公司">公司<small>(4)</small></div>
                 
             </li>
             
@@ -286,31 +270,7 @@
     
         
             
-            <li><div data-rel="IT阅读">IT阅读<small>(5)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="Python">Python<small>(16)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="Unity">Unity<small>(7)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="Unity学习">Unity学习<small>(4)</small></div>
+            <li><div data-rel="工作相关">工作相关<small>(2)</small></div>
                 
             </li>
             
@@ -1428,6 +1388,20 @@ adj. 生锈的，腐蚀的；铁锈色的，锈色的；迟钝的
 
         /*高亮代码块行号*/
         
+        $('pre code').each(function(){
+            var lines = $(this).text().trim().split('\n').length, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
 
         /*访问数量*/
         
@@ -1471,6 +1445,38 @@ adj. 生锈的，腐蚀的；铁锈色的，锈色的；迟钝的
 </script>
 
 <!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: ;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
 
 <!--自定义样式设置-->
 <style>
