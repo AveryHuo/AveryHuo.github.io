@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>数据结构在C# | Avery的城堡</title>
-  <meta name="keywords" content>
-  <meta name="description" content="数据结构在C# | Avery的城堡">
+  <title>腾讯云开发-使用Unity开发服务器逻辑并自动部署 | Avery的城堡</title>
+  <meta name="keywords" content=" Unity学习 ">
+  <meta name="description" content="腾讯云开发-使用Unity开发服务器逻辑并自动部署 | Avery的城堡">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="这是关于我，有空再加吧">
 <meta name="keywords" content="Learn+Study">
@@ -944,9 +944,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-数据结构在Charp" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-腾讯云开发-使用Unity开发服务器逻辑并自动部署" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">数据结构在C#</h1>
+        <h1 class="article-title">腾讯云开发-使用Unity开发服务器逻辑并自动部署</h1>
     
     <div class="article-meta">
         
@@ -956,20 +956,27 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="Unity">Unity</a>
+            <a  data-rel="Unity学习">Unity学习</a>
             
         </span>
         
         
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color3">Unity学习</a>
+            
+        </span>
+        
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-09-08 11:23:20'>2020-09-08 11:23</time>
+            Created At : <time class="date" title='Updated At: 2020-11-18 21:32:05'>2020-11-18 21:32</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:608</span>
+        <span>Count:6</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -999,7 +1006,7 @@
     
     <div class="toc-ref">
     
-        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#客户端"><span class="toc-text">客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#服务端"><span class="toc-text">服务端</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -1015,35 +1022,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>数组Array：顺序存储结构<br>        优点：按位置索引很快，修改效率高。<br>        缺点：需声明存放类型，且只能存放相同类型，必须指定长度（过长浪费，过短溢出），插入与删除很慢（排除特殊情况）。</p>
-<p>数组ArrayList：顺序存储结构，解决了Array的缺点，由源码得知，默认容量为4，容量自增2倍。<br>        不过由于容量是类成员，自增机制会引发线程安全问题，所以ArrayList不是线程安全的。<br>        优点：无需指定长度，无需声明存放类型，可存放不同类型元素，底层是object,顺序存储结构常有优点这里都有。<br>        缺点：由于底层元素是object，当为值类型时，存在装箱/拆箱操作，效率降低，且可能会有非类型安全问题。顺序存储结构常有缺点这里都有。</p>
-<p>数组List：顺序存储结构，综合Array和ArrayList的优点，所以List也不是线程安全的。<br>        优点：无需指定长度，长度自增。需声明存放类型，内部用Array实现，保证了类型安全。<br>        缺点：顺序存储结构常有缺点都有。<br>    所以现在基本上不使用Array和ArrayList，而是使用List。</p>
-<p>双向链表LinkList：链式存储结构,非线程安全，可自己加锁实现线程安全。<br>        优点：插入，删除效率高，只需修改指针域的前驱节点和后继节点即可进行插入删除。<br>        缺点：无法基于位置索引，必须从头结点依次遍历。</p>
-<p>队列Queue：顺序存储结构，先进先出集合。由官方文档得知，非线程安全，但是其有线程安全的的队列实现为ConcurrentQueue<T>。<br>        默认容量为32，容量自增为4(.net framework 4.8)，其他版本可能会有变化。</p>
-<p>栈Stack：顺序存储结构，后进先出集合，默认容量10，容量自增2倍。非线程安全。</p>
-<p><img src="/img/1586415301619.png" alt="递归算法"></p>
-<ul>
-<li><p>公式法求复杂度：</p>
-</li>
-<li><p><img src="/img/1586415991649.png" alt="公式法"></p>
-</li>
-<li><p><img src="/img/1586416006714.png" alt="三种情况"></p>
-</li>
-<li><p><img src="/img/1586416029304.png" alt="例一"></p>
-</li>
-<li><p><img src="/img/1586416055487.png" alt="例二"></p>
-</li>
-<li><p><img src="/img/1586416101201.png" alt="例三"></p>
-</li>
-</ul>
-<p><img src="/img/1586416261865.png" alt="回溯法"></p>
-<p><img src="/img/1586416480976.png" alt="经典找集合总和的算法"></p>
-<p>NQueen算法：<br><img src="/img/1586418715552.png" alt="回溯法NQueen"></p>
-<p>算法复杂度：<br><img src="/img/1586419084172.png" alt="NQueen算法复杂度"></p>
-<ul>
-<li>题外：关于ref, out的区别<br>1、ref指定的参数在函数调用时候必须初始化，不能为空的引用。而out指定的参数在函数调用时候可以不初始化；</li>
-</ul>
-<p>2、out指定的参数在进入函数时会清空自己，必须在函数内部赋初值。而ref指定的参数不需要。</p>
+        <p><img src="/img/1605700406892.png" alt="联机功能简述"></p>
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><p><img src="/img/1605700473654.png" alt="客户端接收函数"></p>
+<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><p><img src="/img/1605701291767.png" alt="核心价值"></p>
+<p><img src="/img/1605701305959.png" alt="应用场景"></p>
+<p><img src="/img/1605701442216.png" alt="场景服务"></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
@@ -1057,12 +1040,12 @@
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">Title:</span>数据结构在C#</p>
-    <p><span class="copy-title">Count:</span><span class="post-count">608</span></p>
+    <p><span class="copy-title">Title:</span>腾讯云开发-使用Unity开发服务器逻辑并自动部署</p>
+    <p><span class="copy-title">Count:</span><span class="post-count">6</span></p>
     <p><span class="copy-title">Author:</span><a  title="霍家鹏">霍家鹏</a></p>
-    <p><span class="copy-title">Created At:</span>2020-09-08, 11:23:20</p>
-    <p><span class="copy-title">Updated At:</span>2020-09-08, 11:23:20</p>
-    <span class="copy-title">Url:</span><a class="post-url" href="/2020/09/08/数据结构在Charp/" title="数据结构在C#">http://www.hjp.wiki/2020/09/08/数据结构在Charp/</a>
+    <p><span class="copy-title">Created At:</span>2020-11-18, 21:32:05</p>
+    <p><span class="copy-title">Updated At:</span>2020-11-18, 21:32:05</p>
+    <span class="copy-title">Url:</span><a class="post-url" href="/2020/11/18/腾讯云开发-使用Unity开发服务器逻辑并自动部署/" title="腾讯云开发-使用Unity开发服务器逻辑并自动部署">http://www.hjp.wiki/2020/11/18/腾讯云开发-使用Unity开发服务器逻辑并自动部署/</a>
     <p>
         <span class="copy-title">Copyright:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">AveryHuo</a> Reprint please keep the original link and author.
     </p>

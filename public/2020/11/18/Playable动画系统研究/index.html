@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>数据结构在C# | Avery的城堡</title>
-  <meta name="keywords" content>
-  <meta name="description" content="数据结构在C# | Avery的城堡">
+  <title>Playable动画系统研究 | Avery的城堡</title>
+  <meta name="keywords" content=" Unity学习 ">
+  <meta name="description" content="Playable动画系统研究 | Avery的城堡">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="这是关于我，有空再加吧">
 <meta name="keywords" content="Learn+Study">
@@ -944,9 +944,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-数据结构在Charp" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-Playable动画系统研究" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">数据结构在C#</h1>
+        <h1 class="article-title">Playable动画系统研究</h1>
     
     <div class="article-meta">
         
@@ -956,20 +956,27 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="Unity">Unity</a>
+            <a  data-rel="Unity学习">Unity学习</a>
             
         </span>
         
         
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color3">Unity学习</a>
+            
+        </span>
+        
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-09-08 11:23:20'>2020-09-08 11:23</time>
+            Created At : <time class="date" title='Updated At: 2020-11-18 18:30:28'>2020-11-18 18:30</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:608</span>
+        <span>Count:1.1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -999,7 +1006,7 @@
     
     <div class="toc-ref">
     
-        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Playable是什么"><span class="toc-text">1. Playable是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-简单使用：播放单个动画"><span class="toc-text">2. 简单使用：播放单个动画</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-替代AnimationController"><span class="toc-text">3. 替代AnimationController</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-实现自定义的PlayableBehaviour"><span class="toc-text">5. 实现自定义的PlayableBehaviour</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-工具：-PlayableGraph-Visiualizer"><span class="toc-text">4. 工具：  PlayableGraph Visiualizer</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -1015,35 +1022,272 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>数组Array：顺序存储结构<br>        优点：按位置索引很快，修改效率高。<br>        缺点：需声明存放类型，且只能存放相同类型，必须指定长度（过长浪费，过短溢出），插入与删除很慢（排除特殊情况）。</p>
-<p>数组ArrayList：顺序存储结构，解决了Array的缺点，由源码得知，默认容量为4，容量自增2倍。<br>        不过由于容量是类成员，自增机制会引发线程安全问题，所以ArrayList不是线程安全的。<br>        优点：无需指定长度，无需声明存放类型，可存放不同类型元素，底层是object,顺序存储结构常有优点这里都有。<br>        缺点：由于底层元素是object，当为值类型时，存在装箱/拆箱操作，效率降低，且可能会有非类型安全问题。顺序存储结构常有缺点这里都有。</p>
-<p>数组List：顺序存储结构，综合Array和ArrayList的优点，所以List也不是线程安全的。<br>        优点：无需指定长度，长度自增。需声明存放类型，内部用Array实现，保证了类型安全。<br>        缺点：顺序存储结构常有缺点都有。<br>    所以现在基本上不使用Array和ArrayList，而是使用List。</p>
-<p>双向链表LinkList：链式存储结构,非线程安全，可自己加锁实现线程安全。<br>        优点：插入，删除效率高，只需修改指针域的前驱节点和后继节点即可进行插入删除。<br>        缺点：无法基于位置索引，必须从头结点依次遍历。</p>
-<p>队列Queue：顺序存储结构，先进先出集合。由官方文档得知，非线程安全，但是其有线程安全的的队列实现为ConcurrentQueue<T>。<br>        默认容量为32，容量自增为4(.net framework 4.8)，其他版本可能会有变化。</p>
-<p>栈Stack：顺序存储结构，后进先出集合，默认容量10，容量自增2倍。非线程安全。</p>
-<p><img src="/img/1586415301619.png" alt="递归算法"></p>
+        <h2 id="1-Playable是什么"><a href="#1-Playable是什么" class="headerlink" title="1. Playable是什么"></a>1. Playable是什么</h2><p>Playable是一组API，可以用来组合、混合、修改多个数据源，然后通过一个输出，将这些数据源处理完的结果播放出来。</p>
+<h2 id="2-简单使用：播放单个动画"><a href="#2-简单使用：播放单个动画" class="headerlink" title="2. 简单使用：播放单个动画"></a>2. 简单使用：播放单个动画</h2><ul>
+<li>PlayableGraph的AnimationOutput依然是基于Animator组件的，不过你可以不用关心它了。</li>
+<li>主要实现目的是可以不创建animationcontroller，用代码实现其中的一些功能</li>
+</ul>
+<pre><code class="csharp">using UnityEngine;
+using UnityEngine.Animations;
+using UnityEngine.Playables;
+
+public class PlayClipOnObject : MonoBehaviour
+{
+   public AnimationClip myClip;
+   private PlayableGraph graph;
+
+   void Start () {
+      PlayAnimation(gameObject, myClip);
+   }
+
+   public void PlayAnimation(GameObject target, AnimationClip clip) {
+      // Create the PlayableGraph, which is the root of the Playable API stuff
+      graph = PlayableGraph.Create();
+
+      //We need an Animator to play stuff, even if we&#39;re not using an AnimatorController. So just add one:
+      var animator = target.AddComponent&lt;Animator&gt;();
+
+      //Wrap the clip in a thing the Playable system understands:
+      var clipPlayable = AnimationClipPlayable.Create(graph, clip);
+
+      //Create the output, and make the clip be the output&#39;s source. This API is a bit wordy :p
+      var animOutput = AnimationPlayableOutput.Create(graph, &quot;some name&quot;, animator);
+      animOutput.SetSourcePlayable(clipPlayable);
+
+      //play the thing
+      graph.Play();
+    }
+
+   void OnDestroy()
+   {
+      // If you don&#39;t destroy the graph, it leaks in the engine (and Unity whines), so destroy it!
+      // IsValid will be false if the graph was never created (ie. this component is never enabled before it&#39;s destroyed)
+      if(graph.IsValid())
+         graph.Destroy();
+   }
+}</code></pre>
+<p>创建步骤：</p>
+<ol>
+<li>创建Graph</li>
+</ol>
+<pre><code class="csharp">playableGraph = PlayableGraph.Create();</code></pre>
+<ol start="2">
+<li>创建Ouput</li>
+</ol>
+<pre><code class="csharp">var playableOutput = AnimationPlayableOutput.Create(playableGraph, &quot;Animation&quot;, GetComponent&lt;Animator&gt;());</code></pre>
+<ol start="3">
+<li>为clip创建针对的Playable对象</li>
+</ol>
+<pre><code class="csharp"> var clipPlayable = AnimationClipPlayable.Create(playableGraph, clip);</code></pre>
+<ol start="4">
+<li>设置playable对象到Output中</li>
+</ol>
+<pre><code class="csharp"> playableOutput.SetSourcePlayable(clipPlayable);</code></pre>
+<ol start="5">
+<li>让Graph执行play</li>
+</ol>
+<pre><code class="csharp">playableGraph.Play();</code></pre>
 <ul>
-<li><p>公式法求复杂度：</p>
-</li>
-<li><p><img src="/img/1586415991649.png" alt="公式法"></p>
-</li>
-<li><p><img src="/img/1586416006714.png" alt="三种情况"></p>
-</li>
-<li><p><img src="/img/1586416029304.png" alt="例一"></p>
-</li>
-<li><p><img src="/img/1586416055487.png" alt="例二"></p>
-</li>
-<li><p><img src="/img/1586416101201.png" alt="例三"></p>
+<li><ol start="6">
+<li>需要在结束时销毁Graph对象</li>
+</ol>
 </li>
 </ul>
-<p><img src="/img/1586416261865.png" alt="回溯法"></p>
-<p><img src="/img/1586416480976.png" alt="经典找集合总和的算法"></p>
-<p>NQueen算法：<br><img src="/img/1586418715552.png" alt="回溯法NQueen"></p>
-<p>算法复杂度：<br><img src="/img/1586419084172.png" alt="NQueen算法复杂度"></p>
+<pre><code class="csharp">playableGraph.Play();</code></pre>
+<blockquote>
+<p>Playable Output类型<br>为了避免GC，所有类型都是使用struct实现的。<br>构建PlayableGraph一般有如下的流程：</p>
+</blockquote>
+<p>创建一个PlayableGraph，方法是PlayableGraph.Create(“graph的名字”)<br>创建输出节点，常用的有</p>
+<pre><code class="csharp">AnimationPlayableOutput.Create(playableGraph, &quot;name&quot;, GetComponent&lt;Animator&gt;());
+AudioPlayableOutput.Create(playableGraph, &quot;name&quot;, GetComponent&lt;AudioSource&gt;());</code></pre>
+<p>还可以创建自定义的输出节点</p>
+<p>创建各种playables。所有的Playable都有一个静态的Create()方法，用来创建playable实例。需要注意的是自定义的PlayableBehaviour需要使用</p>
+<pre><code class="csharp">ScriptPlayable&lt;T&gt;.Create(playableGraph);</code></pre>
+<p>来创建。</p>
+<pre><code class="csharp">AnimationClipPlayable.Create(playableGraph, animationClip);
+AudioClipPlayable.Create(playableGraph, audioClip, true);
+ScriptPlayable&lt;T&gt;.Create(playableGraph);</code></pre>
+<p>连接playable和output：PlayableOutput.SetSourcePlayable()<br>playable之间的连接：PlayableGraph.Connect()。<br>播放graph：PlayableGraph.Play()<br>如果graph不再使用，记得销毁：PlayableGraph.Destroy()。调用这个方法后会销毁所有的playbles和output。</p>
+<h2 id="3-替代AnimationController"><a href="#3-替代AnimationController" class="headerlink" title="3. 替代AnimationController"></a>3. 替代AnimationController</h2><ol>
+<li>创建混合树AnimationMixerPlayable，实现AnimationController之间连线控制功能：</li>
+</ol>
+<pre><code class="csharp">using UnityEngine;
+
+using UnityEngine.Playables;
+
+using UnityEngine.Animations;
+using UnityEngine.Experimental.Animations;
+
+[RequireComponent(typeof(Animator))]
+
+public class PlayAnimationSample : MonoBehaviour
+
+{
+
+    public AnimationClip clip0;
+    public AnimationClip clip1;
+
+    PlayableGraph playableGraph;
+    private AnimationMixerPlayable m_Mixer;
+
+    public float tranTime = 2;
+    private float leftTime;
+
+    void Start()
+
+    {
+
+        playableGraph = PlayableGraph.Create(&quot;测试&quot;);
+
+        playableGraph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
+
+        var playableOutput = AnimationPlayableOutput.Create(playableGraph, &quot;Animation&quot;, GetComponent&lt;Animator&gt;());
+
+        // Wrap the clip in a playable
+
+        m_Mixer = AnimationMixerPlayable.Create(playableGraph, 2);
+
+        AnimationClipPlayable clipPlayable0 = AnimationClipPlayable.Create(playableGraph, clip0);
+        AnimationClipPlayable clipPlayable1 = AnimationClipPlayable.Create(playableGraph, clip1);
+
+        playableGraph.Connect(clipPlayable0, 0, m_Mixer, 0);
+        playableGraph.Connect(clipPlayable1, 0, m_Mixer, 1);
+
+        m_Mixer.SetInputWeight(0,1);
+        m_Mixer.SetInputWeight(1,0);
+        // Connect the Playable to an output
+
+        playableOutput.SetSourcePlayable(m_Mixer);
+        playableOutput.SetSortingOrder(0);
+
+            // Plays the Graph.
+        leftTime = tranTime;
+        playableGraph.Play();
+
+    }
+
+    void Update()
+    {
+        leftTime = Mathf.Clamp(leftTime - Time.deltaTime, 0, 2);
+        float weight = leftTime / tranTime;
+        Debug.Log(&quot;weight:&quot;+weight);
+        m_Mixer.SetInputWeight(0, 1 - weight);
+        m_Mixer.SetInputWeight(1, weight);
+    }
+
+    void OnDestroy()
+    {
+        // Destroys all Playables and PlayableOutputs created by the graph.
+        playableGraph.Destroy();
+    }
+}</code></pre>
+<h2 id="5-实现自定义的PlayableBehaviour"><a href="#5-实现自定义的PlayableBehaviour" class="headerlink" title="5. 实现自定义的PlayableBehaviour"></a>5. 实现自定义的PlayableBehaviour</h2><p>实现</p>
 <ul>
-<li>题外：关于ref, out的区别<br>1、ref指定的参数在函数调用时候必须初始化，不能为空的引用。而out指定的参数在函数调用时候可以不初始化；</li>
+<li>1.继承 PlayableBehaviour </li>
+<li>2.在初始化函数中传入graph, playable对象，分别为每个动画创建Playable并添加到mixer中，设置weight</li>
 </ul>
-<p>2、out指定的参数在进入函数时会清空自己，必须在函数内部赋初值。而ref指定的参数不需要。</p>
+<p>调用</p>
+<ul>
+<li>1.使用ScriptPlayable.Create创建自定义的Playable对象</li>
+<li>2.从Playable中获取behaviour并利用此behaviour调用初始化函数</li>
+</ul>
+<pre><code class="csharp">using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Animations;
+using UnityEngine.Playables;
+
+public class CustomPlayable : PlayableBehaviour
+{
+    private int m_CurrentClipIndex = -1;
+    private float m_TimeToNextClip;
+    private Playable mixer;
+    public void Initialize(AnimationClip[] clipsToPlay, Playable owner, PlayableGraph graph)
+    {
+        owner.SetInputCount(1);
+        mixer = AnimationMixerPlayable.Create(graph, clipsToPlay.Length);
+        graph.Connect(mixer, 0, owner, 0);
+        owner.SetInputWeight(0, 1);
+        for (int clipIndex = 0 ; clipIndex &lt; mixer.GetInputCount() ; ++clipIndex)
+        {
+            graph.Connect(AnimationClipPlayable.Create(graph, clipsToPlay[clipIndex]), 0, mixer, clipIndex);
+            mixer.SetInputWeight(clipIndex, 1.0f);
+        }
+    }
+
+    override public void PrepareFrame(Playable owner, FrameData info)
+    {
+        if (mixer.GetInputCount() == 0)
+            return;
+        // Advance to next clip if necessary
+        m_TimeToNextClip -= (float)info.deltaTime;
+        if (m_TimeToNextClip &lt;= 0.0f)
+        {
+            m_CurrentClipIndex++;
+            if (m_CurrentClipIndex &gt;= mixer.GetInputCount())
+                m_CurrentClipIndex = 0;
+            var currentClip = (AnimationClipPlayable)mixer.GetInput(m_CurrentClipIndex);
+            // Reset the time so that the next clip starts at the correct position
+            currentClip.SetTime(0);
+            m_TimeToNextClip = currentClip.GetAnimationClip().length;
+        }
+        // Adjust the weight of the inputs
+        for (int clipIndex = 0 ; clipIndex &lt; mixer.GetInputCount(); ++clipIndex)
+        {
+            if (clipIndex == m_CurrentClipIndex)
+                mixer.SetInputWeight(clipIndex, 1.0f);
+            else
+                mixer.SetInputWeight(clipIndex, 0.0f);
+        }
+    }
+}
+</code></pre>
+<pre><code class="csharp">using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Animations;
+using UnityEngine.Playables;
+
+public class PlayCustomPlayableSample : MonoBehaviour
+{
+    public AnimationClip[] clipsToPlay;
+
+    PlayableGraph m_Graph;
+
+    void Start()
+    {
+        m_Graph = PlayableGraph.Create();
+        var custPlayable = ScriptPlayable&lt;CustomPlayable&gt;.Create(m_Graph);
+
+        var playQueue = custPlayable.GetBehaviour();
+
+        playQueue.Initialize(clipsToPlay, custPlayable, m_Graph);
+
+        var playableOutput = AnimationPlayableOutput.Create(m_Graph, &quot;Animation&quot;, GetComponent&lt;Animator&gt;());
+
+        playableOutput.SetSourcePlayable(custPlayable);
+        playableOutput.SetSourceInputPort(0);
+
+        m_Graph.Play();
+    }
+
+    void OnDisable()
+
+    {
+
+        // Destroys all Playables and Outputs created by the graph.
+
+        m_Graph.Destroy();
+
+    }
+}
+</code></pre>
+<h2 id="4-工具：-PlayableGraph-Visiualizer"><a href="#4-工具：-PlayableGraph-Visiualizer" class="headerlink" title="4. 工具：  PlayableGraph Visiualizer"></a>4. 工具：  PlayableGraph Visiualizer</h2><ul>
+<li>停止更新于去年4月</li>
+</ul>
+<blockquote>
+<p>在场景中的Animator运行时，将自动映射动画到Visiualizer中显示<br>在创建好的PlayableGraph ，运行时也会在其中显示</p>
+</blockquote>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
@@ -1057,12 +1301,12 @@
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">Title:</span>数据结构在C#</p>
-    <p><span class="copy-title">Count:</span><span class="post-count">608</span></p>
+    <p><span class="copy-title">Title:</span>Playable动画系统研究</p>
+    <p><span class="copy-title">Count:</span><span class="post-count">1.1k</span></p>
     <p><span class="copy-title">Author:</span><a  title="霍家鹏">霍家鹏</a></p>
-    <p><span class="copy-title">Created At:</span>2020-09-08, 11:23:20</p>
-    <p><span class="copy-title">Updated At:</span>2020-09-08, 11:23:20</p>
-    <span class="copy-title">Url:</span><a class="post-url" href="/2020/09/08/数据结构在Charp/" title="数据结构在C#">http://www.hjp.wiki/2020/09/08/数据结构在Charp/</a>
+    <p><span class="copy-title">Created At:</span>2020-11-18, 18:30:28</p>
+    <p><span class="copy-title">Updated At:</span>2020-11-18, 18:30:28</p>
+    <span class="copy-title">Url:</span><a class="post-url" href="/2020/11/18/Playable动画系统研究/" title="Playable动画系统研究">http://www.hjp.wiki/2020/11/18/Playable动画系统研究/</a>
     <p>
         <span class="copy-title">Copyright:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">AveryHuo</a> Reprint please keep the original link and author.
     </p>

@@ -4,6 +4,56 @@
   
     
     <entry>
+      <title>腾讯云开发-使用Unity开发服务器逻辑并自动部署</title>
+      <link href="2020/11/18/%E8%85%BE%E8%AE%AF%E4%BA%91%E5%BC%80%E5%8F%91-%E4%BD%BF%E7%94%A8Unity%E5%BC%80%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%80%BB%E8%BE%91%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2/"/>
+      <url>2020/11/18/%E8%85%BE%E8%AE%AF%E4%BA%91%E5%BC%80%E5%8F%91-%E4%BD%BF%E7%94%A8Unity%E5%BC%80%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%80%BB%E8%BE%91%E5%B9%B6%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/img/1605700406892.png" alt="联机功能简述"></p><h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><p><img src="/img/1605700473654.png" alt="客户端接收函数"></p><h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><p><img src="/img/1605701291767.png" alt="核心价值"></p><p><img src="/img/1605701305959.png" alt="应用场景"></p><p><img src="/img/1605701442216.png" alt="场景服务"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Unity学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Unity学习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Playable动画系统研究</title>
+      <link href="2020/11/18/Playable%E5%8A%A8%E7%94%BB%E7%B3%BB%E7%BB%9F%E7%A0%94%E7%A9%B6/"/>
+      <url>2020/11/18/Playable%E5%8A%A8%E7%94%BB%E7%B3%BB%E7%BB%9F%E7%A0%94%E7%A9%B6/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-Playable是什么"><a href="#1-Playable是什么" class="headerlink" title="1. Playable是什么"></a>1. Playable是什么</h2><p>Playable是一组API，可以用来组合、混合、修改多个数据源，然后通过一个输出，将这些数据源处理完的结果播放出来。</p><h2 id="2-简单使用：播放单个动画"><a href="#2-简单使用：播放单个动画" class="headerlink" title="2. 简单使用：播放单个动画"></a>2. 简单使用：播放单个动画</h2><ul><li>PlayableGraph的AnimationOutput依然是基于Animator组件的，不过你可以不用关心它了。</li><li>主要实现目的是可以不创建animationcontroller，用代码实现其中的一些功能</li></ul><pre><code class="csharp">using UnityEngine;using UnityEngine.Animations;using UnityEngine.Playables;public class PlayClipOnObject : MonoBehaviour{   public AnimationClip myClip;   private PlayableGraph graph;   void Start () {      PlayAnimation(gameObject, myClip);   }   public void PlayAnimation(GameObject target, AnimationClip clip) {      // Create the PlayableGraph, which is the root of the Playable API stuff      graph = PlayableGraph.Create();      //We need an Animator to play stuff, even if we&#39;re not using an AnimatorController. So just add one:      var animator = target.AddComponent&lt;Animator&gt;();      //Wrap the clip in a thing the Playable system understands:      var clipPlayable = AnimationClipPlayable.Create(graph, clip);      //Create the output, and make the clip be the output&#39;s source. This API is a bit wordy :p      var animOutput = AnimationPlayableOutput.Create(graph, &quot;some name&quot;, animator);      animOutput.SetSourcePlayable(clipPlayable);      //play the thing      graph.Play();    }   void OnDestroy()   {      // If you don&#39;t destroy the graph, it leaks in the engine (and Unity whines), so destroy it!      // IsValid will be false if the graph was never created (ie. this component is never enabled before it&#39;s destroyed)      if(graph.IsValid())         graph.Destroy();   }}</code></pre><p>创建步骤：</p><ol><li>创建Graph</li></ol><pre><code class="csharp">playableGraph = PlayableGraph.Create();</code></pre><ol start="2"><li>创建Ouput</li></ol><pre><code class="csharp">var playableOutput = AnimationPlayableOutput.Create(playableGraph, &quot;Animation&quot;, GetComponent&lt;Animator&gt;());</code></pre><ol start="3"><li>为clip创建针对的Playable对象</li></ol><pre><code class="csharp"> var clipPlayable = AnimationClipPlayable.Create(playableGraph, clip);</code></pre><ol start="4"><li>设置playable对象到Output中</li></ol><pre><code class="csharp"> playableOutput.SetSourcePlayable(clipPlayable);</code></pre><ol start="5"><li>让Graph执行play</li></ol><pre><code class="csharp">playableGraph.Play();</code></pre><ul><li><ol start="6"><li>需要在结束时销毁Graph对象</li></ol></li></ul><pre><code class="csharp">playableGraph.Play();</code></pre><blockquote><p>Playable Output类型<br>为了避免GC，所有类型都是使用struct实现的。<br>构建PlayableGraph一般有如下的流程：</p></blockquote><p>创建一个PlayableGraph，方法是PlayableGraph.Create(“graph的名字”)<br>创建输出节点，常用的有</p><pre><code class="csharp">AnimationPlayableOutput.Create(playableGraph, &quot;name&quot;, GetComponent&lt;Animator&gt;());AudioPlayableOutput.Create(playableGraph, &quot;name&quot;, GetComponent&lt;AudioSource&gt;());</code></pre><p>还可以创建自定义的输出节点</p><p>创建各种playables。所有的Playable都有一个静态的Create()方法，用来创建playable实例。需要注意的是自定义的PlayableBehaviour需要使用</p><pre><code class="csharp">ScriptPlayable&lt;T&gt;.Create(playableGraph);</code></pre><p>来创建。</p><pre><code class="csharp">AnimationClipPlayable.Create(playableGraph, animationClip);AudioClipPlayable.Create(playableGraph, audioClip, true);ScriptPlayable&lt;T&gt;.Create(playableGraph);</code></pre><p>连接playable和output：PlayableOutput.SetSourcePlayable()<br>playable之间的连接：PlayableGraph.Connect()。<br>播放graph：PlayableGraph.Play()<br>如果graph不再使用，记得销毁：PlayableGraph.Destroy()。调用这个方法后会销毁所有的playbles和output。</p><h2 id="3-替代AnimationController"><a href="#3-替代AnimationController" class="headerlink" title="3. 替代AnimationController"></a>3. 替代AnimationController</h2><ol><li>创建混合树AnimationMixerPlayable，实现AnimationController之间连线控制功能：</li></ol><pre><code class="csharp">using UnityEngine;using UnityEngine.Playables;using UnityEngine.Animations;using UnityEngine.Experimental.Animations;[RequireComponent(typeof(Animator))]public class PlayAnimationSample : MonoBehaviour{    public AnimationClip clip0;    public AnimationClip clip1;    PlayableGraph playableGraph;    private AnimationMixerPlayable m_Mixer;    public float tranTime = 2;    private float leftTime;    void Start()    {        playableGraph = PlayableGraph.Create(&quot;测试&quot;);        playableGraph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);        var playableOutput = AnimationPlayableOutput.Create(playableGraph, &quot;Animation&quot;, GetComponent&lt;Animator&gt;());        // Wrap the clip in a playable        m_Mixer = AnimationMixerPlayable.Create(playableGraph, 2);        AnimationClipPlayable clipPlayable0 = AnimationClipPlayable.Create(playableGraph, clip0);        AnimationClipPlayable clipPlayable1 = AnimationClipPlayable.Create(playableGraph, clip1);        playableGraph.Connect(clipPlayable0, 0, m_Mixer, 0);        playableGraph.Connect(clipPlayable1, 0, m_Mixer, 1);        m_Mixer.SetInputWeight(0,1);        m_Mixer.SetInputWeight(1,0);        // Connect the Playable to an output        playableOutput.SetSourcePlayable(m_Mixer);        playableOutput.SetSortingOrder(0);            // Plays the Graph.        leftTime = tranTime;        playableGraph.Play();    }    void Update()    {        leftTime = Mathf.Clamp(leftTime - Time.deltaTime, 0, 2);        float weight = leftTime / tranTime;        Debug.Log(&quot;weight:&quot;+weight);        m_Mixer.SetInputWeight(0, 1 - weight);        m_Mixer.SetInputWeight(1, weight);    }    void OnDestroy()    {        // Destroys all Playables and PlayableOutputs created by the graph.        playableGraph.Destroy();    }}</code></pre><h2 id="5-实现自定义的PlayableBehaviour"><a href="#5-实现自定义的PlayableBehaviour" class="headerlink" title="5. 实现自定义的PlayableBehaviour"></a>5. 实现自定义的PlayableBehaviour</h2><p>实现</p><ul><li>1.继承 PlayableBehaviour </li><li>2.在初始化函数中传入graph, playable对象，分别为每个动画创建Playable并添加到mixer中，设置weight</li></ul><p>调用</p><ul><li>1.使用ScriptPlayable.Create创建自定义的Playable对象</li><li>2.从Playable中获取behaviour并利用此behaviour调用初始化函数</li></ul><pre><code class="csharp">using System.Collections;using System.Collections.Generic;using UnityEngine;using UnityEngine.Animations;using UnityEngine.Playables;public class CustomPlayable : PlayableBehaviour{    private int m_CurrentClipIndex = -1;    private float m_TimeToNextClip;    private Playable mixer;    public void Initialize(AnimationClip[] clipsToPlay, Playable owner, PlayableGraph graph)    {        owner.SetInputCount(1);        mixer = AnimationMixerPlayable.Create(graph, clipsToPlay.Length);        graph.Connect(mixer, 0, owner, 0);        owner.SetInputWeight(0, 1);        for (int clipIndex = 0 ; clipIndex &lt; mixer.GetInputCount() ; ++clipIndex)        {            graph.Connect(AnimationClipPlayable.Create(graph, clipsToPlay[clipIndex]), 0, mixer, clipIndex);            mixer.SetInputWeight(clipIndex, 1.0f);        }    }    override public void PrepareFrame(Playable owner, FrameData info)    {        if (mixer.GetInputCount() == 0)            return;        // Advance to next clip if necessary        m_TimeToNextClip -= (float)info.deltaTime;        if (m_TimeToNextClip &lt;= 0.0f)        {            m_CurrentClipIndex++;            if (m_CurrentClipIndex &gt;= mixer.GetInputCount())                m_CurrentClipIndex = 0;            var currentClip = (AnimationClipPlayable)mixer.GetInput(m_CurrentClipIndex);            // Reset the time so that the next clip starts at the correct position            currentClip.SetTime(0);            m_TimeToNextClip = currentClip.GetAnimationClip().length;        }        // Adjust the weight of the inputs        for (int clipIndex = 0 ; clipIndex &lt; mixer.GetInputCount(); ++clipIndex)        {            if (clipIndex == m_CurrentClipIndex)                mixer.SetInputWeight(clipIndex, 1.0f);            else                mixer.SetInputWeight(clipIndex, 0.0f);        }    }}</code></pre><pre><code class="csharp">using System.Collections;using System.Collections.Generic;using UnityEngine;using UnityEngine.Animations;using UnityEngine.Playables;public class PlayCustomPlayableSample : MonoBehaviour{    public AnimationClip[] clipsToPlay;    PlayableGraph m_Graph;    void Start()    {        m_Graph = PlayableGraph.Create();        var custPlayable = ScriptPlayable&lt;CustomPlayable&gt;.Create(m_Graph);        var playQueue = custPlayable.GetBehaviour();        playQueue.Initialize(clipsToPlay, custPlayable, m_Graph);        var playableOutput = AnimationPlayableOutput.Create(m_Graph, &quot;Animation&quot;, GetComponent&lt;Animator&gt;());        playableOutput.SetSourcePlayable(custPlayable);        playableOutput.SetSourceInputPort(0);        m_Graph.Play();    }    void OnDisable()    {        // Destroys all Playables and Outputs created by the graph.        m_Graph.Destroy();    }}</code></pre><h2 id="4-工具：-PlayableGraph-Visiualizer"><a href="#4-工具：-PlayableGraph-Visiualizer" class="headerlink" title="4. 工具：  PlayableGraph Visiualizer"></a>4. 工具：  PlayableGraph Visiualizer</h2><ul><li>停止更新于去年4月</li></ul><blockquote><p>在场景中的Animator运行时，将自动映射动画到Visiualizer中显示<br>在创建好的PlayableGraph ，运行时也会在其中显示</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> Unity学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Unity学习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>力扣刷题记录</title>
       <link href="2020/11/05/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/"/>
       <url>2020/11/05/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/</url>
