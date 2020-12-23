@@ -1,9 +1,7 @@
 ---
 title: CSHARP的编译器
 categories:
-- Unity学习
-tags: Unity学习
-- Unity学习
+- Unity
 ---
 
 ## C#、.NET Framework、CLR的关系

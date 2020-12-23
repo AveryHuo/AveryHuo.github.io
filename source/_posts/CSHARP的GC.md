@@ -1,9 +1,7 @@
 ---
 title: CSHARP的GC
 categories:
-- Unity学习
-tags: Unity学习
-- Unity学习
+- Unity
 ---
 
 ## 一、GC概述

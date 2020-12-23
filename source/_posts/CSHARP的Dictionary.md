@@ -1,9 +1,7 @@
 ---
 title: CSHARP的Dictionary
 categories:
-- Unity学习
-tags: Unity学习
-- Unity学习
+- Unity
 ---
 
 参考： https://www.cnblogs.com/InCerry/p/10325290.html
