@@ -1,7 +1,9 @@
 ---
-title: C# GC
+title: CSHARP的GC
 categories:
-- Unity
+- Unity学习
+tags: Unity学习
+- Unity学习
 ---
 
 ## 一、GC概述
