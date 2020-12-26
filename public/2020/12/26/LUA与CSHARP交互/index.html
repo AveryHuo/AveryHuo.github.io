@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <title>LUA与CSHARP交互 | Avery的城堡</title>
+  <meta name="keywords" content>
+  <meta name="description" content="LUA与CSHARP交互 | Avery的城堡">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="这是关于我，有空再加吧">
+<meta name="keywords" content="Learn+Study">
+<meta property="og:type" content="website">
+<meta property="og:title" content="about">
+<meta property="og:url" content="http://www.hjp.wiki/about/index.html">
+<meta property="og:site_name" content="Avery的城堡">
+<meta property="og:description" content="这是关于我，有空再加吧">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-09-08T03:23:20.891Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="about">
+<meta name="twitter:description" content="这是关于我，有空再加吧">
+
+
+<link rel="icon" href="/img/my.jpg">
+
+<link href="/css/style.css?v=1.1.0" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-dark.css?v=1.1.0" rel="stylesheet">
+
+<link href="//cdn.jsdelivr.net/npm/animate.css@4.1.0/animate.min.css" rel="stylesheet">
+
+<script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="/js/titleTip.js?v=1.1.0"></script>
+
+<script src="//cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="/js/iconfont.js?v=1.1.0"></script>
+
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="true">
+  <input class="theme_blog_path" value>
+  <input id="theme_shortcut" value="true">
+  <input id="theme_highlight_on" value="true">
+  <input id="theme_code_copy" value="true">
+</div>
+
+
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/my.jpeg" />
+</a>
+<div class="author">
+    <span>霍家鹏</span>
+</div>
+
+<div class="icon">
+    
+        
+    
+        
+        <a title="github" href="https://github.com/AveryHuo" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-github"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+        <a title="jianshu" href="https://www.jianshu.com/u/96df2dd41ded" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-jianshu"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="zhihu" href="https://www.zhihu.com/people/alvinxiao-peng" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-zhihu"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+        <a title="oschina" href="https://my.oschina.net/u/138823" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-oschina"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+        <a title="email" href="mailto:1024037035@qq.com" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-email"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=1024037035&site=qq&menu=yes" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-qq"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active" data-rel="All">All<small>(79)</small></div></li>
+    
+        
+            
+            <li><div data-rel="IT阅读">IT阅读<small>(5)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Unity">Unity<small>(18)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="数据结构">数据结构<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="数学">数学<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="算法">算法<small>(5)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="图形学">图形学<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="CPlusPlus">CPlusPlus<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Python">Python<small>(16)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="Unity学习">Unity学习<small>(7)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="英语学习">英语学习<small>(9)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="杂项资料">杂项资料<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="公司">公司<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="工作相关">工作相关<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="79">
+<input type="hidden" id="yelog_site_word_count" value="103.3k">
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        Links
+        <i class="iconfont icon-left"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <div class="right-top">
+        <div id="default-panel">
+            <i class="iconfont icon-search" data-title="搜索 快捷键 i"></i>
+            <div class="right-title">All</div>
+            <i class="iconfont icon-file-tree" data-title="切换到大纲视图 快捷键 w"></i>
+        </div>
+        <div id="search-panel">
+            <i class="iconfont icon-left" data-title="返回"></i>
+            <input id="local-search-input" />
+            <label class="border-line" for="input"></label>
+            <i class="iconfont icon-case-sensitive" data-title="大小写敏感"></i>
+            <i class="iconfont icon-tag" data-title="标签"></i>
+        </div>
+        <div id="outline-panel" style="display: none">
+            <div class="right-title">大纲</div>
+            <i class="iconfont icon-list" data-title="切换到文章列表"></i>
+        </div>
+    </div>
+
+    <div class="tags-list">
+    <input id="tag-search" />
+    <div class="tag-wrapper">
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>实例</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>图形学</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>指令</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>C++</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>CI</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Conda</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Core Programming</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Django</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>English</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Game</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Git</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Jenkins</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>linux</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Note</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Python</a>
+            </li>
+        
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>Unity学习</a>
+            </li>
+        
+    </div>
+
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        <a  class="All Unity "
+           href="/2020/12/26/贝塞尔曲线/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="贝塞尔曲线">贝塞尔曲线</span>
+            <span class="post-date" title="2020-12-26 17:16:48">2020/12/26</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/26/CSHARP的内置引用类型/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="CSHARP的内置引用类型">CSHARP的内置引用类型</span>
+            <span class="post-date" title="2020-12-26 17:16:48">2020/12/26</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/26/LUA与CSHARP交互/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="LUA与CSHARP交互">LUA与CSHARP交互</span>
+            <span class="post-date" title="2020-12-26 17:16:48">2020/12/26</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/23/CSHARP的GC/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="CSHARP的GC">CSHARP的GC</span>
+            <span class="post-date" title="2020-12-23 14:46:38">2020/12/23</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/23/CSHARP的编译器/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="CSHARP的编译器">CSHARP的编译器</span>
+            <span class="post-date" title="2020-12-23 14:46:38">2020/12/23</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/23/CSHARP的Dictionary/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="CSHARP的Dictionary">CSHARP的Dictionary</span>
+            <span class="post-date" title="2020-12-23 14:46:38">2020/12/23</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/23/Lua源码研究/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Lua源码研究">Lua源码研究</span>
+            <span class="post-date" title="2020-12-23 11:45:06">2020/12/23</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/23/Lua源码编译流程/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Lua源码编译流程">Lua源码编译流程</span>
+            <span class="post-date" title="2020-12-23 11:45:06">2020/12/23</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/22/基于物理的渲染-PBR/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="基于物理的渲染-PBR">基于物理的渲染-PBR</span>
+            <span class="post-date" title="2020-12-22 12:22:00">2020/12/22</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/18/骨骼蒙皮动画(SkinnedMesh)的原理解析/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="骨骼蒙皮动画(SkinnedMesh)的原理解析">骨骼蒙皮动画(SkinnedMesh)的原理解析</span>
+            <span class="post-date" title="2020-12-18 12:25:18">2020/12/18</span>
+        </a>
+        
+        <a  class="All Unity学习 "
+           href="/2020/12/18/ECSSamples研究/"
+           data-tag="Unity学习"
+           data-author="" >
+            <span class="post-title" title="ECSSamples研究">ECSSamples研究</span>
+            <span class="post-date" title="2020-12-18 12:25:18">2020/12/18</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/12/18/Unity内存剖析/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Unity内存剖析">Unity内存剖析</span>
+            <span class="post-date" title="2020-12-18 12:25:18">2020/12/18</span>
+        </a>
+        
+        <a  class="All Unity学习 "
+           href="/2020/11/18/腾讯云开发-使用Unity开发服务器逻辑并自动部署/"
+           data-tag="Unity学习"
+           data-author="" >
+            <span class="post-title" title="腾讯云开发-使用Unity开发服务器逻辑并自动部署">腾讯云开发-使用Unity开发服务器逻辑并自动部署</span>
+            <span class="post-date" title="2020-11-18 21:32:05">2020/11/18</span>
+        </a>
+        
+        <a  class="All Unity学习 "
+           href="/2020/11/18/Playable动画系统研究/"
+           data-tag="Unity学习"
+           data-author="" >
+            <span class="post-title" title="Playable动画系统研究">Playable动画系统研究</span>
+            <span class="post-date" title="2020-11-18 18:30:28">2020/11/18</span>
+        </a>
+        
+        <a  class="All 算法 "
+           href="/2020/11/05/力扣刷题记录/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="力扣刷题记录">力扣刷题记录</span>
+            <span class="post-date" title="2020-11-05 20:26:18">2020/11/05</span>
+        </a>
+        
+        <a  class="All IT阅读 "
+           href="/2020/10/15/GEA-P4/"
+           data-tag="Game"
+           data-author="" >
+            <span class="post-title" title="GEA-P4">GEA-P4</span>
+            <span class="post-date" title="2020-10-15 20:46:56">2020/10/15</span>
+        </a>
+        
+        <a  class="All IT阅读 "
+           href="/2020/10/15/GEA-P3/"
+           data-tag="Game"
+           data-author="" >
+            <span class="post-title" title="GEA-P3">GEA-P3</span>
+            <span class="post-date" title="2020-10-15 20:46:56">2020/10/15</span>
+        </a>
+        
+        <a  class="All IT阅读 "
+           href="/2020/10/15/GEA-P2/"
+           data-tag="Game"
+           data-author="" >
+            <span class="post-title" title="GEA-P2">GEA-P2</span>
+            <span class="post-date" title="2020-10-15 20:46:56">2020/10/15</span>
+        </a>
+        
+        <a  class="All 图形学 "
+           href="/2020/09/27/计算机图形学编程笔记2/"
+           data-tag="图形学"
+           data-author="" >
+            <span class="post-title" title="计算机图形学编程笔记2">计算机图形学编程笔记2</span>
+            <span class="post-date" title="2020-09-27 18:19:22">2020/09/27</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/27/Python 杂项/"
+           data-tag="Python,Note"
+           data-author="" >
+            <span class="post-title" title="Python 杂项">Python 杂项</span>
+            <span class="post-date" title="2020-09-27 12:18:01">2020/09/27</span>
+        </a>
+        
+        <a  class="All 工作相关 "
+           href="/2020/09/22/Addressable打包流程/"
+           data-tag="CI"
+           data-author="" >
+            <span class="post-title" title="Addressable打包流程">Addressable打包流程</span>
+            <span class="post-date" title="2020-09-22 21:20:32">2020/09/22</span>
+        </a>
+        
+        <a  class="All IT阅读 "
+           href="/2020/09/09/IT-English/"
+           data-tag="Game,English"
+           data-author="" >
+            <span class="post-title" title="Game Engine Architecture - English">Game Engine Architecture - English</span>
+            <span class="post-date" title="2020-09-09 10:46:51">2020/09/09</span>
+        </a>
+        
+        <a  class="All IT阅读 "
+           href="/2020/09/09/GEA-P1/"
+           data-tag="Game"
+           data-author="" >
+            <span class="post-title" title="GEA-P1">GEA-P1</span>
+            <span class="post-date" title="2020-09-09 10:46:51">2020/09/09</span>
+        </a>
+        
+        <a  class="All Unity学习 "
+           href="/2020/09/08/Addressable 研究/"
+           data-tag="Unity学习"
+           data-author="" >
+            <span class="post-title" title="Addressable 研究">Addressable 研究</span>
+            <span class="post-date" title="2020-09-08 14:59:26">2020/09/08</span>
+        </a>
+        
+        <a  class="All 数据结构 "
+           href="/2020/09/08/数据结构-数组链表结构/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="数据结构-数组,链表结构">数据结构-数组,链表结构</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 数据结构 "
+           href="/2020/09/08/排序算法/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="排序算法">排序算法</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/09/08/性能优化相关/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="性能优化相关">性能优化相关</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 公司 "
+           href="/2020/09/08/最新Addressable资源打包与加载框架/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="最新Addressable资源打包与加载框架">最新Addressable资源打包与加载框架</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 数据结构 "
+           href="/2020/09/08/数据结构-笔记1/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="数据结构-图">数据结构-图</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/09/08/数据结构在Charp/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="数据结构在C#">数据结构在C#</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 算法 "
+           href="/2020/09/08/深度优先与广度优先算法/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="深度优先与广度优先算法">深度优先与广度优先算法</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 图形学 "
+           href="/2020/09/08/计算机图形学编程笔记1/"
+           data-tag="图形学"
+           data-author="" >
+            <span class="post-title" title="计算机图形学编程笔记1">计算机图形学编程笔记1</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 算法 "
+           href="/2020/09/08/算法课程笔记1/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Coursera算法课笔记1">Coursera算法课笔记1</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 数学 "
+           href="/2020/09/08/线性代数-笔记1/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="线性代数-笔记1">线性代数-笔记1</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 数据结构 "
+           href="/2020/09/08/递归算法/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="递归算法">递归算法</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 公司 "
+           href="/2020/09/08/客户端更换Git指南/"
+           data-tag="Git"
+           data-author="" >
+            <span class="post-title" title="客户端更换Git指南">客户端更换Git指南</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/天天生鲜项目实例/"
+           data-tag="Python,Note,Django,实例"
+           data-author="" >
+            <span class="post-title" title="天天生鲜项目实例P1">天天生鲜项目实例P1</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/天天生鲜项目实例P2/"
+           data-tag="Python,Note,Django,实例"
+           data-author="" >
+            <span class="post-title" title="天天生鲜项目实例P2">天天生鲜项目实例P2</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 英语学习 "
+           href="/2020/09/08/开言_Bargaining in the market/"
+           data-tag="Note,English"
+           data-author="" >
+            <span class="post-title" title="开言_Bargaining in the market">开言_Bargaining in the market</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 英语学习 "
+           href="/2020/09/08/开言_Happy Hour Drinks with Coworks/"
+           data-tag="Note,English"
+           data-author="" >
+            <span class="post-title" title="开言_Happy Hour Drinks with Coworks">开言_Happy Hour Drinks with Coworks</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 英语学习 "
+           href="/2020/09/08/开言- To tip or not to tip/"
+           data-tag="Note,English"
+           data-author="" >
+            <span class="post-title" title="开言">开言</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 英语学习 "
+           href="/2020/09/08/常用单词学习/"
+           data-tag="Note,English"
+           data-author="" >
+            <span class="post-title" title="常用单词学习">常用单词学习</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 英语学习 "
+           href="/2020/09/08/开言体验营 - Day1/"
+           data-tag="Note,English"
+           data-author="" >
+            <span class="post-title" title="开言体验营 - Day1">开言体验营 - Day1</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 英语学习 "
+           href="/2020/09/08/开言体验营 - Day4/"
+           data-tag="Note,English"
+           data-author="" >
+            <span class="post-title" title="开言体验营 - Day4">开言体验营 - Day4</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 英语学习 "
+           href="/2020/09/08/开言体验营 - Day2/"
+           data-tag="Note,English"
+           data-author="" >
+            <span class="post-title" title="开言体验营 - Day2">开言体验营 - Day2</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 英语学习 "
+           href="/2020/09/08/开言体验营 - Day5/"
+           data-tag="Note,English"
+           data-author="" >
+            <span class="post-title" title="开言体验营 - Day5">开言体验营 - Day5</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 英语学习 "
+           href="/2020/09/08/开言学习笔记1/"
+           data-tag="Note,English"
+           data-author="" >
+            <span class="post-title" title="开言学习笔记1">开言学习笔记1</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/python_2/"
+           data-tag="Python,Note"
+           data-author="" >
+            <span class="post-title" title="Python Note 2">Python Note 2</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/python_1/"
+           data-tag="Python,Note"
+           data-author="" >
+            <span class="post-title" title="Python Note 1">Python Note 1</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 算法 "
+           href="/2020/09/08/动态规划/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="动态规划">动态规划</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity学习 "
+           href="/2020/09/08/内存管理/"
+           data-tag="Unity学习"
+           data-author="" >
+            <span class="post-title" title="内存管理">内存管理</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 算法 "
+           href="/2020/09/08/力扣刷题顺序/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="力扣刷题顺序">力扣刷题顺序</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/python_4/"
+           data-tag="Python,Note"
+           data-author="" >
+            <span class="post-title" title="Python Note 4">Python Note 4</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity学习 "
+           href="/2020/09/08/四元数旋转函数学习/"
+           data-tag="Unity学习"
+           data-author="" >
+            <span class="post-title" title="四元数旋转函数学习">四元数旋转函数学习</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 公司 "
+           href="/2020/09/08/UI系统制作流程/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="UI系统制作流程">UI系统制作流程</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Twisted  介绍/"
+           data-tag="Python,Note,Core Programming"
+           data-author="" >
+            <span class="post-title" title="Twisted  介绍">Twisted  介绍</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 杂项资料 "
+           href="/2020/09/08/VS Code最佳插件/"
+           data-tag="Note"
+           data-author="" >
+            <span class="post-title" title="VS Code最佳插件">VS Code最佳插件</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All "
+           href="/2020/09/08/hello-world/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Hello World">Hello World</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity学习 "
+           href="/2020/09/08/LWRP官方说明/"
+           data-tag="Unity学习"
+           data-author="" >
+            <span class="post-title" title="LWRP官方说明">LWRP官方说明</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All "
+           href="/2020/09/08/Linux与window常用指令/"
+           data-tag="linux,指令"
+           data-author="" >
+            <span class="post-title" title="Linux与window常用指令">Linux与window常用指令</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Python Core Programming Note 1/"
+           data-tag="Python,Note,Core Programming"
+           data-author="" >
+            <span class="post-title" title="Python Core Programming Note 1">Python Core Programming Note 1</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 工作相关 "
+           href="/2020/09/08/Jenkins打包事项/"
+           data-tag="CI,Jenkins"
+           data-author="" >
+            <span class="post-title" title="Jenkins打包事项">Jenkins打包事项</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Python Core Programming Note 3/"
+           data-tag="Python,Note,Core Programming"
+           data-author="" >
+            <span class="post-title" title="Python Core Programming Note 3">Python Core Programming Note 3</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Python Core Programming Note 2/"
+           data-tag="Python,Note,Core Programming"
+           data-author="" >
+            <span class="post-title" title="Python Core Programming Note 2">Python Core Programming Note 2</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Python_3/"
+           data-tag="Python,Note"
+           data-author="" >
+            <span class="post-title" title="Python Note 3">Python Note 3</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All 公司 "
+           href="/2020/09/08/Smargit  简单使用说明/"
+           data-tag="Git"
+           data-author="" >
+            <span class="post-title" title="Smargit  简单使用说明">Smargit  简单使用说明</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/09/08/Shader Variant/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Shader Variant">Shader Variant</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All CPlusPlus "
+           href="/2020/09/08/C++ 复习1/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C++ 复习1">C++ 复习1</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/09/08/DOTS-事件/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="DOTS-事件">DOTS-事件</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Centos 部署 Django/"
+           data-tag="Python,Note,Django"
+           data-author="" >
+            <span class="post-title" title="Centos 部署 Django">Centos 部署 Django</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All CPlusPlus "
+           href="/2020/09/08/C与C++开源项目学习/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="C与C++开源项目学习">C与C++开源项目学习</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Conda 常用操作/"
+           data-tag="Python,Note,Django,Conda"
+           data-author="" >
+            <span class="post-title" title="Conda 常用操作">Conda 常用操作</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/09/08/DrawCall优化/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="网络游戏同步方案">网络游戏同步方案</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Django 实例 Web Application/"
+           data-tag="Python,Note,Django,实例"
+           data-author="" >
+            <span class="post-title" title="Django 实例 Web Application">Django 实例 Web Application</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Django  初步构建/"
+           data-tag="Python,Note,Django"
+           data-author="" >
+            <span class="post-title" title="Django  初步构建">Django  初步构建</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Python "
+           href="/2020/09/08/Django  初始测试/"
+           data-tag="Python,Note,Django"
+           data-author="" >
+            <span class="post-title" title="Django  初始测试">Django  初始测试</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/09/08/ECS框架的思考/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="ECS框架的思考">ECS框架的思考</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All Unity "
+           href="/2020/09/08/ECS-研究学习/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="DOTS-研究学习">DOTS-研究学习</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <a  class="All CPlusPlus "
+           href="/2020/09/08/Effective C++学习记录/"
+           data-tag="C++"
+           data-author="" >
+            <span class="post-title" title="Effective C++学习记录">Effective C++学习记录</span>
+            <span class="post-date" title="2020-09-08 11:23:20">2020/09/08</span>
+        </a>
+        
+        <div id="no-item-tips">
+
+        </div>
+    </nav>
+    <div id="outline-list">
+    </div>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle" data-title="切换全屏 快捷键 s">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div id="post">
+    <div class="pjax">
+        <article id="post-LUA与CSHARP交互" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">LUA与CSHARP交互</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            <i class="iconfont icon-category"></i>
+            
+            
+            <a  data-rel="Unity">Unity</a>
+            
+        </span>
+        
+        
+    </div>
+    <div class="article-meta">
+        
+            Created At : <time class="date" title='Updated At: 2020-12-26 17:16:48'>2020-12-26 17:16</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>Count:2.7k</span>
+        
+        
+        <span id="busuanzi_container_page_pv">
+            Views 👀 :<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+        <span class="top-comment" title="跳转至评论区">
+            <a href="#comments">
+                Comment:<span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </a>
+        </span>
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#相互调用"><span class="toc-text">相互调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Call-Lua"><span class="toc-text">C# Call Lua:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lua-Call-C"><span class="toc-text">Lua Call C#:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unity下的lua框架"><span class="toc-text">unity下的lua框架</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#XLUA"><span class="toc-text">XLUA</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#LowLevelAPI"><span class="toc-text">LowLevelAPI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HighLevelAPI"><span class="toc-text">HighLevelAPI</span></a></li></ol></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="相互调用"><a href="#相互调用" class="headerlink" title="相互调用"></a>相互调用</h2><p>原理：  C#与Lua进行交互主要通过虚拟栈实现</p>
+<h2 id="C-Call-Lua"><a href="#C-Call-Lua" class="headerlink" title="C# Call Lua:"></a>C# Call Lua:</h2><ul>
+<li>内存： 由C#先将数据放入栈中，由lua去栈中获取数据，然后返回数据对应的值到栈顶，再由栈顶返回至C#。</li>
+<li>代码： C#生成Bridge文件，Bridge调dll文件（dll是用C写的库），先调用lua中dll文件，由dll文件执行lua代码<br>C#-&gt;Bridge-&gt;dll-&gt;Lua  OR   C#-&gt;dll-&gt;Lua</li>
+</ul>
+<h2 id="Lua-Call-C"><a href="#Lua-Call-C" class="headerlink" title="Lua Call C#:"></a>Lua Call C#:</h2><ul>
+<li>内存： 先生成C#源文件所对应的Wrap文件或者编写C#源文件所对应的c模块，然后将源文件内容通过Wrap文件或者C模块注册到Lua解释器中，然后由Lua去调用这个模块的函数。</li>
+<li>代码：先生成Wrap文件（中间文件/适配文件），wrap文件把字段方法，注册到lua虚拟机中（解释器luajit），然后lua通过wrap就可以调C#了<br>或者在config文件中添加相应类型也可以</li>
+</ul>
+<h2 id="unity下的lua框架"><a href="#unity下的lua框架" class="headerlink" title="unity下的lua框架"></a>unity下的lua框架</h2><p>为了使基于unity开发的应用在移动平台能够热更新，我们嵌入了Lua虚拟机，将需要热更新的逻辑用lua实现。c#通过P/Invoke和lua交互（lua由ANSI C实现）。在这个过程中，由于数据的交换需要使用==lua提供的虚拟栈 #F44336==，不够简单高效，为了解决这个问题，我们引入了*lua框架（xlua、slua、ulua）来达到类似RPC式的函数调用、类原生对象式的对象访问以及高效的对象传递。</p>
+<h3 id="XLUA"><a href="#XLUA" class="headerlink" title="XLUA"></a>XLUA</h3><p>可以把xlua的push API归为两类：一类是针对某种特定类型的push，暂且叫做LowLevelAPI；还有一类是基于LowLevelAPI封装的更上层的HighLevelAPI。</p>
+<ul>
+<li>门面模式<br>使用HighLevelAPI时你只要简单的传入你想push的对象，HighLevelAPI会帮你找到最适合的LowLevelAPI调用，因为就算同一种类型的push方法，也可能有用户自定义的优化版本。而对于LowLevelAPI最终是需要调用xlua.dll中提供的C API来协调完成最终的工作。</li>
+</ul>
+<h4 id="LowLevelAPI"><a href="#LowLevelAPI" class="headerlink" title="LowLevelAPI"></a>LowLevelAPI</h4><pre><code class="csharp">//using RealStatePtr = System.IntPtr;
+//using LuaCSFunction = XLua.LuaDLL.lua_CSFunction;
+//typedef int (*lua_CFunction) (lua_State *L);
+
+//ObjectTranslator.cs
+void pushPrimitive(RealStatePtr L, object o)
+public void Push(RealStatePtr L, object o)
+public void PushObject(RealStatePtr L, object o, int type_id)
+public void Push(RealStatePtr L, LuaCSFunction o)
+internal void PushFixCSFunction(RealStatePtr L, LuaCSFunction func)
+public void Push(RealStatePtr L, LuaBase o)
+public void PushDecimal(RealStatePtr L, decimal val)</code></pre>
+<ul>
+<li>传递基元类型</li>
+</ul>
+<p>基元类型为 Boolean、Byte、SByte、Int16、UInt16、Int32、UInt32、Int64、UInt64、UIntPtr、Char、Double、Single和IntPtr （对应的void*）。</p>
+<pre><code class="csharp">void pushPrimitive(RealStatePtr L, object o)</code></pre>
+<p>XLUA中：</p>
+<pre><code class="csharp">//push一个int
+LUA_API void xlua_pushinteger (lua_State *L, int n)
+//push一个double
+#define LUA_NUMBER    double
+typedef LUA_NUMBER lua_Number;
+LUA_API void lua_pushnumber (lua_State *L, lua_Number n)
+//push一个IntPtr
+LUA_API void lua_pushlightuserdata (lua_State *L, void *p)</code></pre>
+<p>对于long，xlua定制：</p>
+<pre><code class="cpp">//i64lib.c
+//在lua中表示c#中的long
+typedef struct {
+    int fake_id;
+    int8_t type;
+    union {
+        int64_t i64;
+        uint64_t u64;
+    } data;
+} Integer64;</code></pre>
+<ul>
+<li>传递 object</li>
+</ul>
+<pre><code class="csharp">public void Push(RealStatePtr L, object o)
+public void PushObject(RealStatePtr L, object o, int type_id)</code></pre>
+<p>不管object是什么类型，最终的push都是使用:</p>
+<pre><code class="c">LUA_API void xlua_pushcsobj(lua_State *L, int key, int meta_ref, int need_cache, int cache_ref) {
+    int* pointer = (int*)lua_newuserdata(L, sizeof(int));
+    *pointer = key;
+
+    if (need_cache) cacheud(L, key, cache_ref);
+
+    lua_rawgeti(L, LUA_REGISTRYINDEX, meta_ref);
+
+    lua_setmetatable(L, -2);
+}</code></pre>
+<p>为什么我们传给lua的对象是一个int类型（这里的key）？其实我们这里的key是我们要传递的c#对象的一个索引，我们可以通过这个索引找到这个c#对象。</p>
+<p>当传递一个c#对象的时候，我们创建一个userdate，并把这个索引值赋给这个userdata。然后，lua在全局注册表中，有一张专门的表用来存放c#各种类型所对应的元表，而<strong>meta_ref</strong>就是当前这个对象所对应类型的元表的索引id，我们通过他找到对应的元表，就可以通过setmetatable来绑定操作这个对象的方法。最终lua就可以愉快的使用这个对象。</p>
+<blockquote>
+<p>每种类型所对应的元表，是我们在push一种类型的对象之前，提前注册进来的，后面详述。</p>
+</blockquote>
+<p>但是对于引用类型的对象，其生命周期是有可能超出当前的调用栈的（比如lua用一个变量引用了这个对象） 。这时，我们就不仅要能够通过这个key找到c#原始对象，还要通过这个key能够找到对应的lua代理对象。因此，对于引用类型，我们在lua中同样也要建立一套索引机制，这就是need_cache和cache_ref的作用：</p>
+<pre><code class="c">static void cacheud(lua_State *L, int key, int cache_ref) {
+    lua_rawgeti(L, LUA_REGISTRYINDEX, cache_ref);
+    lua_pushvalue(L, -2);
+    lua_rawseti(L, -2, key);
+    lua_pop(L, 1);
+}</code></pre>
+<ul>
+<li>缓存</li>
+</ul>
+<p>再回过头来看看c#中的索引和缓存机制：</p>
+<p>在调用xlua_pushcsobj之前,所有object都会被放入一个对象的缓存池中ObjectTranslator.objects。而我们得到的key就是这个对象在缓存池中的下标。</p>
+<ul>
+<li>gc</li>
+</ul>
+<p>对于引用类型，它的生命周期管理会略微复杂。<strong>mono和lua虚拟机有各自的gc系统</strong>，并且相互无法感知。当lua和c#同时引用一个对象时，我们需要能够保证对象生命周期的正确，不能一边还在引用，另一边却把它释放掉了。</p>
+<p>这个过程是由lua的gc驱动的。我们<strong>把对象push到lua时，会缓存在c#的对象池中，所以是不会被mono的gc所释放掉，这样就保证了lua能够安全的持有c#对象。同时我们也会把这个对象的代理缓存到lua中，而lua中对象的缓存表是一个弱表，也就是说，当没有其他的lua引用这个对象时，lua的gc会把这个对象从lua的缓存中回收</strong>，而对象被gc回收的过程会触发这个对象的的__gc元方法。</p>
+<p>而这个__gc元方法就会通知到c#这端，来告诉我们lua不再使用这个对象，我们可以把它从对象缓存池中移除。当没有其他c#对其的引用时，mono的gc就会正常的回收这个对象。</p>
+<pre><code class="csharp">//StaticLuaCallback.cs
+//__gc元方法：
+public static int LuaGC(RealStatePtr L)
+{
+    try
+    {
+        int udata = LuaAPI.xlua_tocsobj_safe(L, 1);
+        if (udata != -1)
+        {
+            ObjectTranslator translator = ObjectTranslatorPool.Instance.Find(L);
+            if ( translator != null )
+            {
+                translator.collectObject(udata);
+            }
+        }
+        return 0;
+    }
+    catch (Exception e)
+    {
+        return LuaAPI.luaL_error(L, &quot;c# exception in LuaGC:&quot; + e);
+    }
+}
+
+//从缓存池中删除
+internal void collectObject(int obj_index_to_collect)
+{
+    object o;
+
+    if (objects.TryGetValue(obj_index_to_collect, out o))
+    {
+        objects.Remove(obj_index_to_collect);
+
+        if (o != null)
+        {
+            int obj_index;
+            //lua gc是先把weak table移除后再调用__gc，这期间同一个对象可能再次push到lua，关联到新的index
+            bool is_enum = o.GetType().IsEnum();
+            if ((is_enum ? enumMap.TryGetValue(o, out obj_index) : reverseMap.TryGetValue(o, out obj_index))
+                &amp;&amp; obj_index == obj_index_to_collect)
+            {
+                if (is_enum)
+                {
+                    enumMap.Remove(o);
+                }
+                else
+                {
+                    reverseMap.Remove(o);
+                }
+            }
+        }
+    }
+}</code></pre>
+<ul>
+<li>元表</li>
+</ul>
+<p>对于业务来说，我们只是单纯的把对象的索引传递过去，是远远不够的，我们还需要提供直接使用和操作对象的方法。前面我们提到，在我们把一个对象push到lua之前，我们会把对象类型所对应的元表提前注册到lua之中。这样在我们真正push一个对象时，就会用这个元表来设置操作这个对象的方法。</p>
+<p>首先第一个问题就是，如何表示c#对象的类型？回过头来看看我们的Push函数，其中最重要的就是getTypeId：</p>
+<p>首先会尝试从c#的类型缓存typeIdMap中检查是否已经注册过这种类型，如果没有的话，我们就需要为其生成一个type_id。</p>
+<p><strong>再从lua的类型缓存中用类型名来检索是否已经注册过这种类型，如果没有的话，意味着我们还没有为这种类型在lua中注册一个元表，继而通过TryDelayWrapLoader来生成这个类型的元表</strong>。</p>
+<pre><code class="csharp">//
+public void Push(RealStatePtr L, object o)
+{
+    //...
+    Type type = o.GetType();
+    bool is_first;
+    int type_id = getTypeId(L, type, out is_first);
+    //...
+}
+
+//这里再次吐槽getTypeId函数的设计和实现，为了保持清楚，我只保留能大体说明逻辑的的代码
+internal int getTypeId(RealStatePtr L, Type type, out bool is_first, LOGLEVEL log_level = LOGLEVEL.WARN)
+{
+    //尝试获取c#中检索
+    if (typeIdMap.TryGetValue(type, out type_id)){return;}
+    //尝试从lua中检索
+    LuaAPI.luaL_getmetatable(L,type.FullName);
+    if (LuaAPI.lua_isnil(L, -1)) 
+    {
+        LuaAPI.lua_pop(L, 1);
+        //获取类型的元表
+        if (TryDelayWrapLoader(L,  type))
+        {
+            LuaAPI.luaL_getmetatable(L, type.FullName);
+        }
+        else
+        {
+            throw new Exception(&quot;Fatal: can not load metatable of type:&quot; + type);
+        }
+    }
+    //生成新的type_id
+    type_id = LuaAPI.luaL_ref(L, LuaIndexes.LUA_REGISTRYINDEX);
+    //注册到lua
+    LuaAPI.lua_pushnumber(L, type_id);
+    LuaAPI.xlua_rawseti(L, -2, 1);
+    LuaAPI.lua_pop(L, 1);
+
+    if (type.IsValueType())
+    {
+        typeMap.Add(type_id, type);
+    }
+
+    typeIdMap.Add(type, type_id);
+}</code></pre>
+<ul>
+<li>传递c#函数</li>
+</ul>
+<p>xlua通过lua_pushstdcallcfunction来push一个LuaCSFunction，其调用的时xlua.dll提供的xlua_push_csharp_function。</p>
+<pre><code class="csharp"> //LUADLL.cs
+public static void lua_pushstdcallcfunction(IntPtr L, lua_CSFunction function, int n = 0)//[-0, +1, m]
+{
+    IntPtr fn = Marshal.GetFunctionPointerForDelegate(function);
+    xlua_push_csharp_function(L, fn, n);
+}</code></pre>
+<p>最终提供给用户的是这两个接口：</p>
+<pre><code class="csharp">internal void PushFixCSFunction(RealStatePtr L, LuaCSFunction func)
+public void Push(RealStatePtr L, LuaCSFunction o)</code></pre>
+<p>这两个函数都做了一件事情，就是在LuaCSFunction函数push到lua之前，用另一个LuaCSFunction来包装了一层，用来做异常捕获。</p>
+<blockquote>
+<p>和gc一样，mono和lua有自己的异常</p>
+</blockquote>
+<p>两种索引方式的不同，使用在了不同的场景。</p>
+<p>PushFixCSFunction()大量被用在我们静态生成的元表构造器中，做为默认需要支持的类型的元表，注册进lua，并永久存在。而Push()被大量使用在反射生成的元表之中，在使用完之后，可能就会被释放。</p>
+<p>最后还有一个小细节，Push()中对IsStaticPInvokeCSFunction的函数没有加包装，因为这种类型的函数是我们静态生成的，在生成时，我们已经加入了异常捕获的代码，不需要再被捕获了。</p>
+<blockquote>
+<p>可以看到，一个函数在被调用之前，进行了多次的包装，每次包装都附带了一些额外的功能，但又对原函数没有侵入。（函数式编程，面向切片编程）</p>
+</blockquote>
+<ul>
+<li>其他push</li>
+</ul>
+<pre><code class="csharp">//push一个lua在c#中的代理对象
+public void Push(RealStatePtr L, LuaBase o)</code></pre>
+<p>LuaBase是c#对lua中特有的类型的封装。比如说LuaTable对应table、LuaFunction对应luafunction（此处不是luacfunction）。C#可以通过对应的类型去创建、操作一个lua原生对象。</p>
+<p>所以，LuaBase只是一个lua对象在c#中的代理，我们push一个LuaBase其实是找到真正的lua对象，并push。</p>
+<pre><code class="csharp">//重载push一个decimal，避免gc
+void PushDecimal(RealStatePtr L, decimal val)</code></pre>
+<h4 id="HighLevelAPI"><a href="#HighLevelAPI" class="headerlink" title="HighLevelAPI"></a>HighLevelAPI</h4><p>对于HighLevelAPI，里面不包含具体的push实现，而是通过获取对象的类型，来选择性的调用类型所对应的具体push函数。</p>
+<p>可以看作类似是编译器的函数重载功能</p>
+<pre><code class="csharp">public void PushAny(RealStatePtr L, object o)
+public void PushByType&lt;T&gt;(RealStatePtr L,  T v)</code></pre>
+<ul>
+<li><p>顾名思义，PushAny()可以用来push所有的类型，可以被用在我们提前没法知道对象类型的地方。最典型的例子就是在反射生成元表时，我们动态的获取对象，通过PushAny()把类型未知的对象push到lua。</p>
+</li>
+<li><p>PushByType()是对PushAny()的封装，唯一的不同就是做了一个优化：<br>对于基元类型，不再调用pushPrimitive() （会有装箱/拆箱）,而是通过查表的方式直接获取针对各个基元类型的直接push的方式。</p>
+</li>
+</ul>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a  class="dashang" onclick="dashangToggle()">💰</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">Title:</span>LUA与CSHARP交互</p>
+    <p><span class="copy-title">Count:</span><span class="post-count">2.7k</span></p>
+    <p><span class="copy-title">Author:</span><a  title="霍家鹏">霍家鹏</a></p>
+    <p><span class="copy-title">Created At:</span>2020-12-26, 17:16:48</p>
+    <p><span class="copy-title">Updated At:</span>2020-12-26, 17:16:48</p>
+    <span class="copy-title">Url:</span><a class="post-url" href="/2020/12/26/LUA与CSHARP交互/" title="LUA与CSHARP交互">http://www.hjp.wiki/2020/12/26/LUA与CSHARP交互/</a>
+    <p>
+        <span class="copy-title">Copyright:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">AveryHuo</a> Reprint please keep the original link and author.
+    </p>
+</div>
+
+
+
+    <div id="comments">
+    <script src="https://utteranc.es/client.js"
+            repo="AveryHuo/AveryHuo.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            label="utteranc"
+            crossorigin="anonymous"
+            async>
+    </script>
+</div>
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry"><span class="miit">
+                <img src="/img/gov.png" title="中华人民共和国工业和信息化部">
+                <a href="http://beian.miit.gov.cn/">粤ICP备2020091327号</a>
+        </span>
+    
+    ©2018-2020 AveryHuo
+</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full" data-title="切换全屏 快捷键 s"><span class="min "></span></button>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close"  onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>Help us with donation</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">alipay</label></span><span><label><input type="radio" name="pay" value="weixin">weixin</label></span>
+    </div>
+</div>
+
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.1.0" ></script>
+
+<script src="/js/script.js?v=1.1.0" ></script>
+<script>
+    var img_resize = 'default';
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $("#post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+        $("input[name=pay]").on("click", function () {
+            if($("input[name=pay]:checked").val()=="weixin"){
+                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
+            } else {
+                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
+            }
+        })
+        
+
+        /*高亮代码块行号*/
+        
+        $('pre code').each(function(){
+            var lines = $(this).text().trim().split('\n').length, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+        /* 渲染*/
+        function HTMLDecode(text) {
+            var temp = document.createElement("div");
+            temp.innerHTML = text;
+            var output = temp.innerText || temp.textContent;
+            temp = null;
+            return output;
+        }
+        if (window.mermaid){
+            window.mermaid = null
+        }
+        $.getScript("//cdn.jsdelivr.net/npm/mermaid@8.4.2/dist/mermaid.min.js", function () {
+            var mermaidOptions = JSON.parse(HTMLDecode("{&#34;theme&#34;:&#34;default&#34;,&#34;startOnLoad&#34;:true,&#34;flowchart&#34;:{&#34;useMaxWidth&#34;:false,&#34;htmlLabels&#34;:true}}"))
+            if (window.mermaid) {
+                mermaid.initialize(mermaidOptions)
+                mermaid.contentLoaded()
+            }
+        })
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: ;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
