@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>Python Note 5</title>
+      <link href="2022/04/09/python_5/"/>
+      <url>2022/04/09/python_5/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Python-Note-5"><a href="#Python-Note-5" class="headerlink" title="Python Note 5"></a>Python Note 5</h1><h2 id="kwargs的使用"><a href="#kwargs的使用" class="headerlink" title="kwargs的使用"></a>kwargs的使用</h2><ul><li><ol><li>kwargs表示有key, value形式的参数，如：<pre><code class="python">def test(*args,**kwargs):print &quot;args:&quot;, argsprint &quot;kwargs&quot;, kwargs</code></pre></li></ol></li></ul><p>test(12,2,abc={“good”:7})</p><h1 id="输出："><a href="#输出：" class="headerlink" title="输出："></a>输出：</h1><h1 id="args-12-2"><a href="#args-12-2" class="headerlink" title="args: (12, 2)"></a>args: (12, 2)</h1><h1 id="kwargs-‘abc’-‘good’-7"><a href="#kwargs-‘abc’-‘good’-7" class="headerlink" title="kwargs {‘abc’: {‘good’: 7}}"></a>kwargs {‘abc’: {‘good’: 7}}</h1><pre><code>* 2. 使用Pop取出kwargs的值```pythondef test(*args,**kwargs):    print &quot;args:&quot;, args    print &quot;kwargs&quot;, kwargs    val1 = kwargs.pop(&#39;abc&#39;, False)    print &quot;kwargs val:&quot;, val1    if kwargs:        raise TypeError(&quot;Unexpectd ** kwargs, %r&quot; % kwargs)test(12,2,abc={&quot;good&quot;:7}, cde=5)# 输出：# args: (12, 2)# kwargs {&#39;cde&#39;: 5, &#39;abc&#39;: {&#39;good&#39;: 7}}# kwargs val: {&#39;good&#39;: 7}# Traceback (most recent call last):#   File &quot;D:/Avery/Workspaces/pythonProject2/test.py&quot;, line 54, in # &lt;module&gt;#     test(12,2,abc={&quot;good&quot;:7}, cde=5)#   File &quot;D:/Avery/Workspaces/pythonProject2/test.py&quot;, line 52, in test#     raise TypeError(&quot;Unexpectd ** kwargs, %r&quot; % kwargs)# TypeError: Unexpectd ** kwargs, {&#39;cde&#39;: 5}</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> Python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Python </tag>
+            
+            <tag> Note </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Python源码剖析-Note2</title>
       <link href="2021/08/01/Python%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90-Note2/"/>
       <url>2021/08/01/Python%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90-Note2/</url>
