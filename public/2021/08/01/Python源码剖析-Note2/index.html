@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>Shader Variant | Avery的城堡</title>
-  <meta name="keywords" content>
-  <meta name="description" content="Shader Variant | Avery的城堡">
+  <title>Python源码剖析-Note2 | Avery的城堡</title>
+  <meta name="keywords" content=" Python , Note ">
+  <meta name="description" content="Python源码剖析-Note2 | Avery的城堡">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="这是关于我，有空再加吧">
 <meta name="keywords" content="Learn+Study">
@@ -1064,9 +1064,9 @@
 </aside>
 <div id="post">
     <div class="pjax">
-        <article id="post-Shader Variant" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-Python源码剖析-Note2" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Shader Variant</h1>
+        <h1 class="article-title">Python源码剖析-Note2</h1>
     
     <div class="article-meta">
         
@@ -1076,20 +1076,29 @@
             <i class="iconfont icon-category"></i>
             
             
-            <a  data-rel="Unity">Unity</a>
+            <a  data-rel="Python">Python</a>
             
         </span>
         
         
+        <span class="tag">
+            <i class="iconfont icon-tag"></i>
+            
+            <a class="color2">Python</a>
+            
+            <a class="color5">Note</a>
+            
+        </span>
+        
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2020-09-08 11:23:20'>2020-09-08 11:23</time>
+            Created At : <time class="date" title='Updated At: 2021-08-01 17:43:43'>2021-08-01 17:43</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:886</span>
+        <span>Count:798</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -1119,7 +1128,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#multi-compile与shader-feature"><span class="toc-text">multi_compile与shader_feature</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#如何控制项目中Shader变体的生成"><span class="toc-text">如何控制项目中Shader变体的生成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Shader编写规范"><span class="toc-text">Shader编写规范</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Python的内存"><span class="toc-text">Python的内存</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用计数"><span class="toc-text">引用计数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#标记清除"><span class="toc-text">标记清除</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分代机制"><span class="toc-text">分代机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓存机制"><span class="toc-text">缓存机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -1135,76 +1144,132 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="multi-compile与shader-feature"><a href="#multi-compile与shader-feature" class="headerlink" title="multi_compile与shader_feature"></a>multi_compile与shader_feature</h4><p>multi_compile与shader_feature可在shader中定义宏。两者区别如下图所示：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>multi_compile</th>
-<th>shader_feature</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>定义方式</td>
-<td>#pragma multi_compile A</td>
-<td>#pragma shader_feature A</td>
-</tr>
-<tr>
-<td>宏的适用范围</td>
-<td>大多数shader</td>
-<td>一般仅针对shader自身</td>
-</tr>
-<tr>
-<td>变体的生成</td>
-<td>生成所有的变体</td>
-<td>可自定义生成何种变体</td>
-</tr>
-<tr>
-<td>默认定义的宏</td>
-<td>默认定义首个宏</td>
-<td>默认定义首个宏</td>
-</tr>
-</tbody></table>
+        <h1 id="Python的内存"><a href="#Python的内存" class="headerlink" title="Python的内存"></a>Python的内存</h1><h2 id="引用计数"><a href="#引用计数" class="headerlink" title="引用计数"></a>引用计数</h2><p>由源码可知，Python的数据对象由PyVarObject（PyObject+size）组成，PyObject中又包含了双向链表，计数器，数据类型_typeobject对象（其中可以定制行为）</p>
+<pre><code class="c">/* Define pointers to support a doubly-linked list of all live heap objects. */
+#define _PyObject_HEAD_EXTRA            \
+    struct _object *_ob_next;           \
+    struct _object *_ob_prev;
+
+#define PyObject_HEAD                   \
+    _PyObject_HEAD_EXTRA                \
+    Py_ssize_t ob_refcnt;               \
+    struct _typeobject *ob_type;
+
+#define PyObject_VAR_HEAD               \
+    PyObject_HEAD                       \
+    Py_ssize_t ob_size; /* Number of items in variable part */
+
+typedef struct {
+    PyObject_HEAD
+    long ob_ival;
+} PyIntObject;
+
+typedef struct {
+    PyObject_HEAD
+    double ob_fval;
+} PyFloatObject;
+
+typedef struct {
+    PyObject_VAR_HEAD
+    /* Vector of pointers to list elements.  list[0] is ob_item[0], etc. */
+    PyObject **ob_item;
+
+    /* ob_item contains space for &#39;allocated&#39; elements.  The number
+     * currently in use is ob_size.
+     * Invariants:
+     *     0 &lt;= ob_size &lt;= allocated
+     *     len(list) == ob_size
+     *     ob_item == NULL implies ob_size == allocated == 0
+     * list.sort() temporarily sets allocated to -1 to detect mutations.
+     *
+     * Items must normally not be NULL, except during construction when
+     * the list is not yet visible outside the function that builds it.
+     */
+    Py_ssize_t allocated;
+} PyListObject;
+
+
+typedef struct {
+    PyObject_VAR_HEAD
+    PyObject *ob_item[1];
+
+    /* ob_item contains space for &#39;ob_size&#39; elements.
+     * Items must normally not be NULL, except during construction when
+     * the tuple is not yet visible outside the function that builds it.
+     */
+} PyTupleObject;
+
+
+/*
+To ensure the lookup algorithm terminates, there must be at least one Unused
+slot (NULL key) in the table.
+The value ma_fill is the number of non-NULL keys (sum of Active and Dummy);
+ma_used is the number of non-NULL, non-dummy keys (== the number of non-NULL
+values == the number of Active items).
+To avoid slowing down lookups on a near-full table, we resize the table when
+it&#39;s two-thirds full.
+*/
+typedef struct _dictobject PyDictObject;
+struct _dictobject {
+    PyObject_HEAD
+    Py_ssize_t ma_fill;  /* # Active + # Dummy */
+    Py_ssize_t ma_used;  /* # Active */
+
+    /* The table contains ma_mask + 1 slots, and that&#39;s a power of 2.
+     * We store the mask instead of the size because the mask is more
+     * frequently needed.
+     */
+    Py_ssize_t ma_mask;
+
+    /* ma_table points to ma_smalltable for small tables, else to
+     * additional malloc&#39;ed memory.  ma_table is never NULL!  This rule
+     * saves repeated runtime null-tests in the workhorse getitem and
+     * setitem calls.
+     */
+    PyDictEntry *ma_table;
+    PyDictEntry *(*ma_lookup)(PyDictObject *mp, PyObject *key, long hash);
+    PyDictEntry ma_smalltable[PyDict_MINSIZE];
+};
+
+</code></pre>
+<h2 id="标记清除"><a href="#标记清除" class="headerlink" title="标记清除"></a>标记清除</h2><p>对于list, dict, tuple 这种类型，有可能存在循环引用的情况，这时需要再做一次扫描及标记清除的处理。</p>
+<ul>
+<li>在Python中使用另一个新的链表来存储需要标记清除的对象。然而这种扫描的往往比较耗时，需要执行可达性分析，以找到unreachable的对象，对这些对象进行标记清除。</li>
+<li>因此为标记清除的处理需要找一个时间点来。 这就引入了分代机制</li>
+</ul>
+<h2 id="分代机制"><a href="#分代机制" class="headerlink" title="分代机制"></a>分代机制</h2><p>标记清除的扫描的操作比较耗时。所以需要设置一个时间点。</p>
+<ul>
+<li>Python中设置第一代为 700个对象， 第二代为第一代的10次，第三代为第二代的10次</li>
+<li>可使用python的gc模块，从业务层对这些值进行设置</li>
+</ul>
+<h2 id="缓存机制"><a href="#缓存机制" class="headerlink" title="缓存机制"></a>缓存机制</h2><p>一、int的缓存机制</p>
+<p>二、字符串的缓存机制：</p>
+<ul>
+<li><p>intern dict ： PyDict对象，key, value就是字符串</p>
+</li>
+<li><p>nullstring, characters， 空串和单串，有两个属性来存储</p>
+<blockquote>
+<p>intern的默认识别只能在compile时，无法在runtime时识别，不过可以手动调用intern</p>
+</blockquote>
+</li>
+</ul>
+<p><img src="/img/image-20210730174828153.png" alt="字符串缓存机制"></p>
+<p>三、tuple的缓存机制</p>
+<p>PyTupleObject， 维护一个链表，用free_list存储链表头， 20个</p>
+<p>不用像int和string一整块的申请，利用链表的ob_item组起来</p>
+<p>四、list的缓存机制</p>
+<p>维护一个free_list ， 保存80个，运行时往里回放。</p>
+<p>四、源码分析<br>obmalloc.c -&gt; PyObject_Malloc</p>
 <ol>
-<li><p>定义方式<br>定义方式中值得注意的是，#pragma shader_feature A其实是 #pragma shader_feature _ A的简写，下划线表示未定义宏(nokeyword)。因此此时shader其实对应了两个变体，一个是nokeyword，一个是定义了宏A的。<br>而#pragma multi_compile A并不存在简写这一说，所以shader此时只对应A这个变体。若要表示未定义任何变体，则应写为 #pragma multi_compile __ A。</p>
+<li><p>申请大小大于256，直接使用 PyMem_Malloc</p>
 </li>
-<li><p>宏的适用范围<br>multi_compile定义的宏，如#pragma multi_compile_fog，#pragma multi_compile_fwdbase等，基本上适用于大部分shader，与shader自身所带的属性无关。<br>shader_feature定义的宏多用于针对shader自身的属性。比如shader中有_NormalMap这个属性(Property)，便可通过#pragma shader_feature _NormalMap来定义宏，用来实现这个shader在material有无_NormalMap时可进行不同的处理。</p>
-</li>
-<li><p>变体的生成<br>#pragma multi_compile A B C<br>#pragma multi_compile D E<br>则此时会生成 A D、A E、B D、B E、C D、C E这6中变体。<br>shader_feature要生成何种变体可用shader variant collection进行自定义设置。</p>
-</li>
-<li><p>默认定义的宏<br>当material中的keywords无法对应shader所生成的变体时，Unity便会默认定义宏定义语句中的首个宏，并运行相应的变体来为这个material进行渲染。<br>multi_compile与shader_feature都默认定义首个宏。</p>
+<li><p>小于256， 进入小块内存池</p>
 </li>
 </ol>
-<h4 id="如何控制项目中Shader变体的生成"><a href="#如何控制项目中Shader变体的生成" class="headerlink" title="如何控制项目中Shader变体的生成"></a>如何控制项目中Shader变体的生成</h4><table>
-<thead>
-<tr>
-<th>生成方式</th>
-<th>优点</th>
-<th>缺点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>shader与material打在一个包中</td>
-<td>变体根据material中的keywords自动生成</td>
-<td>多个不同的material包中可能存在相同的shader变体，造成资源冗余，若在程序运行时动态改变material的keyword其变体可能并没有被生成</td>
-</tr>
-<tr>
-<td>Shader单独打包，使用multi_compile定义全部宏</td>
-<td>全部变体都被生成，不会发生需要的变体未生成的情况</td>
-<td>生成的变体数量庞大，严重浪费资源</td>
-</tr>
-<tr>
-<td>Shader单独打包，shader_feature与multi_compile结合使用</td>
-<td>能够有效控制变体数量</td>
-<td>如何确定哪些变体需要生成，容易遗漏需要生成的变体</td>
-</tr>
-</tbody></table>
-<h4 id="Shader编写规范"><a href="#Shader编写规范" class="headerlink" title="Shader编写规范"></a>Shader编写规范</h4><ol>
-<li><p>建议使用shader_feature时将定义语句写成完整模式，并且不要在一个语句中定义多个宏。<br>完整模式：#pragma shader_feature _ A，不建议写成#pragma shader_feature A。<br>不建议在一个语句中定义多个宏，如： #pragma shader_feature _ A B C，若一定要定义多个宏，请务必将其写成完整模式，不使用完整模式在切换shader时可能会与想要的效果不一致，具体原因尚未测得。</p>
-</li>
-<li><p>若在shader中使用shader_feature，请为这个shader指定一个CustomEditor<br>每个使用shader_feature来定义Keyword的shader都需要再末尾加个 CusomEditor “xxxx”，并在代码中实现类xxxx(需继承自UnityEditor.ShaderGUI)，用来对Keywords定义进行设定。<br>这么做是因为Material中的部分Keyword是由shader中的属性(Properties)所控制的。比如shader中含有_NormalMap的属性并且定义了与_NormalMap相关的Keyword，这个Keyword需要在Material含有NormalMap时添加，不含NormalMap时移除。这个功能可由自定义的CustomEidtor实现。<br>具体如何写这个CustomEditor类可参考Unity builtin_shaders\Editor\StandardShaderGUI.cs。该文件可去Unity官网下载，下载时选择内置着色器即可。</p>
-</li>
-</ol>
+<ul>
+<li>取size， 指定大小-1 后 除以8或者16字节。(设定一个block大小)</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><img src="/img/image-20210801173440707.png" alt="关于python机制的总结"></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
@@ -1218,12 +1283,12 @@
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">Title:</span>Shader Variant</p>
-    <p><span class="copy-title">Count:</span><span class="post-count">886</span></p>
+    <p><span class="copy-title">Title:</span>Python源码剖析-Note2</p>
+    <p><span class="copy-title">Count:</span><span class="post-count">798</span></p>
     <p><span class="copy-title">Author:</span><a  title="霍家鹏">霍家鹏</a></p>
-    <p><span class="copy-title">Created At:</span>2020-09-08, 11:23:20</p>
-    <p><span class="copy-title">Updated At:</span>2020-09-08, 11:23:20</p>
-    <span class="copy-title">Url:</span><a class="post-url" href="/2020/09/08/Shader Variant/" title="Shader Variant">http://www.hjp.wiki/2020/09/08/Shader Variant/</a>
+    <p><span class="copy-title">Created At:</span>2021-08-01, 17:43:43</p>
+    <p><span class="copy-title">Updated At:</span>2021-08-01, 17:43:43</p>
+    <span class="copy-title">Url:</span><a class="post-url" href="/2021/08/01/Python源码剖析-Note2/" title="Python源码剖析-Note2">http://www.hjp.wiki/2021/08/01/Python源码剖析-Note2/</a>
     <p>
         <span class="copy-title">Copyright:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">AveryHuo</a> Reprint please keep the original link and author.
     </p>
