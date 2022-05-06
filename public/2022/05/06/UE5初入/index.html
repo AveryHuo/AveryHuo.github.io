@@ -154,7 +154,7 @@
 
 
 <ul>
-    <li><div class="all active" data-rel="All">All<small>(84)</small></div></li>
+    <li><div class="all active" data-rel="All">All<small>(85)</small></div></li>
     
         
             
@@ -268,6 +268,14 @@
             
         
     
+        
+            
+            <li><div data-rel="WPF">WPF<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
 </ul>
 <div class="left-bottom">
     <div class="menus">
@@ -278,8 +286,8 @@
     </div>
     <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
 </div>
-<input type="hidden" id="yelog_site_posts_number" value="84">
-<input type="hidden" id="yelog_site_word_count" value="107.8k">
+<input type="hidden" id="yelog_site_posts_number" value="85">
+<input type="hidden" id="yelog_site_word_count" value="109.8k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -392,6 +400,10 @@
                 <i class="iconfont icon-tag"></i><a>Unity学习</a>
             </li>
         
+            <li class="article-tag-list-item">
+                <i class="iconfont icon-tag"></i><a>WPF</a>
+            </li>
+        
     </div>
 
 </div>
@@ -404,11 +416,19 @@
     <nav id="title-list-nav">
         
         <a  class="All UE "
-           href="/2022/04/10/UE5初入/"
+           href="/2022/05/06/UE5初入/"
            data-tag="Note,UE"
            data-author="" >
             <span class="post-title" title="UE5初入">UE5初入</span>
-            <span class="post-date" title="2022-04-10 14:57:23">2022/04/10</span>
+            <span class="post-date" title="2022-05-06 15:12:12">2022/05/06</span>
+        </a>
+        
+        <a  class="All WPF "
+           href="/2022/05/06/WPF笔记/"
+           data-tag="Note,WPF"
+           data-author="" >
+            <span class="post-title" title="WPF">WPF</span>
+            <span class="post-date" title="2022-05-06 15:12:12">2022/05/06</span>
         </a>
         
         <a  class="All Python "
@@ -1121,12 +1141,12 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2022-04-10 14:57:23'>2022-04-10 14:57</time>
+            Created At : <time class="date" title='Updated At: 2022-05-06 15:12:12'>2022-05-06 15:12</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:182</span>
+        <span>Count:558</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -1156,7 +1176,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#UE5初入"><span class="toc-text">UE5初入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建初始场景"><span class="toc-text">创建初始场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快捷键"><span class="toc-text">快捷键</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#后处理"><span class="toc-text">后处理</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#UE5初入"><span class="toc-text">UE5初入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建初始场景"><span class="toc-text">创建初始场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快捷键"><span class="toc-text">快捷键</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#后处理"><span class="toc-text">后处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#材质"><span class="toc-text">材质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Light"><span class="toc-text">Light</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -1186,7 +1206,7 @@
 </ol>
 </li>
 </ul>
-<h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><p>使用End，可以让一个物体底部定到下个物体的表面<br>使用鼠标结合WSADQE精细调整<br>使用ctrl+space打开项目内容面板，使用过滤等功能。S.M表示静态mesh</p>
+<h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><p>使用End，可以让一个物体底部定到下个物体的表面<br>使用鼠标结合WSADQE精细调整<br>使用ctrl+space打开项目内容面板，使用过滤等功能。S.M表示静态mesh<br>使用Engine资源，在内容面板上的settings中勾选show engine content<br>使用ctrl+L+移动鼠标，可以改变阳光的状态</p>
 <h2 id="后处理"><a href="#后处理" class="headerlink" title="后处理"></a>后处理</h2><p>选中Game setting以保证游戏内看到的与editor相同</p>
 <ul>
 <li><ol>
@@ -1202,6 +1222,13 @@
 </ol>
 </li>
 </ul>
+<h2 id="材质"><a href="#材质" class="headerlink" title="材质"></a>材质</h2><p>基本四层:<br>Base Color<br>Metallic / Metal<br>Roughness<br>Normal</p>
+<p>在内容面板Content下新建材质文件夹，新建Material。注意通常命名一般为M_前缀<br>材质编辑器的使用说明：<br>1.双击材质打开<br>2.右键以拖动或点击以创建一个结点， 使用alt+点击可以删除一个连线<br>3.快速创建1,2,3向量结点，按1/2/3再点左键即可。 快速创建UV结点，按U点左键<br>4.Save将自动 apply到材质 </p>
+<p>Channel Packing技术 ：将不同的信息存储在一张图的不同通道里<br>*使用FlattenNormal可以改变Normal的凸起程度<br>*使用StaticSwitchParam。转为开关参数</p>
+<blockquote>
+<p>使用右键选中的节点为Parameter转成动态参数<br>在有创建好参数的材质球（类似于Unity的shader）右键创建 材质实例,一般以MI为前缀<br>双击材质实例则可以打开此材质并编辑其参数</p>
+</blockquote>
+<h2 id="Light"><a href="#Light" class="headerlink" title="Light"></a>Light</h2><p>属性： Static 表示为静态灯光，一般用于烘焙。 Movable 表示百分百动态的灯光（类似于实时光源，过多将消耗性能）。Stationary (介于动态与静态之间，允许动态与烘焙并存)<br>Source radius: 反射后显示的源光源的大小，一般需要一个反射接受面才能感觉到不同。 Soft Source radius: 表明光源边缘的柔软度</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
@@ -1216,11 +1243,11 @@
 
 <div class="article_copyright">
     <p><span class="copy-title">Title:</span>UE5初入</p>
-    <p><span class="copy-title">Count:</span><span class="post-count">182</span></p>
+    <p><span class="copy-title">Count:</span><span class="post-count">558</span></p>
     <p><span class="copy-title">Author:</span><a  title="霍家鹏">霍家鹏</a></p>
-    <p><span class="copy-title">Created At:</span>2022-04-10, 14:57:23</p>
-    <p><span class="copy-title">Updated At:</span>2022-04-10, 14:57:23</p>
-    <span class="copy-title">Url:</span><a class="post-url" href="/2022/04/10/UE5初入/" title="UE5初入">http://www.hjp.wiki/2022/04/10/UE5初入/</a>
+    <p><span class="copy-title">Created At:</span>2022-05-06, 15:12:12</p>
+    <p><span class="copy-title">Updated At:</span>2022-05-06, 15:12:12</p>
+    <span class="copy-title">Url:</span><a class="post-url" href="/2022/05/06/UE5初入/" title="UE5初入">http://www.hjp.wiki/2022/05/06/UE5初入/</a>
     <p>
         <span class="copy-title">Copyright:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">AveryHuo</a> Reprint please keep the original link and author.
     </p>
