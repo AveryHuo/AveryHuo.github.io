@@ -280,3 +280,48 @@ Opacity:透明度
 <Separator></Separator>
 </StatusBar>
 ```
+
+## 关于Binding
+
+MVVM中充当VM的作用，把Model与View绑定起来。 类似于监听器模式，对于Model中的数据变化当实时反应到Model
+
+```
+this.textBox1.SetBinding(TextBox.TextProperty, new Binding("Value"){ElementName="slider1"})
+==>
+<TextBox x:Name="textBox1" Text="{Binding Path=Value, ElementName=slider1}">
+<TextBox x:Name="textBox1" Text="{Binding Value, ElementName=slider1}">
+```
+xaml中的属性：
+Path: 
+关注的属性名或使用点取子对象的属性，也可使用/（斜线）表示当前的Source。
+xaml中可以不写Path，此情况，表示使用当前的Source为值显示。 与写.的意义一样，但在CS中不可以不写Path
+
+UpdateSourceTrigger: 枚举，Default, PropertyChanged, LostFocus, Explicit 变化通知的方式（即时性）
+BindingMode: 控制数据流向， 只读采用OneWay
+RelativeSource: 当需要找的数据源不是直接Source指定，比如是父级组件上的，这时需要用到Relative
+
+    Mode: Self 自身， PreviouseData 静态实例, TemplatedParent 静态实例, FindAncestor：使用往上找
+    AncestorType: 类型
+    AncestorLevel:从哪一层开始，从当前0 往上不断加1
+    Path: 指定属性名
+```
+<Grid xName="g1">
+<Grid xName="a1">
+<Grid xName="b1">
+<TextBox x:Name="textBox1">
+</Grid>
+</Grid>
+</Grid>
+
+//如果希望textBox1中显示g1的Grid名字，则需要用RelativeSource
+<TextBox x:Name="textBox1" text="{Binding FindAncestor AncestorType={x:Type Grid}, AncestorLevel=1, Path=Name}">
+```
+
+Converter: 
+数据类型转换器，可指定内置的，如：
+```
+Converter={StaticResource BooleanToVisibilityConverter}
+```
+
+DataContext：
+对于一整个xaml都需要使用的VM,可以指定一个DataContext作为VM
