@@ -287,7 +287,7 @@
     <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
 </div>
 <input type="hidden" id="yelog_site_posts_number" value="85">
-<input type="hidden" id="yelog_site_word_count" value="110.6k">
+<input type="hidden" id="yelog_site_word_count" value="110.8k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -416,11 +416,11 @@
     <nav id="title-list-nav">
         
         <a  class="All 图形学 "
-           href="/2022/05/13/计算机图形学编程笔记1/"
+           href="/2022/05/16/计算机图形学编程笔记1/"
            data-tag="图形学"
            data-author="" >
             <span class="post-title" title="计算机图形学编程笔记1">计算机图形学编程笔记1</span>
-            <span class="post-date" title="2022-05-13 18:28:11">2022/05/13</span>
+            <span class="post-date" title="2022-05-16 17:18:48">2022/05/16</span>
         </a>
         
         <a  class="All WPF "
@@ -1139,12 +1139,12 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2022-05-13 18:28:11'>2022-05-13 18:28</time>
+            Created At : <time class="date" title='Updated At: 2022-05-16 17:18:48'>2022-05-16 17:18</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:1.9k</span>
+        <span>Count:2.1k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -1174,7 +1174,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#一、搭建OPENGL-的C-环境"><span class="toc-text">一、搭建OPENGL 的C++环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二、3D图形数据"><span class="toc-text">二、3D图形数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#纹理贴图-使用SOIL2"><span class="toc-text">纹理贴图-使用SOIL2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三、数学"><span class="toc-text">三、数学</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#四、变换"><span class="toc-text">四、变换</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#一、搭建OPENGL-的C-环境"><span class="toc-text">一、搭建OPENGL 的C++环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二、3D图形数据"><span class="toc-text">二、3D图形数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#纹理贴图-使用SOIL2"><span class="toc-text">纹理贴图-使用SOIL2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三、数学"><span class="toc-text">三、数学</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#四、线性变换"><span class="toc-text">四、线性变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#五、Homogeneous-Coordinate-齐次坐标"><span class="toc-text">五、Homogeneous Coordinate 齐次坐标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#六、组合变换"><span class="toc-text">六、组合变换</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -1391,11 +1391,27 @@ noperspective in texcoord;//片面</code></pre>
 <p>单位矩阵：<br><img src="/img/160880489472851310.png" alt="3x3的单位矩阵:"><br>当两个矩阵相乘结果为单位矩阵，且不管顺序，则意为互为逆矩阵</p>
 <p>矩阵在向量点乘的意义：<br><img src="/img/160880489472851311.png" alt="矩阵在向量点乘的意义:"></p>
 <p>矩阵在向量叉乘的意义：<br><img src="/img/160880489472851312.png" alt="矩阵在向量叉乘的意义:"></p>
-<h4 id="四、变换"><a href="#四、变换" class="headerlink" title="四、变换"></a>四、变换</h4><p>缩放 （’ 读为prime）<br><img src="/img/160880489472851313.png" alt="缩放矩阵:"></p>
+<h4 id="四、线性变换"><a href="#四、线性变换" class="headerlink" title="四、线性变换"></a>四、线性变换</h4><p>共通性：线性变换：<br><img src="/img/160880489472851318.png" alt="线性变换:"></p>
+<p>缩放 （’ 读为prime）<br><img src="/img/160880489472851313.png" alt="缩放矩阵:"></p>
 <p>翻转<br><img src="/img/160880489472851314.png" alt="翻转矩阵:"></p>
 <p>扭曲<br><img src="/img/160880489472851315.png" alt="扭曲矩阵:"></p>
 <p>旋转<br><img src="/img/160880489472851316.png" alt="推导过程:"><br><img src="/img/160880489472851317.png" alt="旋转矩阵:"></p>
-<p>共通性：线性变换：<br><img src="/img/160880489472851318.png" alt="线性变换:"></p>
+<h4 id="五、Homogeneous-Coordinate-齐次坐标"><a href="#五、Homogeneous-Coordinate-齐次坐标" class="headerlink" title="五、Homogeneous Coordinate 齐次坐标"></a>五、Homogeneous Coordinate 齐次坐标</h4><ul>
+<li>问题：平移的变换并不是线性变换（即不可以写为 x’= Mx）<br><img src="/img/160880489472851319.png" alt="平移表示:"></li>
+</ul>
+<p>齐次坐标中引入了w坐标值<br>为了使用线性变换的方程来表示带平移的变换，这时齐次坐标就发挥了作用：</p>
+<ul>
+<li>对于 向量，齐次坐标w值为0 (x, y, 0)， (x, y, z, 0)</li>
+<li>对于 点， 齐次坐标w值为1 (x, y, 1), (x, y, z, 1)</li>
+</ul>
+<p>对于两个点相加的齐次坐标的意义，其实是求两个点的中点<br><img src="/img/160880489472851320.png" alt="各种变换的意义:"></p>
+<p>仿射变换：<br><img src="/img/160880489472851321.png" alt="仿射变换："><br>齐次坐标：<br><img src="/img/160880489472851322.png" alt="齐次坐标："></p>
+<p>齐次坐标下的二维点变换：<br><img src="/img/160880489472851323.png" alt="齐次坐标下的二维点变换："></p>
+<p>特征：<br>当x’ = Mx 成立时， x = M-1x’也成立。 即如果需要还原，则使用变换矩阵的逆矩阵变换即可</p>
+<h4 id="六、组合变换"><a href="#六、组合变换" class="headerlink" title="六、组合变换"></a>六、组合变换</h4><p>矩阵的组合相乘是从右往左算<br><img src="/img/160880489472851324.png" alt="组合变换是从右往左算："></p>
+<ul>
+<li>启示：由于矩阵有结合律，可以对于复杂的变换，把变换的矩阵先乘在一起，如常用的MVP矩阵</li>
+</ul>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
@@ -1410,11 +1426,11 @@ noperspective in texcoord;//片面</code></pre>
 
 <div class="article_copyright">
     <p><span class="copy-title">Title:</span>计算机图形学编程笔记1</p>
-    <p><span class="copy-title">Count:</span><span class="post-count">1.9k</span></p>
+    <p><span class="copy-title">Count:</span><span class="post-count">2.1k</span></p>
     <p><span class="copy-title">Author:</span><a  title="霍家鹏">霍家鹏</a></p>
-    <p><span class="copy-title">Created At:</span>2022-05-13, 18:28:11</p>
-    <p><span class="copy-title">Updated At:</span>2022-05-13, 18:28:11</p>
-    <span class="copy-title">Url:</span><a class="post-url" href="/2022/05/13/计算机图形学编程笔记1/" title="计算机图形学编程笔记1">http://www.hjp.wiki/2022/05/13/计算机图形学编程笔记1/</a>
+    <p><span class="copy-title">Created At:</span>2022-05-16, 17:18:48</p>
+    <p><span class="copy-title">Updated At:</span>2022-05-16, 17:18:48</p>
+    <span class="copy-title">Url:</span><a class="post-url" href="/2022/05/16/计算机图形学编程笔记1/" title="计算机图形学编程笔记1">http://www.hjp.wiki/2022/05/16/计算机图形学编程笔记1/</a>
     <p>
         <span class="copy-title">Copyright:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">AveryHuo</a> Reprint please keep the original link and author.
     </p>
