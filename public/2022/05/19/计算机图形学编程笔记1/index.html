@@ -287,7 +287,7 @@
     <div><a class="about  hasFriend  site_url"  href="/about">About</a><a style="width: 50%"  class="friends">Friends</a></div>
 </div>
 <input type="hidden" id="yelog_site_posts_number" value="85">
-<input type="hidden" id="yelog_site_word_count" value="110.8k">
+<input type="hidden" id="yelog_site_word_count" value="112.2k">
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
     <span id="busuanzi_value_site_pv"></span>
@@ -416,11 +416,11 @@
     <nav id="title-list-nav">
         
         <a  class="All 图形学 "
-           href="/2022/05/16/计算机图形学编程笔记1/"
+           href="/2022/05/19/计算机图形学编程笔记1/"
            data-tag="图形学"
            data-author="" >
             <span class="post-title" title="计算机图形学编程笔记1">计算机图形学编程笔记1</span>
-            <span class="post-date" title="2022-05-16 17:22:25">2022/05/16</span>
+            <span class="post-date" title="2022-05-19 15:56:51">2022/05/19</span>
         </a>
         
         <a  class="All WPF "
@@ -1139,12 +1139,12 @@
     </div>
     <div class="article-meta">
         
-            Created At : <time class="date" title='Updated At: 2022-05-16 17:22:25'>2022-05-16 17:22</time>
+            Created At : <time class="date" title='Updated At: 2022-05-19 15:56:51'>2022-05-19 15:56</time>
         
     </div>
     <div class="article-meta">
         
-        <span>Count:2.2k</span>
+        <span>Count:3.6k</span>
         
         
         <span id="busuanzi_container_page_pv">
@@ -1174,7 +1174,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#一、搭建OPENGL-的C-环境"><span class="toc-text">一、搭建OPENGL 的C++环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二、3D图形数据"><span class="toc-text">二、3D图形数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#纹理贴图-使用SOIL2"><span class="toc-text">纹理贴图-使用SOIL2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三、数学"><span class="toc-text">三、数学</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#四、线性变换"><span class="toc-text">四、线性变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#五、Homogeneous-Coordinate-齐次坐标"><span class="toc-text">五、Homogeneous Coordinate 齐次坐标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#六、组合变换"><span class="toc-text">六、组合变换</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#一、搭建OPENGL-的C-环境"><span class="toc-text">一、搭建OPENGL 的C++环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二、3D图形数据"><span class="toc-text">二、3D图形数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#纹理贴图-使用SOIL2"><span class="toc-text">纹理贴图-使用SOIL2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三、数学"><span class="toc-text">三、数学</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#四、线性变换"><span class="toc-text">四、线性变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#五、Homogeneous-Coordinate-齐次坐标"><span class="toc-text">五、Homogeneous Coordinate 齐次坐标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#六、组合变换"><span class="toc-text">六、组合变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#七、三维变换"><span class="toc-text">七、三维变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#八、View变换-相机变换（Model-View-Transformation）"><span class="toc-text">八、View变换/相机变换（Model-View Transformation）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#九、Projection变换"><span class="toc-text">九、Projection变换</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -1413,6 +1413,48 @@ noperspective in texcoord;//片面</code></pre>
 <ul>
 <li>启示：由于矩阵有结合律，可以对于复杂的变换，把变换的矩阵先乘在一起，如常用的MVP矩阵</li>
 </ul>
+<h4 id="七、三维变换"><a href="#七、三维变换" class="headerlink" title="七、三维变换"></a>七、三维变换</h4><p>平移变换和线性变换一起称为仿射变换<br>旋转的逆矩阵与旋转的转置矩阵是相同<br>数学上如果逆矩阵与转置矩阵相同，则为正交矩阵</p>
+<p>y轴旋转矩阵不同的原因是, z cross x = +y，与x cross z的结果方向相反了</p>
+<p><img src="/img/160880489472851325.png" alt="三维变换："> </p>
+<ul>
+<li>任意的旋转都能分解为三种旋转： </li>
+</ul>
+<p><img src="/img/160880489472851326.png" alt="三种旋转分解："> </p>
+<p><img src="/img/160880489472851327.png" alt="罗得里格欺旋转公式："> </p>
+<h4 id="八、View变换-相机变换（Model-View-Transformation）"><a href="#八、View变换-相机变换（Model-View-Transformation）" class="headerlink" title="八、View变换/相机变换（Model-View Transformation）"></a>八、View变换/相机变换（Model-View Transformation）</h4><p>将物体变到以相机为坐标系，即相机归成原点为轴</p>
+<p>设定相机位置为e，看的方向为g，相机向上为t， 需要变以uvw构成的坐标系，设定w为-g的方向，u为t和w的叉积方向。<br><img src="/img/160880489472851328.png" alt="变换："><br>$$<br>w=-\frac{g}{||g||},<br>u=\frac{t\times w}{||t\times w||},<br>u=\frac{g\times t}{||g\times t||},<br>v=w\times u<br>$$</p>
+<p>反向：假设已经得到uvw，变为XYZ如下：<br>$$<br>\left[<br>\begin{matrix}<br>u&amp;v&amp;w&amp;e\<br>0&amp;0&amp;0&amp;1<br>\end{matrix}<br>\right]<br>$$</p>
+<p>由于旋转的逆矩阵与转置矩阵相同，即互为正交矩阵，因此，只需要得到此矩阵的逆即可</p>
+<p>先进行平移变换， 再进行变换，：<br>$$<br>M_cam = \left[<br>\begin{matrix}<br>u&amp;v&amp;w&amp;e\<br>0&amp;0&amp;0&amp;1<br>\end{matrix}<br>\right]^{-1}<br>=<br>\left[<br>\begin{matrix}<br>x_u&amp;y_u&amp;z_u&amp;0\<br>x_v&amp;y_v&amp;z_v&amp;0\<br>x_w&amp;y_w&amp;z_w&amp;0\<br>0&amp;0&amp;0&amp;1<br>\end{matrix}<br>\right]</p>
+<p>\left[<br>\begin{matrix}<br>1&amp;0&amp;0&amp;-x_e \<br>0&amp;1&amp;0&amp;-y_e \<br>0&amp;0&amp;1&amp;-z_e \<br>0&amp;0&amp;0&amp;1<br>\end{matrix}<br>\right]<br>$$</p>
+<h4 id="九、Projection变换"><a href="#九、Projection变换" class="headerlink" title="九、Projection变换"></a>九、Projection变换</h4><ul>
+<li>$x=l \equiv$ left plane,</li>
+<li>$x=r \equiv$ right plane,</li>
+<li>$y=b \equiv$ bottom plane,</li>
+<li>$y=t \equiv$ top plane,</li>
+<li>$z=n \equiv$ near plane,</li>
+<li>$z=f \equiv$ far plane.</li>
+</ul>
+<p>正交变换</p>
+<ul>
+<li>1.将所有模型所在的空间的中心点平移至原点。依据模型变换中的平移矩阵，其实就是平移空间中心坐标的负值</li>
+<li>2.将空间的坐标轴数值缩放至 [-1, 1]³ 的标准立方体中。依据模型变换中的缩放矩阵</li>
+</ul>
+<p>$$</p>
+<p>M_{\text {ortho }}=\left[\begin{array}{cccc}<br>\frac{2}{r-l} &amp; 0 &amp; 0 &amp; 0 \<br>0 &amp; \frac{2}{t-b} &amp; 0 &amp; 0 \<br>0 &amp; 0 &amp; \frac{2}{n-f} &amp; 0 \<br>0 &amp; 0 &amp; 0 &amp; 1<br>\end{array}\right]\left[\begin{array}{cccc}<br>1 &amp; 0 &amp; 0 &amp; -\frac{r+l}{2} \<br>0 &amp; 1 &amp; 0 &amp; -\frac{t+b}{2} \<br>0 &amp; 0 &amp; 1 &amp; -\frac{n+f}{2} \<br>0 &amp; 0 &amp; 0 &amp; 1<br>\end{array}\right]<br>=\left[\begin{array}{cccr}<br>\frac{2}{r-l} &amp; 0 &amp; 0 &amp; -\frac{r+l}{r-l} \<br>0 &amp; \frac{2}{t-b} &amp; 0 &amp; -\frac{t+b}{t-b} \<br>0 &amp; 0 &amp; \frac{2}{n-f} &amp; -\frac{n+f}{n-f} \<br>0 &amp; 0 &amp; 0 &amp; 1<br>\end{array}\right]<br>$$</p>
+<p>透视变换:<br>变换过程：透视投影的空间是一个四棱台，因为正交投影的矩阵已知，所以可以先将四棱台“挤压”为一个长方体，然后再对其进行正交投影。在“挤压”过程中，首先，近平面上的点坐标不变，因为最终就是投影到近平面； 其次，远平面上的点Z轴坐标不变，注意近平面和远平面之间的点Z轴坐标还是会变的，这也是产生“近大远小”的原因；最后，通过前两个性质，就限定了四棱台“挤压”为长方体只会有一种方式，即最终的变换矩阵是唯一的</p>
+<p><img src="/img/160880489472851329.png" alt="四棱台内的关系："> </p>
+<p>$$<br>\begin{aligned}<br>&amp;M_{\text {persp-ortho }}^{4 \times 4} \times\left[\begin{array}{l}<br>x \<br>y \<br>z \<br>1<br>\end{array}\right]=\left[\begin{array}{c}<br>\frac{n}{z} x \<br>\frac{n}{z} y \<br>\text { unknow }<br>\end{array}\right]=\left[\begin{array}{c}<br>n x \<br>\text { ny } \<br>\text { unknow } \<br>z<br>\end{array}\right] \<br>&amp;\Rightarrow M_{\text {persp-ortho }}^{4 \times 4}=\left[\begin{array}{cccc}<br>n &amp; 0 &amp; 0 &amp; 0 \<br>0 &amp; n &amp; 0 &amp; 0 \<br>? &amp; ? &amp; ? &amp; ? \<br>0 &amp; 0 &amp; 1 &amp; 0<br>\end{array}\right]<br>\end{aligned}<br>$$</p>
+<ul>
+<li>近平面的点的推导<br>对于近平面的点（x, y, n, 1） 经过透视变换，必定得到点(nx, ny, $n^2$, n)</li>
+</ul>
+<p>$$<br>\begin{aligned}<br>&amp;M_{\text {persp-ortho }}^{4 \times 4} \times\left[\begin{array}{l}<br>x \<br>y \<br>n \<br>1<br>\end{array}\right]=\left[\begin{array}{c}<br>n x \<br>n y \<br>n^{2} \<br>n<br>\end{array}\right]\<br>&amp;\Rightarrow M_{\text {persp-ortho }}^{4 \times 4}=\left[\begin{array}{cccc}<br>\boldsymbol{n} &amp; \mathbf{0} &amp; \mathbf{0} &amp; 0 \<br>\mathbf{0} &amp; \boldsymbol{n} &amp; \mathbf{0} &amp; \mathbf{0} \<br>\mathbf{0} &amp; \mathbf{0} &amp; \boldsymbol{A} &amp; B \<br>0 &amp; 0 &amp; 1 &amp; 0<br>\end{array}\right]\<br>&amp;\therefore \exists A n+B=n^{2}<br>\end{aligned}<br>$$</p>
+<ul>
+<li>对于远平面的中心点的推导<br>对于远平面的中心点(x, y, f, 1) 经过透视变换，必定得到点（nx, ny, $f^2$, f)</li>
+</ul>
+<p>$$<br>M_{\text {persp-ortho }}^{4 \times 4} \times\left[\begin{array}{l}<br>x \<br>y \<br>f \<br>1<br>\end{array}\right]=\left[\begin{array}{c}<br>n x \<br>n y \<br>f^{2} \<br>f<br>\end{array}\right]\<br>\therefore \exists A f+B=f^{2}<br>$$</p>
+<p>由上两种情况，得到如下“挤压”的变换方程：<br>$$<br>\begin{aligned}<br>&amp;\therefore\left{\begin{array} { l }<br>{ A n + B = n ^ { 2 } } \<br>{ A f + B = f ^ { 2 } }<br>\end{array} \Rightarrow \left{\begin{array}{l}<br>A=n+f \<br>B=-n f<br>\end{array}\right.\right. \<br>&amp;M_{\text {persp-ortho }}^{4 \times 4}=\left[\begin{array}{cccc}<br>n &amp; 0 &amp; 0 &amp; 0 \<br>0 &amp; n &amp; 0 &amp; 0 \<br>0 &amp; 0 &amp; n+f &amp; -n f \<br>0 &amp; 0 &amp; 1 &amp; 0<br>\end{array}\right]<br>\end{aligned}<br>$$</p>
+<p>因此，透视变换矩阵应为：先进行挤压，再进行一次正交变换<br>$$<br>\begin{aligned}<br>&amp;M_{\text {persp }} \<br>&amp;=M_{\text {ortho }} M_{\text {persp-ortho }} \<br>&amp;=\left[\begin{array}{cccc}<br>\frac{2}{r-l} &amp; 0 &amp; 0 &amp; 0 \<br>0 &amp; \frac{2}{t-b} &amp; 0 &amp; 0 \<br>0 &amp; 0 &amp; \frac{2}{n-f} &amp; 0 \<br>0 &amp; 0 &amp; 0 &amp; 1<br>\end{array}\right]\left[\begin{array}{cccc}<br>1 &amp; 0 &amp; 0 &amp; -\frac{r+l}{2} \<br>0 &amp; 1 &amp; 0 &amp; -\frac{t+b}{2} \<br>0 &amp; 0 &amp; 1 &amp; -\frac{n+f}{2} \<br>0 &amp; 0 &amp; 0 &amp; 1<br>\end{array}\right]\left[\begin{array}{cccc}<br>n &amp; 0 &amp; 0 &amp; 0 \<br>0 &amp; n &amp; 0 &amp; 0 \<br>0 &amp; 0 &amp; n+f &amp; -n f \<br>0 &amp; 0 &amp; 1 &amp; 0<br>\end{array}\right]<br>\end{aligned}<br>$$</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1024037035@qq.com </span>
@@ -1427,11 +1469,11 @@ noperspective in texcoord;//片面</code></pre>
 
 <div class="article_copyright">
     <p><span class="copy-title">Title:</span>计算机图形学编程笔记1</p>
-    <p><span class="copy-title">Count:</span><span class="post-count">2.2k</span></p>
+    <p><span class="copy-title">Count:</span><span class="post-count">3.6k</span></p>
     <p><span class="copy-title">Author:</span><a  title="霍家鹏">霍家鹏</a></p>
-    <p><span class="copy-title">Created At:</span>2022-05-16, 17:22:25</p>
-    <p><span class="copy-title">Updated At:</span>2022-05-16, 17:22:25</p>
-    <span class="copy-title">Url:</span><a class="post-url" href="/2022/05/16/计算机图形学编程笔记1/" title="计算机图形学编程笔记1">http://www.hjp.wiki/2022/05/16/计算机图形学编程笔记1/</a>
+    <p><span class="copy-title">Created At:</span>2022-05-19, 15:56:51</p>
+    <p><span class="copy-title">Updated At:</span>2022-05-19, 15:56:51</p>
+    <span class="copy-title">Url:</span><a class="post-url" href="/2022/05/19/计算机图形学编程笔记1/" title="计算机图形学编程笔记1">http://www.hjp.wiki/2022/05/19/计算机图形学编程笔记1/</a>
     <p>
         <span class="copy-title">Copyright:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">AveryHuo</a> Reprint please keep the original link and author.
     </p>
