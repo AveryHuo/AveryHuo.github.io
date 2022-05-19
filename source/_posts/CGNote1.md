@@ -4,6 +4,7 @@ categories:
 - 图形学
 tags: 
 - 图形学
+mathjax: true
 top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记1
 keywords: "CG, 图形学"
