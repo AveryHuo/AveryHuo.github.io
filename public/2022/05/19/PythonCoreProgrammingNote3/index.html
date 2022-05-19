@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Python Core Programming Note 3 | Avery的城堡</title><meta name="keywords" content="Python,Note,Core Programming"><meta name="author" content="霍家鹏"><meta name="copyright" content="霍家鹏"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Multi-threadPython 的 threading 模块Python 提供了多个模块来支持多线程编程，包括 thread、 threading 和 Queue 模块等。程序是可以使用 thread 和 threading 模块来创建与管理线程。 thread 模块提供了基本的线程和锁定支持；而 threading 模块提供了更高级别、功能更全面的线程管理。使用 Queue 模块，用户可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Core Programming Note 3">
+<meta property="og:url" content="http://www.hjp.wiki/2022/05/19/PythonCoreProgrammingNote3/index.html">
+<meta property="og:site_name" content="Avery的城堡">
+<meta property="og:description" content="Multi-threadPython 的 threading 模块Python 提供了多个模块来支持多线程编程，包括 thread、 threading 和 Queue 模块等。程序是可以使用 thread 和 threading 模块来创建与管理线程。 thread 模块提供了基本的线程和锁定支持；而 threading 模块提供了更高级别、功能更全面的线程管理。使用 Queue 模块，用户可以">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+<meta property="article:published_time" content="2022-05-19T13:29:50.775Z">
+<meta property="article:modified_time" content="2022-05-19T13:29:50.775Z">
+<meta property="article:author" content="霍家鹏">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Note">
+<meta property="article:tag" content="Core Programming">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://www.hjp.wiki/2022/05/19/PythonCoreProgrammingNote3/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Python Core Programming Note 3',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2022-05-19 21:29:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">85</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Avery的城堡</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Python Core Programming Note 3</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-05-19T13:29:50.775Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-19T13:29:50.775Z" title="更新于 2022-05-19 21:29:50">2022-05-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python/">Python</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Python Core Programming Note 3"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Multi-thread"><a href="#Multi-thread" class="headerlink" title="Multi-thread"></a>Multi-thread</h2><h3 id="Python-的-threading-模块"><a href="#Python-的-threading-模块" class="headerlink" title="Python 的 threading 模块"></a>Python 的 threading 模块</h3><p>Python 提供了多个模块来支持多线程编程，包括 thread、 threading 和 Queue 模块等。程<br>序是可以使用 thread 和 threading 模块来创建与管理线程。 thread 模块提供了基本的线程和锁<br>定支持；而 threading 模块提供了更高级别、功能更全面的线程管理。使用 Queue 模块，用户<br>可以创建一个队列数据结构，用于在多线程之间进行共享。</p>
+<blockquote>
+<p><strong>核心提示：避免使用 thread 模块</strong><br>推荐使用更高级别的 threading 模块，而不使用 thread 模块有很多原因。 threading 模<br>块更加先进，有更好的线程支持，并且 thread 模块中的一些属性会和 threading 模块有冲突。<br>另一个原因是低级别的 thread 模块拥有的同步原语很少（实际上只有一个），而 threading<br>模块则有很多。<br>不过，出于对 Python 和线程学习的兴趣，我们将给出使用 thread 模块的一些代码。<br>给出这些代码只是出于学习目的，希望它能够让你更好地领悟为什么应该避免使用<br>thread 模块。我们还将展示如何使用更加合适的工具，如 threading 和 Queue 模块中的那<br>些方法。<br>避免使用 thread 模块的另一个原因是它对于进程何时退出没有控制。当主线程结束<br>时，所有其他线程也都强制结束，不会发出警告或者进行适当的清理。如前所述，至少<br>threading 模块能确保重要的子线程在进程退出前结束。<br>我们只建议那些想访问线程的更底层级别的专家使用 thread 模块。为了强调这一点，<br>在 Python3 中该模块被重命名为_thread。你创建的任何多线程应用都应该使用 threading 模<br>块或其他更高级别的模块。</p>
+</blockquote>
+<blockquote>
+<p><strong>核心提示：守护线程</strong><br>避免使用 thread 模块的另一个原因是该模块不支持守护线程这个概念。当主线程退出<br>时，所有子线程都将终止，不管它们是否仍在工作。如果你不希望发生这种行为，就要引<br>入守护线程的概念了。<br>threading 模块支持守护线程，其工作方式是：守护线程一般是一个等待客户端请<br>求服务的服务器。如果没有客户端请求，守护线程就是空闲的。如果把一个线程设置<br>为守护线程，就表示这个线程是不重要的，进程退出时不需要等待这个线程执行完成。<br>如同在第 2 章中看到的那样，服务器线程远行在一个无限循环里，并且在正常情况下<br>不会退出。<br>如果主线程准备退出时，不需要等待某些子线程完成，就可以为这些子线程设置守护<br>线程标记。该标记值为真时，表示该线程是不重要的，或者说该线程只是用来等待客户端<br>请求而不做任何其他事情。<br>要将一个线程设置为守护线程，需要在启动线程之前执行如下赋值语句：<br>thread.daemon &#x3D; True（调用 thread.setDaemon(True)的旧方法已经弃用了）。同样，要检<br>查线程的守护状态，也只需要检查这个值即可（对比过去调用 thread.isDaemon()的方<br>法）。一个新的子线程会继承父线程的守护标记。整个 Python 程序（可以解读为：主线<br>程）将在所有非守护线程退出之后才退出，换句话说，就是没有剩下存活的非守护线<br>程时。</p>
+</blockquote>
+<blockquote>
+<p>当所有线程都分配完成之后，通过调用每个线程的 start()方法让它们开始执行，而不是<br>在这之前就会执行。相比于管理一组锁（分配、获取、释放、检查锁状态等）而言，这里只<br>需要为每个线程调用 join()方法即可。 join()方法将等待线程结束，或者在提供了超时时间的<br>情况下，达到超时时间。使用 join()方法要比等待锁释放的无限循环更加清晰（这也是这种锁<br>又称为自旋锁的原因）。136 第 1 部分 通用应用主题<br>对于 join()方法而言，其另一个重要方面是其实它根本不需要调用。一旦线程启动，它们<br>就会一直执行，直到给定的函数完成后退出。如果主线程还有其他事情要去做，而不是等待<br>这些线程完成（例如其他处理或者等待新的客户端请求），就可以不调用 join()。 join()方法只<br>有在你需要等待线程完成的时候才是有用的。</p>
+</blockquote>
+<blockquote>
+<p>使用 Thread 类，可以有很多方法来创建线程。我们将介绍其中比较相似的三种方法。选<br>择你觉得最舒服的，或者是最适合你的应用和未来扩展的方法（我们更倾向于最后一种方案）。<br>• 创建 Thread 的实例，传给它一个函数。<br>• 创建 Thread 的实例，传给它一个可调用的类实例。<br>• 派生 Thread 的子类，并创建子类的实例。<br>你会发现你将选择第一个或第三个方案。当你需要一个更加符合面向对象的接口时，<br>会选择后者；否则会选择前者。老实说，你会发现第二种方案显得有些尴尬并且稍微难以<br>阅读，以下示例详细介绍：</p>
+</blockquote>
+<blockquote>
+<p>函数形式创建</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> threading <span class="keyword">as</span> thread</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep, ctime</span><br><span class="line"></span><br><span class="line">loops = [<span class="number">3</span>,<span class="number">2</span>]</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loop</span>(<span class="params">nloop, nsec</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;thread start! :&quot;</span>,nloop , ctime())</span><br><span class="line">    sleep(nsec)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;thread end! :&quot;</span>,nloop , ctime())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;starting at :<span class="subst">&#123;ctime()&#125;</span>&quot;</span>)</span><br><span class="line">    threads = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(loops)):</span><br><span class="line">        t = thread.Thread(target=loop, args=(i, loops[i]))</span><br><span class="line">        t.daemon = <span class="literal">True</span></span><br><span class="line">        threads.append(t)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(loops)):</span><br><span class="line">        threads[i].start()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(loops)):</span><br><span class="line">        threads[i].join()</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;all done&quot;</span>)</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>类形式创建</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> threading <span class="keyword">as</span> thread</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep, ctime</span><br><span class="line"></span><br><span class="line">loops = [<span class="number">3</span>,<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyThread</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, func, args, name=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">        self.func = func</span><br><span class="line">        self.args = args</span><br><span class="line">        self.name = name</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self</span>):</span><br><span class="line">        self.func(*self.args)</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loop</span>(<span class="params">nloop, nsec</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;thread start! :&quot;</span>,nloop , ctime())</span><br><span class="line">    sleep(nsec)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;thread end! :&quot;</span>,nloop , ctime())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;starting at :<span class="subst">&#123;ctime()&#125;</span>&quot;</span>)</span><br><span class="line">    threads = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(loops)):</span><br><span class="line">        t = thread.Thread(target=MyThread(loop,(i,loops[i]),loop.__name__))</span><br><span class="line">        t.daemon = <span class="literal">True</span></span><br><span class="line">        threads.append(t)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(loops)):</span><br><span class="line">        threads[i].start()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(loops)):</span><br><span class="line">        threads[i].join()</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;all done&quot;</span>)</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>子类形式创建</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> threading <span class="keyword">as</span> thread</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep, ctime</span><br><span class="line"></span><br><span class="line">loops = [<span class="number">3</span>,<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyThread</span>(thread.Thread):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, func, args, name=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">        thread.Thread.__init__(self) <span class="comment">#Changed: need to inherit and call parent&#x27;s init</span></span><br><span class="line">        self.func = func</span><br><span class="line">        self.args = args</span><br><span class="line">        self.name = name</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_result</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.res</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;starting&#x27;</span>, self.name, <span class="string">&#x27;at: &#x27;</span>, ctime())</span><br><span class="line">        self.res = self.func(*self.args)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;finished&#x27;</span>, self.name, <span class="string">&#x27;at: &#x27;</span>, ctime())</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loop</span>(<span class="params">nloop, nsec</span>):</span><br><span class="line">    sleep(nsec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    threads = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(loops)):</span><br><span class="line">        t = MyThread(loop, (i, loops[i]), loop.__name__+<span class="built_in">str</span>(i)) <span class="comment">#Changed:no need to use threading.Thread() method</span></span><br><span class="line">        t.daemon = <span class="literal">True</span></span><br><span class="line">        threads.append(t)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(loops)):</span><br><span class="line">        threads[i].start()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(loops)):</span><br><span class="line">        threads[i].join()</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;all done&quot;</span>)</span><br><span class="line"></span><br><span class="line">main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>实例：</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#my_thread.py</span></span><br><span class="line"><span class="keyword">import</span> threading <span class="keyword">as</span> thread</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> ctime</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyThread</span>(thread.Thread):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, func, args, name=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">        thread.Thread.__init__(self)  <span class="comment"># Changed: need to inherit and call parent&#x27;s init</span></span><br><span class="line">        self.func = func</span><br><span class="line">        self.args = args</span><br><span class="line">        self.name = name</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_result</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.res</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;starting&#x27;</span>, self.name, <span class="string">&#x27;at: &#x27;</span>, ctime())</span><br><span class="line">        self.res = self.func(*self.args)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;finished&#x27;</span>, self.name, <span class="string">&#x27;at: &#x27;</span>, ctime())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"> <span class="comment">#main.py</span></span><br><span class="line"> <span class="keyword">from</span> my_thread <span class="keyword">import</span> MyThread</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> ctime, sleep</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fib</span>(<span class="params">x</span>):</span><br><span class="line">    sleep(<span class="number">0.002</span>)</span><br><span class="line">    <span class="keyword">if</span> x &lt; <span class="number">2</span>: <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> fib(x-<span class="number">2</span>) + fib(x-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fac</span>(<span class="params">x</span>):</span><br><span class="line">    sleep(<span class="number">0.1</span>)</span><br><span class="line">    <span class="keyword">if</span> x &lt; <span class="number">2</span>: <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> x * fac(x-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sum</span>(<span class="params">x</span>):</span><br><span class="line">    sleep(<span class="number">0.2</span>)</span><br><span class="line">    <span class="keyword">if</span> x &lt; <span class="number">2</span>: <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> x + <span class="built_in">sum</span>(x-<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">funcs = [fib, fac, <span class="built_in">sum</span>]</span><br><span class="line">n = <span class="number">12</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;****** Single THREAD ********&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(funcs)):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;start function %s&quot;</span> % funcs[i].__name__)</span><br><span class="line">        <span class="built_in">print</span>(funcs[i](n))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;end function %s&quot;</span> % funcs[i].__name__)</span><br><span class="line"></span><br><span class="line">    threads = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;****** Multi THREAD ********&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(funcs)):</span><br><span class="line">        t = MyThread(funcs[i], (n,), funcs[i].__name__)</span><br><span class="line">        threads.append(t)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(funcs)):</span><br><span class="line">        threads[i].start()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(funcs)):</span><br><span class="line">        threads[i].join()</span><br><span class="line">        <span class="built_in">print</span>(threads[i].get_result())</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;all done&quot;</span>)</span><br><span class="line">main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://www.hjp.wiki">霍家鹏</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://www.hjp.wiki/2022/05/19/PythonCoreProgrammingNote3/">http://www.hjp.wiki/2022/05/19/PythonCoreProgrammingNote3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.hjp.wiki" target="_blank">Avery的城堡</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/Note/">Note</a><a class="post-meta__tags" href="/tags/Core-Programming/">Core Programming</a></div><div class="post_share"><div class="social-share" data-image="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/gh/overtrue/share.js@master/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/05/19/PythonCoreProgrammingNote2/"><img class="prev-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Python Core Programming Note 2</div></div></a></div><div class="next-post pull-right"><a href="/2022/05/19/PythonSourceNote1/"><img class="next-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Python源码剖析-Note1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/05/19/PythonCoreProgrammingNote1/" title="Python Core Programming Note 1"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Python Core Programming Note 1</div></div></a></div><div><a href="/2022/05/19/PythonCoreProgrammingNote2/" title="Python Core Programming Note 2"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Python Core Programming Note 2</div></div></a></div><div><a href="/2022/05/19/TwistedStudy/" title="Twisted  介绍"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Twisted  介绍</div></div></a></div><div><a href="/2022/05/19/Centos_Django/" title="Centos 部署 Django"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Centos 部署 Django</div></div></a></div><div><a href="/2022/05/19/Conda_Handles/" title="Conda 常用操作"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Conda 常用操作</div></div></a></div><div><a href="/2022/05/19/DjangoApplication/" title="Django 实例 Web Application"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Django 实例 Web Application</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">霍家鹏</div><div class="author-info__description">Keep going. Keep study.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">85</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/AveryHuo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:jackhamsir@sina.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Multi-thread"><span class="toc-number">1.</span> <span class="toc-text">Multi-thread</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Python-%E7%9A%84-threading-%E6%A8%A1%E5%9D%97"><span class="toc-number">1.1.</span> <span class="toc-text">Python 的 threading 模块</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/WPFNote/" title="WPF"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="WPF"/></a><div class="content"><a class="title" href="/2022/05/19/WPFNote/" title="WPF">WPF</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/WebAppP1/" title="天天生鲜项目实例P1"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="天天生鲜项目实例P1"/></a><div class="content"><a class="title" href="/2022/05/19/WebAppP1/" title="天天生鲜项目实例P1">天天生鲜项目实例P1</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/WebAppP2/" title="天天生鲜项目实例P2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="天天生鲜项目实例P2"/></a><div class="content"><a class="title" href="/2022/05/19/WebAppP2/" title="天天生鲜项目实例P2">天天生鲜项目实例P2</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/python_1/" title="Python Note 1"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Python Note 1"/></a><div class="content"><a class="title" href="/2022/05/19/python_1/" title="Python Note 1">Python Note 1</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/python_2/" title="Python Note 2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Python Note 2"/></a><div class="content"><a class="title" href="/2022/05/19/python_2/" title="Python Note 2">Python Note 2</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 霍家鹏</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+      Array.from($mermaidWrap).forEach((item, index) => {
+        const mermaidSrc = item.firstElementChild
+        const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+        const mermaidID = 'mermaid-' + index
+        const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+        mermaid.mermaidAPI.render(mermaidID, mermaidDefinition, (svgCode) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        })
+      })
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

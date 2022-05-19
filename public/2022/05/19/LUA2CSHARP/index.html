@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>LUA与CSHARP交互 | Avery的城堡</title><meta name="keywords" content="Learn+Study"><meta name="author" content="霍家鹏"><meta name="copyright" content="霍家鹏"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="相互调用原理：  C#与Lua进行交互主要通过虚拟栈实现 C# Call Lua: 内存： 由C#先将数据放入栈中，由lua去栈中获取数据，然后返回数据对应的值到栈顶，再由栈顶返回至C#。 代码： C#生成Bridge文件，Bridge调dll文件（dll是用C写的库），先调用lua中dll文件，由dll文件执行lua代码C#-&gt;Bridge-&gt;dll-&gt;Lua  OR   C#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LUA与CSHARP交互">
+<meta property="og:url" content="http://www.hjp.wiki/2022/05/19/LUA2CSHARP/index.html">
+<meta property="og:site_name" content="Avery的城堡">
+<meta property="og:description" content="相互调用原理：  C#与Lua进行交互主要通过虚拟栈实现 C# Call Lua: 内存： 由C#先将数据放入栈中，由lua去栈中获取数据，然后返回数据对应的值到栈顶，再由栈顶返回至C#。 代码： C#生成Bridge文件，Bridge调dll文件（dll是用C写的库），先调用lua中dll文件，由dll文件执行lua代码C#-&gt;Bridge-&gt;dll-&gt;Lua  OR   C#">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+<meta property="article:published_time" content="2022-05-19T13:29:50.769Z">
+<meta property="article:modified_time" content="2022-05-19T13:29:50.769Z">
+<meta property="article:author" content="霍家鹏">
+<meta property="article:tag" content="Learn+Study">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://www.hjp.wiki/2022/05/19/LUA2CSHARP/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LUA与CSHARP交互',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2022-05-19 21:29:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">85</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Avery的城堡</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">LUA与CSHARP交互</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-05-19T13:29:50.769Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-19T13:29:50.769Z" title="更新于 2022-05-19 21:29:50">2022-05-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Unity/">Unity</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="LUA与CSHARP交互"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="相互调用"><a href="#相互调用" class="headerlink" title="相互调用"></a>相互调用</h2><p>原理：  C#与Lua进行交互主要通过虚拟栈实现</p>
+<h2 id="C-Call-Lua"><a href="#C-Call-Lua" class="headerlink" title="C# Call Lua:"></a>C# Call Lua:</h2><ul>
+<li>内存： 由C#先将数据放入栈中，由lua去栈中获取数据，然后返回数据对应的值到栈顶，再由栈顶返回至C#。</li>
+<li>代码： C#生成Bridge文件，Bridge调dll文件（dll是用C写的库），先调用lua中dll文件，由dll文件执行lua代码<br>C#-&gt;Bridge-&gt;dll-&gt;Lua  OR   C#-&gt;dll-&gt;Lua</li>
+</ul>
+<h2 id="Lua-Call-C"><a href="#Lua-Call-C" class="headerlink" title="Lua Call C#:"></a>Lua Call C#:</h2><ul>
+<li>内存： 先生成C#源文件所对应的Wrap文件或者编写C#源文件所对应的c模块，然后将源文件内容通过Wrap文件或者C模块注册到Lua解释器中，然后由Lua去调用这个模块的函数。</li>
+<li>代码：先生成Wrap文件（中间文件&#x2F;适配文件），wrap文件把字段方法，注册到lua虚拟机中（解释器luajit），然后lua通过wrap就可以调C#了<br>或者在config文件中添加相应类型也可以</li>
+</ul>
+<h2 id="unity下的lua框架"><a href="#unity下的lua框架" class="headerlink" title="unity下的lua框架"></a>unity下的lua框架</h2><p>为了使基于unity开发的应用在移动平台能够热更新，我们嵌入了Lua虚拟机，将需要热更新的逻辑用lua实现。c#通过P&#x2F;Invoke和lua交互（lua由ANSI C实现）。在这个过程中，由于数据的交换需要使用&#x3D;&#x3D;lua提供的虚拟栈 #F44336&#x3D;&#x3D;，不够简单高效，为了解决这个问题，我们引入了*lua框架（xlua、slua、ulua）来达到类似RPC式的函数调用、类原生对象式的对象访问以及高效的对象传递。</p>
+<h3 id="XLUA"><a href="#XLUA" class="headerlink" title="XLUA"></a>XLUA</h3><p>可以把xlua的push API归为两类：一类是针对某种特定类型的push，暂且叫做LowLevelAPI；还有一类是基于LowLevelAPI封装的更上层的HighLevelAPI。</p>
+<ul>
+<li>门面模式<br>使用HighLevelAPI时你只要简单的传入你想push的对象，HighLevelAPI会帮你找到最适合的LowLevelAPI调用，因为就算同一种类型的push方法，也可能有用户自定义的优化版本。而对于LowLevelAPI最终是需要调用xlua.dll中提供的C API来协调完成最终的工作。</li>
+</ul>
+<h4 id="LowLevelAPI"><a href="#LowLevelAPI" class="headerlink" title="LowLevelAPI"></a>LowLevelAPI</h4><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//using RealStatePtr = System.IntPtr;</span></span><br><span class="line"><span class="comment">//using LuaCSFunction = XLua.LuaDLL.lua_CSFunction;</span></span><br><span class="line"><span class="comment">//typedef int (*lua_CFunction) (lua_State *L);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//ObjectTranslator.cs</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushPrimitive</span>(<span class="params">RealStatePtr L, <span class="built_in">object</span> o</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params">RealStatePtr L, <span class="built_in">object</span> o</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">PushObject</span>(<span class="params">RealStatePtr L, <span class="built_in">object</span> o, <span class="built_in">int</span> type_id</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params">RealStatePtr L, LuaCSFunction o</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">void</span> <span class="title">PushFixCSFunction</span>(<span class="params">RealStatePtr L, LuaCSFunction func</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params">RealStatePtr L, LuaBase o</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">PushDecimal</span>(<span class="params">RealStatePtr L, <span class="built_in">decimal</span> val</span>)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>传递基元类型</li>
+</ul>
+<p>基元类型为 Boolean、Byte、SByte、Int16、UInt16、Int32、UInt32、Int64、UInt64、UIntPtr、Char、Double、Single和IntPtr （对应的void*）。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushPrimitive</span>(<span class="params">RealStatePtr L, <span class="built_in">object</span> o</span>)</span></span><br></pre></td></tr></table></figure>
+
+<p>XLUA中：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//push一个int</span></span><br><span class="line"><span class="function">LUA_API <span class="keyword">void</span> <span class="title">xlua_pushinteger</span> (<span class="params">lua_State *L, <span class="built_in">int</span> n</span>)</span></span><br><span class="line"><span class="function"><span class="comment">//push一个double</span></span></span><br><span class="line"><span class="function">#define LUA_NUMBER	<span class="built_in">double</span></span></span><br><span class="line"><span class="function">typedef LUA_NUMBER lua_Number</span>;</span><br><span class="line"><span class="function">LUA_API <span class="keyword">void</span> <span class="title">lua_pushnumber</span> (<span class="params">lua_State *L, lua_Number n</span>)</span></span><br><span class="line"><span class="function"><span class="comment">//push一个IntPtr</span></span></span><br><span class="line"><span class="function">LUA_API <span class="keyword">void</span> <span class="title">lua_pushlightuserdata</span> (<span class="params">lua_State *L, <span class="keyword">void</span> *p</span>)</span></span><br></pre></td></tr></table></figure>
+
+<p>对于long，xlua定制：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//i64lib.c</span></span><br><span class="line"><span class="comment">//在lua中表示c#中的long</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="type">int</span> fake_id;</span><br><span class="line">	<span class="type">int8_t</span> type;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">		<span class="type">int64_t</span> i64;</span><br><span class="line">		<span class="type">uint64_t</span> u64;</span><br><span class="line">	&#125; data;</span><br><span class="line">&#125; Integer64;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>传递 object</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params">RealStatePtr L, <span class="built_in">object</span> o</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">PushObject</span>(<span class="params">RealStatePtr L, <span class="built_in">object</span> o, <span class="built_in">int</span> type_id</span>)</span></span><br></pre></td></tr></table></figure>
+
+
+<p>不管object是什么类型，最终的push都是使用:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">LUA_API <span class="type">void</span> <span class="title function_">xlua_pushcsobj</span><span class="params">(lua_State *L, <span class="type">int</span> key, <span class="type">int</span> meta_ref, <span class="type">int</span> need_cache, <span class="type">int</span> cache_ref)</span> &#123;</span><br><span class="line">	<span class="type">int</span>* pointer = (<span class="type">int</span>*)lua_newuserdata(L, <span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">	*pointer = key;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (need_cache) cacheud(L, key, cache_ref);</span><br><span class="line"></span><br><span class="line">    lua_rawgeti(L, LUA_REGISTRYINDEX, meta_ref);</span><br><span class="line"></span><br><span class="line">	lua_setmetatable(L, <span class="number">-2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为什么我们传给lua的对象是一个int类型（这里的key）？其实我们这里的key是我们要传递的c#对象的一个索引，我们可以通过这个索引找到这个c#对象。</p>
+<p>当传递一个c#对象的时候，我们创建一个userdate，并把这个索引值赋给这个userdata。然后，lua在全局注册表中，有一张专门的表用来存放c#各种类型所对应的元表，而<strong>meta_ref</strong>就是当前这个对象所对应类型的元表的索引id，我们通过他找到对应的元表，就可以通过setmetatable来绑定操作这个对象的方法。最终lua就可以愉快的使用这个对象。</p>
+<blockquote>
+<p>每种类型所对应的元表，是我们在push一种类型的对象之前，提前注册进来的，后面详述。</p>
+</blockquote>
+<p>但是对于引用类型的对象，其生命周期是有可能超出当前的调用栈的（比如lua用一个变量引用了这个对象） 。这时，我们就不仅要能够通过这个key找到c#原始对象，还要通过这个key能够找到对应的lua代理对象。因此，对于引用类型，我们在lua中同样也要建立一套索引机制，这就是need_cache和cache_ref的作用：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">cacheud</span><span class="params">(lua_State *L, <span class="type">int</span> key, <span class="type">int</span> cache_ref)</span> &#123;</span><br><span class="line">	lua_rawgeti(L, LUA_REGISTRYINDEX, cache_ref);</span><br><span class="line">	lua_pushvalue(L, <span class="number">-2</span>);</span><br><span class="line">	lua_rawseti(L, <span class="number">-2</span>, key);</span><br><span class="line">	lua_pop(L, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>缓存</li>
+</ul>
+<p>再回过头来看看c#中的索引和缓存机制：</p>
+<p>在调用xlua_pushcsobj之前,所有object都会被放入一个对象的缓存池中ObjectTranslator.objects。而我们得到的key就是这个对象在缓存池中的下标。</p>
+<ul>
+<li>gc</li>
+</ul>
+<p>对于引用类型，它的生命周期管理会略微复杂。<strong>mono和lua虚拟机有各自的gc系统</strong>，并且相互无法感知。当lua和c#同时引用一个对象时，我们需要能够保证对象生命周期的正确，不能一边还在引用，另一边却把它释放掉了。</p>
+<p>这个过程是由lua的gc驱动的。我们<strong>把对象push到lua时，会缓存在c#的对象池中，所以是不会被mono的gc所释放掉，这样就保证了lua能够安全的持有c#对象。同时我们也会把这个对象的代理缓存到lua中，而lua中对象的缓存表是一个弱表，也就是说，当没有其他的lua引用这个对象时，lua的gc会把这个对象从lua的缓存中回收</strong>，而对象被gc回收的过程会触发这个对象的的__gc元方法。</p>
+<p>而这个__gc元方法就会通知到c#这端，来告诉我们lua不再使用这个对象，我们可以把它从对象缓存池中移除。当没有其他c#对其的引用时，mono的gc就会正常的回收这个对象。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//StaticLuaCallback.cs</span></span><br><span class="line"><span class="comment">//__gc元方法：</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">LuaGC</span>(<span class="params">RealStatePtr L</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">int</span> udata = LuaAPI.xlua_tocsobj_safe(L, <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (udata != <span class="number">-1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ObjectTranslator translator = ObjectTranslatorPool.Instance.Find(L);</span><br><span class="line">            <span class="keyword">if</span> ( translator != <span class="literal">null</span> )</span><br><span class="line">            &#123;</span><br><span class="line">                translator.collectObject(udata);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Exception e)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> LuaAPI.luaL_error(L, <span class="string">&quot;c# exception in LuaGC:&quot;</span> + e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//从缓存池中删除</span></span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">void</span> <span class="title">collectObject</span>(<span class="params"><span class="built_in">int</span> obj_index_to_collect</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">object</span> o;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (objects.TryGetValue(obj_index_to_collect, <span class="keyword">out</span> o))</span><br><span class="line">	&#123;</span><br><span class="line">		objects.Remove(obj_index_to_collect);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (o != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">int</span> obj_index;</span><br><span class="line">            <span class="comment">//lua gc是先把weak table移除后再调用__gc，这期间同一个对象可能再次push到lua，关联到新的index</span></span><br><span class="line">            <span class="built_in">bool</span> is_enum = o.GetType().IsEnum();</span><br><span class="line">            <span class="keyword">if</span> ((is_enum ? enumMap.TryGetValue(o, <span class="keyword">out</span> obj_index) : reverseMap.TryGetValue(o, <span class="keyword">out</span> obj_index))</span><br><span class="line">                &amp;&amp; obj_index == obj_index_to_collect)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (is_enum)</span><br><span class="line">                &#123;</span><br><span class="line">                    enumMap.Remove(o);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    reverseMap.Remove(o);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>元表</li>
+</ul>
+<p>对于业务来说，我们只是单纯的把对象的索引传递过去，是远远不够的，我们还需要提供直接使用和操作对象的方法。前面我们提到，在我们把一个对象push到lua之前，我们会把对象类型所对应的元表提前注册到lua之中。这样在我们真正push一个对象时，就会用这个元表来设置操作这个对象的方法。</p>
+<p>首先第一个问题就是，如何表示c#对象的类型？回过头来看看我们的Push函数，其中最重要的就是getTypeId：</p>
+<p>首先会尝试从c#的类型缓存typeIdMap中检查是否已经注册过这种类型，如果没有的话，我们就需要为其生成一个type_id。</p>
+<p><strong>再从lua的类型缓存中用类型名来检索是否已经注册过这种类型，如果没有的话，意味着我们还没有为这种类型在lua中注册一个元表，继而通过TryDelayWrapLoader来生成这个类型的元表</strong>。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params">RealStatePtr L, <span class="built_in">object</span> o</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">	Type type = o.GetType();</span><br><span class="line">	<span class="built_in">bool</span> is_first;</span><br><span class="line">	<span class="built_in">int</span> type_id = getTypeId(L, type, <span class="keyword">out</span> is_first);</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//这里再次吐槽getTypeId函数的设计和实现，为了保持清楚，我只保留能大体说明逻辑的的代码</span></span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="built_in">int</span> <span class="title">getTypeId</span>(<span class="params">RealStatePtr L, Type type, <span class="keyword">out</span> <span class="built_in">bool</span> is_first, LOGLEVEL log_level = LOGLEVEL.WARN</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">//尝试获取c#中检索</span></span><br><span class="line">	<span class="keyword">if</span> (typeIdMap.TryGetValue(type, <span class="keyword">out</span> type_id))&#123;<span class="keyword">return</span>;&#125;</span><br><span class="line">	<span class="comment">//尝试从lua中检索</span></span><br><span class="line">	LuaAPI.luaL_getmetatable(L,type.FullName);</span><br><span class="line">	<span class="keyword">if</span> (LuaAPI.lua_isnil(L, <span class="number">-1</span>)) </span><br><span class="line">	&#123;</span><br><span class="line">	    LuaAPI.lua_pop(L, <span class="number">1</span>);</span><br><span class="line">	    <span class="comment">//获取类型的元表</span></span><br><span class="line">	    <span class="keyword">if</span> (TryDelayWrapLoader(L,  type))</span><br><span class="line">	    &#123;</span><br><span class="line">	        LuaAPI.luaL_getmetatable(L, type.FullName);</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="keyword">else</span></span><br><span class="line">	    &#123;</span><br><span class="line">	        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Fatal: can not load metatable of type:&quot;</span> + type);</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//生成新的type_id</span></span><br><span class="line">	type_id = LuaAPI.luaL_ref(L, LuaIndexes.LUA_REGISTRYINDEX);</span><br><span class="line">	<span class="comment">//注册到lua</span></span><br><span class="line">    LuaAPI.lua_pushnumber(L, type_id);</span><br><span class="line">    LuaAPI.xlua_rawseti(L, <span class="number">-2</span>, <span class="number">1</span>);</span><br><span class="line">    LuaAPI.lua_pop(L, <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (type.IsValueType())</span><br><span class="line">    &#123;</span><br><span class="line">    	typeMap.Add(type_id, type);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    typeIdMap.Add(type, type_id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>传递c#函数</li>
+</ul>
+<p>xlua通过lua_pushstdcallcfunction来push一个LuaCSFunction，其调用的时xlua.dll提供的xlua_push_csharp_function。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"> <span class="comment">//LUADLL.cs</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">lua_pushstdcallcfunction</span>(<span class="params">IntPtr L, lua_CSFunction function, <span class="built_in">int</span> n = <span class="number">0</span></span>)<span class="comment">//[-0, +1, m]</span></span></span><br><span class="line">&#123;</span><br><span class="line">	IntPtr fn = Marshal.GetFunctionPointerForDelegate(function);</span><br><span class="line">	xlua_push_csharp_function(L, fn, n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终提供给用户的是这两个接口：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">void</span> <span class="title">PushFixCSFunction</span>(<span class="params">RealStatePtr L, LuaCSFunction func</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params">RealStatePtr L, LuaCSFunction o</span>)</span></span><br></pre></td></tr></table></figure>
+
+<p>这两个函数都做了一件事情，就是在LuaCSFunction函数push到lua之前，用另一个LuaCSFunction来包装了一层，用来做异常捕获。</p>
+<blockquote>
+<p>和gc一样，mono和lua有自己的异常</p>
+</blockquote>
+<p>两种索引方式的不同，使用在了不同的场景。</p>
+<p>PushFixCSFunction()大量被用在我们静态生成的元表构造器中，做为默认需要支持的类型的元表，注册进lua，并永久存在。而Push()被大量使用在反射生成的元表之中，在使用完之后，可能就会被释放。</p>
+<p>最后还有一个小细节，Push()中对IsStaticPInvokeCSFunction的函数没有加包装，因为这种类型的函数是我们静态生成的，在生成时，我们已经加入了异常捕获的代码，不需要再被捕获了。</p>
+<blockquote>
+<p>可以看到，一个函数在被调用之前，进行了多次的包装，每次包装都附带了一些额外的功能，但又对原函数没有侵入。（函数式编程，面向切片编程）</p>
+</blockquote>
+<ul>
+<li>其他push</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//push一个lua在c#中的代理对象</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params">RealStatePtr L, LuaBase o</span>)</span></span><br></pre></td></tr></table></figure>
+
+<p>LuaBase是c#对lua中特有的类型的封装。比如说LuaTable对应table、LuaFunction对应luafunction（此处不是luacfunction）。C#可以通过对应的类型去创建、操作一个lua原生对象。</p>
+<p>所以，LuaBase只是一个lua对象在c#中的代理，我们push一个LuaBase其实是找到真正的lua对象，并push。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//重载push一个decimal，避免gc</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PushDecimal</span>(<span class="params">RealStatePtr L, <span class="built_in">decimal</span> val</span>)</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="HighLevelAPI"><a href="#HighLevelAPI" class="headerlink" title="HighLevelAPI"></a>HighLevelAPI</h4><p>对于HighLevelAPI，里面不包含具体的push实现，而是通过获取对象的类型，来选择性的调用类型所对应的具体push函数。</p>
+<p>可以看作类似是编译器的函数重载功能</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">PushAny</span>(<span class="params">RealStatePtr L, <span class="built_in">object</span> o</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">PushByType</span>&lt;<span class="title">T</span>&gt;(<span class="params">RealStatePtr L,  T v</span>)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>顾名思义，PushAny()可以用来push所有的类型，可以被用在我们提前没法知道对象类型的地方。最典型的例子就是在反射生成元表时，我们动态的获取对象，通过PushAny()把类型未知的对象push到lua。</p>
+</li>
+<li><p>PushByType()是对PushAny()的封装，唯一的不同就是做了一个优化：<br>对于基元类型，不再调用pushPrimitive() （会有装箱&#x2F;拆箱）,而是通过查表的方式直接获取针对各个基元类型的直接push的方式。</p>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://www.hjp.wiki">霍家鹏</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://www.hjp.wiki/2022/05/19/LUA2CSHARP/">http://www.hjp.wiki/2022/05/19/LUA2CSHARP/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.hjp.wiki" target="_blank">Avery的城堡</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/gh/overtrue/share.js@master/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/05/19/PlayableAnimStudy/"><img class="prev-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Playable动画系统研究</div></div></a></div><div class="next-post pull-right"><a href="/2022/05/19/LWRPDesc/"><img class="next-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LWRP官方说明</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">霍家鹏</div><div class="author-info__description">Keep going. Keep study.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">85</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/AveryHuo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:jackhamsir@sina.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E4%BA%92%E8%B0%83%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">相互调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Call-Lua"><span class="toc-number">2.</span> <span class="toc-text">C# Call Lua:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lua-Call-C"><span class="toc-number">3.</span> <span class="toc-text">Lua Call C#:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unity%E4%B8%8B%E7%9A%84lua%E6%A1%86%E6%9E%B6"><span class="toc-number">4.</span> <span class="toc-text">unity下的lua框架</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#XLUA"><span class="toc-number">4.1.</span> <span class="toc-text">XLUA</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#LowLevelAPI"><span class="toc-number">4.1.1.</span> <span class="toc-text">LowLevelAPI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HighLevelAPI"><span class="toc-number">4.1.2.</span> <span class="toc-text">HighLevelAPI</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/WPFNote/" title="WPF"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="WPF"/></a><div class="content"><a class="title" href="/2022/05/19/WPFNote/" title="WPF">WPF</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/WebAppP1/" title="天天生鲜项目实例P1"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="天天生鲜项目实例P1"/></a><div class="content"><a class="title" href="/2022/05/19/WebAppP1/" title="天天生鲜项目实例P1">天天生鲜项目实例P1</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/WebAppP2/" title="天天生鲜项目实例P2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="天天生鲜项目实例P2"/></a><div class="content"><a class="title" href="/2022/05/19/WebAppP2/" title="天天生鲜项目实例P2">天天生鲜项目实例P2</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/python_1/" title="Python Note 1"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Python Note 1"/></a><div class="content"><a class="title" href="/2022/05/19/python_1/" title="Python Note 1">Python Note 1</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/19/python_2/" title="Python Note 2"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Python Note 2"/></a><div class="content"><a class="title" href="/2022/05/19/python_2/" title="Python Note 2">Python Note 2</a><time datetime="2022-05-19T13:29:50.784Z" title="发表于 2022-05-19 21:29:50">2022-05-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 霍家鹏</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+      Array.from($mermaidWrap).forEach((item, index) => {
+        const mermaidSrc = item.firstElementChild
+        const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+        const mermaidID = 'mermaid-' + index
+        const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+        mermaid.mermaidAPI.render(mermaidID, mermaidDefinition, (svgCode) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        })
+      })
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
