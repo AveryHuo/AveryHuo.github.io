@@ -1,5 +1,8 @@
 ---
 title: 最新Addressable资源打包与加载框架
+date: 2022-05-19 21:28:29
+updated: 2022-05-19 21:28:29
+top_img: false
 categories:
 - 公司
 tags: 

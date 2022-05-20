@@ -1,5 +1,8 @@
 ---
 title: Linux与window常用指令
+date: 2022-05-19 21:28:29
+updated: 2022-05-19 21:28:29
+top_img: false
 tags: 
 - linux
 - 指令

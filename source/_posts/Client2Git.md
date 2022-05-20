@@ -1,5 +1,9 @@
 ---
 title: 客户端更换Git指南
+date: 2022-05-19 21:28:29
+updated: 2022-05-19 21:28:29
+top_img: false
+cover: /img/1573879504277.png
 categories:
 - 公司
 tags: 

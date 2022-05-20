@@ -1,5 +1,6 @@
 ---
 title: 计算机图形学编程笔记1
+cover: /img/16088048947285131.png
 categories:
 - 图形学
 tags: 
@@ -8,8 +9,8 @@ katex: true
 top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记1
 keywords: "CG, 图形学"
-date: 2022-05-19 20:53:00 
-updated: 2022-05-20 11:28:52
+date: 2022-05-19 20:58:49
+updated: 2022-05-20 17:21:11
 ---
 
 #### 一、搭建OPENGL 的C++环境

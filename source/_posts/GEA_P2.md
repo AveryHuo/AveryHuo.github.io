@@ -1,5 +1,9 @@
 ---
 title: GEA-P2
+date: 2022-05-19 21:28:29
+updated: 2022-05-19 21:28:29
+top_img: false
+cover: /img/1574738644796.png
 categories:
 - IT阅读
 tags: 

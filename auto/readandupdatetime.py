@@ -41,10 +41,8 @@ def handle_file(file_path):
         for line in f:
             if "date:" in line:
                 source_date_txt = line
-                print("创建时间：%s"%source_date_txt)
             if "updated:" in line:
                 source_update_txt = line
-                print("更新时间：%s"%source_update_txt)
             if "title:" in line:
                 source_title_txt = line
                 print("处理中:%s"%source_title_txt)
@@ -61,11 +59,13 @@ def handle_file(file_path):
         file_data = file_data.replace(source_date_txt, "date: "+ create_time+"\n")
     else:
         new_title_txt = "{0}date: {1}\n".format(source_title_txt, create_time)
+    print("创建时间：%s"%create_time)
 
     if source_update_txt != "":
         file_data = file_data.replace(source_update_txt, "updated: "+modify_time+"\n")
     else:
         new_title_txt = "{0}updated: {1}\n".format(new_title_txt, modify_time)
+    print("更新时间：%s"%modify_time)
     
     if source_top_img_txt == "":
         new_title_txt = "{0}top_img: false\n".format(new_title_txt)

@@ -1,5 +1,8 @@
 ---
 title: 骨骼蒙皮动画(SkinnedMesh)的原理解析
+date: 2022-05-19 21:28:29
+updated: 2022-05-19 21:28:29
+top_img: false
 categories:
 - Unity
 ---

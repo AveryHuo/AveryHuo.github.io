@@ -1,5 +1,9 @@
 ---
 title: 天天生鲜项目实例P1
+date: 2022-05-19 21:28:29
+updated: 2022-05-19 21:28:29
+top_img: false
+cover: /img/1573441070020.png
 categories:
 - Python
 tags: 
