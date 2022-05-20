@@ -106,11 +106,9 @@ deploy:
   repository: git@github.com:AveryHuo/AveryHuo.github.io.git
   branch: master
 
-kramed:
-  gfm: true
-  pedantic: false
-  sanitize: false
-  tables: true
-  breaks: true
-  smartLists: true
-  smartypants: true
+markdown:
+  plugins:
+    - plugin:
+      name: '@neilsustc/markdown-it-katex'
+      options:
+        strict: false
