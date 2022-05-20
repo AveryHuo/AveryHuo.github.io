@@ -672,7 +672,7 @@ busuanzi:
 # Formal: Month/Day/Year Time or Year/Month/Day Time
 runtimeshow:
   enable: true
-  publish_date: 19/5/2022 20:00:00
+  publish_date: 5/19/2022 20:00:00
 
 # Aside widget - Newest Comments
 newest_comments:
