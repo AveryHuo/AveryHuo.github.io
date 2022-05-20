@@ -1,1 +1,1 @@
-python3 readandupdatetime.py /data/blog/AveryHuo.github.io /data/blog/source/_posts
+python3 /data/blog/AveryHuo.github.io/auto/readandupdatetime.py /data/blog/AveryHuo.github.io /data/blog/source/_posts
