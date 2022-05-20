@@ -1,5 +1,6 @@
 ---
 title: Hello World
+cover: false
 date: 2022-05-19 20:12:28
 updated: 2022-05-19 20:12:28
 top_img: false

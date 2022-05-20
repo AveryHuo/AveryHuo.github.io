@@ -1,5 +1,6 @@
 ---
 title: 数据结构-数组,链表结构
+cover: false
 date: 2022-05-19 21:28:29
 updated: 2022-05-19 21:28:29
 top_img: false

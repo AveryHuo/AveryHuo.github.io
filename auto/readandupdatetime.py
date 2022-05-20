@@ -75,6 +75,8 @@ def handle_file(file_path):
         imgs = re.findall(p, first_img_line)
         if imgs != None and len(imgs) > 0:
             new_title_txt = "{0}cover: {1}\n".format(new_title_txt, imgs[0])
+    else:
+        new_title_txt = "{0}cover: {1}\n".format(new_title_txt, "false")
 
     file_data = file_data.replace(source_title_txt, new_title_txt)
         

@@ -1,5 +1,6 @@
 ---
 title: Effective C++学习记录
+cover: false
 date: 2022-05-19 21:28:29
 updated: 2022-05-19 21:28:29
 top_img: false
