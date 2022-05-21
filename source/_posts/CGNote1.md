@@ -11,6 +11,7 @@ description: CG笔记1
 keywords: "CG, 图形学"
 date: 2022-05-19 20:58:49
 updated: 2022-05-20 17:21:11
+sticky: 1
 ---
 
 #### 一、搭建OPENGL 的C++环境
