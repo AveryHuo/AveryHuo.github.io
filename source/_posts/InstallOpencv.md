@@ -1,5 +1,9 @@
 ---
 title: 安装Opencv
+date: 2022-05-25 14:14:12
+updated: 2022-05-25 14:14:12
+top_img: false
+cover: false
 categories:
 - 图形学
 tags: 

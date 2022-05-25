@@ -10,7 +10,7 @@ top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记1
 keywords: "CG, 图形学"
 date: 2022-05-19 20:58:49
-updated: 2022-05-20 17:21:11
+updated: 2022-05-25 14:14:12
 sticky: 1
 ---
 
