@@ -10,7 +10,7 @@ top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记1
 keywords: "CG, 图形学"
 date: 2022-05-19 20:58:49
-updated: 2022-05-25 14:14:12
+updated: 2022-06-10 18:16:47
 sticky: 1
 ---
 
@@ -579,3 +579,23 @@ Antialiasing的另外的方案：
 FXAA（Fast Approximate）， 得到有锯齿的图，找到边界锯齿更换为无锯齿的图。
 TAA（Temporal) ,复用上一次采样的结果，复用时间维度上的结果。
 
+>思考：为什么先采样再模糊就不行？ 提示，先采样则频谱已经混乱了，再模糊就不行了
+
+如何解决深度远近的问题：
+算法：Z-Buffer
+1.为每个像素记录最小的z值，离相机最近的距离
+2.将1的数据的颜色信息记录到frame buffer中，z-buffer存储深度信息
+
+实现明细：
+1. 光珊化过程中，假定所有的像素离相机最远
+2. 每次遍历如果任意一个像素比较近，则记录下来
+
+![深度缓存图的示例](/img/160880489472851335.png)
+
+#### 十一、着色
+
+##### 最基础的反射模型： Blinn-Phong
+
+Diffuse： Light is scattered uniformly in all directions. 漫反射将光源反射到各个方向
+
+![漫反射](/img/160880489472851336.png)
