@@ -10,7 +10,7 @@ top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记1
 keywords: "CG, 图形学"
 date: 2022-05-19 20:58:49
-updated: 2022-06-10 18:16:47
+updated: 2022-06-21 11:32:32
 sticky: 1
 ---
 
@@ -596,6 +596,63 @@ TAA（Temporal) ,复用上一次采样的结果，复用时间维度上的结果
 
 ##### 最基础的反射模型： Blinn-Phong
 
-Diffuse： Light is scattered uniformly in all directions. 漫反射将光源反射到各个方向
+1. Diffuse： Light is scattered uniformly in all directions. 漫反射将光源反射到各个方向
 
 ![漫反射](/img/160880489472851336.png)
+
+2. Specular: 对于高光，观察的方向与镜面的反射方向接近时，得到高光
+这种特性也可以归为l，v的半角方向与法线方向接近（即n和h足够接近）
+
+![镜面反射](/img/160880489472851337.png)
+
+> Phong模型，这里使用的是v与r（反射方向）的接近
+
+按指数将高光收到更小的一个点，一般这个值是在64-200左右，大概在3度左右的高光范围
+![高光项的指数系数](/img/160880489472851338.png)
+
+3. Ambient： 环境光
+   La =  KaIa   
+   Ka ： ambient coefficient 
+环境光可以考虑成一个常数，精确的计算需要全局光照相关的知识 
+
+Ambient + Diffuse + Specular  = Blinn-Phong Reflection
+![着色模型](/img/160880489472851339.png)
+
+##### 着色频率
+
+1. 逐面片  Flat Shading
+2. 逐顶点  Gouraud Shading
+3. 逐像素  Phong Shading
+
+取决于面，顶点，像素出现的频率来选择哪种方式渲染
+![着色频率](/img/160880489472851340.png)
+
+Q: 如何求逐顶点的法线：
+以四周的三角面的法线，取其平均，再配以权重值，得出近似的顶点法线
+![求逐顶点法线](/img/160880489472851341.png)
+
+Q: 如何定义逐像素的法线（得到一个平滑过渡的法线？
+两点之间的法线，取其重心坐标（Barycentric Coordinates），归一化之后得到过渡的法线
+
+##### 图形管线（实时渲染管线）
+简言之，从场景到最后的一张图的过程
+开始：Application
+Vertex Processing
+Triangle Processing
+Rasterization
+Fragment Processing
+Framebuffer Operations
+结束： Display
+![求逐顶点法线](/img/160880489472851342.png)
+
+Shading可以在Vertex Processing也可以在Fragment Processing，而控制这里shading的过程称为Shader！ 
+
+Shader不需要写For循环，只需要关于每个顶点和每个面片
+
+使用Compute Shader可以实现更多的GPU计算，GPGPU（通用GPU）
+
+##### 纹理映射
+任意一张图映射到一个物体的表面的过程
+纹理坐标系： U横轴，V竖轴，范围是（0~1）
+
+tiled纹理：无逢衔接纹理来不失原来效果
