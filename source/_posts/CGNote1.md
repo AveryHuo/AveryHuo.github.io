@@ -10,7 +10,7 @@ top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记1
 keywords: "CG, 图形学"
 date: 2022-05-19 20:58:49
-updated: 2022-06-21 11:32:32
+updated: 2022-06-24 17:21:35
 sticky: 1
 ---
 
@@ -656,3 +656,110 @@ Shader不需要写For循环，只需要关于每个顶点和每个面片
 纹理坐标系： U横轴，V竖轴，范围是（0~1）
 
 tiled纹理：无逢衔接纹理来不失原来效果
+
+##### 重心坐标 Barycentric Coordinate
+如何在三角形内部做插值： Interpolation across Triangles
+为什么需要插值：
+* 特殊顶点
+* 在三角形之间平滑过度不同的值
+  
+哪些需要插值：
+Texture Coordinates, colors, normal vectors.
+
+实现插值： 重心坐标
+给定一个三角形所在平面上的点x,y。 有三个系数之和为1，且与三个顶点ABC线性组合
+注意三个值都不可为负数
+
+$$
+\begin{gathered}
+(x, y)=\alpha A+\beta B+\gamma C \\
+\alpha+\beta+\gamma=1
+\end{gathered}
+$$
+
+举例： A点的重点坐标
+$$
+\begin{aligned}
+(\alpha, \beta, \gamma) &=(1,0,0) \\
+(x, y) &=\alpha A+\beta B+\gamma C \\
+&=A
+\end{aligned}
+$$
+
+几何视角看，重点坐标也可以表示为面积比例：
+![面积比例重点坐标](/img/160880489472851343.png)
+
+
+特别地，中心点的重心坐标：
+$$
+\begin{aligned}
+(\alpha, \beta, \gamma) &=\left(\frac{1}{3}, \frac{1}{3}, \frac{1}{3}\right) \\
+(x, y) &=\frac{1}{3} A+\frac{1}{3} B+\frac{1}{3} C
+\end{aligned}
+$$
+
+重心坐标公式
+$$
+\begin{aligned}
+\alpha &=\frac{-\left(x-x_{B}\right)\left(y_{C}-y_{B}\right)+\left(y-y_{B}\right)\left(x_{C}-x_{B}\right)}{-\left(x_{A}-x_{B}\right)\left(y_{C}-y_{B}\right)+\left(y_{A}-y_{B}\right)\left(x_{C}-x_{B}\right)} \\
+\beta &=\frac{-\left(x-x_{C}\right)\left(y_{A}-y_{C}\right)+\left(y-y_{C}\right)\left(x_{A}-x_{C}\right)}{-\left(x_{B}-x_{C}\right)\left(y_{A}-y_{C}\right)+\left(y_{B}-y_{C}\right)\left(x_{A}-x_{C}\right)} \\
+\gamma &=1-\alpha-\beta
+\end{aligned}
+$$
+
+> 投影变换下不能保证重心坐标不变！ 
+> 由此，对于如三维坐标系的物体，在投影之后做插值求重心坐标是不一定对的，需要在原三维坐标中求
+
+##### 应用纹理
+* 纹理放大问题
+  纹理元素texel， 一个像素在一个纹理
+
+第一个可能的异常： 纹理图片过小？
+
+1. 双向插值： Bilinear Interpolation
+  找到指定点最近的四个点u01, u11, u00, u10，则插值就为
+  
+Two helper lerps
+$$
+\begin{aligned}
+&u_{0}=\operatorname{lerp}\left(s, u_{00}, u_{10}\right) \\
+&u_{1}=\operatorname{lerp}\left(s, u_{01}, u_{11}\right)
+\end{aligned}
+$$
+Final vertical lerp, to get result:
+$$
+f(x, y)=\operatorname{lerp}\left(t, u_{0}, u_{1}\right)
+$$
+
+2. 更好的效果-双三次插值：Bycubic Interpolation
+取周围16个
+
+第二个可能的异常： 纹理图片过大？
+>远处出现Morie, 近处出现Jaggies。
+>可能的方案： MSAA 加多采样点，可行但消耗过高
+
+如果高效的拿到平均值呢？ 对于任意不同大小的区域来做不同的范围查询
+MipMap的方案：
+MipMap： 从一张图生成一系列图，又叫图像金字塔
+三个限制(fast, approx, square正方形的查询)的范围查询
+
+在MipMap第D层去查找：
+   1. 首先找到物体像素点附近一个像素的点，分别对应到纹理UV上
+   2. 在纹理UV上算出近似的这个L边长
+   3. 由L边长，可以得到应该采用哪一层的MipMap
+![MipMap第D层](/img/160880489472851344.png)
+
+3. 三线性插值
+第三次插值， Trilinear Interpolation
+为了MipMap层之间过渡问题，对层与层之间进行差值
+
+> 三线性插值的问题，远处会overblur的问题。引入各向异性
+
+> 效率消耗为4/3，即比原本的多1/3的消耗
+
+4. 各向异性过滤- Anisotropic Filtering
+对比三线性插值，支持处理矩形的处理，对于MipMap的正方形的过滤，得到更好的效果，但并非完美。
+还有可能处理非矩形非正方形的范围，则可以选择如EWA-过滤，其支持多重查询，权重值，支持处理不规则footprints
+
+> 消耗为3倍
+> EWA-过滤，其支持多重查询，权重值，支持处理不规则footprints
