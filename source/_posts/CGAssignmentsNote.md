@@ -4,7 +4,6 @@ cover: /img/160880489472852501.png
 date: 2022-05-25 17:30:37
 updated: 2022-06-30 10:34:25
 top_img: false
-cover: false
 categories:
 - 图形学
 tags: 
