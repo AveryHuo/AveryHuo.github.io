@@ -10,7 +10,7 @@ top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记1
 keywords: "CG, 图形学"
 date: 2022-05-19 20:58:49
-updated: 2022-06-24 17:21:35
+updated: 2022-07-08 18:04:21
 sticky: 1
 ---
 
@@ -786,3 +786,77 @@ Spherical Environment Map: 把环境光记录在球上
 
 三维空间下，最后一步的推导过程省去得到添加负号的结果
 ![三维下如何影响](/img/160880489472851347.png)
+
+>特别的：
+> 位移贴图 Displacement mapping, 也使用Bump Map的贴图，但对几何发生变更，实质上对顶点做一个位置移动
+> 这种方式对模型面数有较高的要求，这样才能达到更好的效果。 
+> 扩展： DirectX 有一种动态模型细分面的技术 
+
+7. Perlin noise 的三维噪声技术
+8. Ambient occlusion贴图
+对于模型内部的阴影，可以使用纹理记录一些Ambient occlusion的信息。
+
+
+##### 几何
+
+1. Implicit 隐式的几何
+   表示一定的关系，并不表示实际的点。更通用的公式： 若点满足 f(x,y,z) = 0，由表示这个点在几何的面上
+  特点：
+  判断一个面找什么样，有哪些点，很难。 HARD
+  判断一个点是否在不在几何内，小于0表示在内，大于0表达在外 =0则是在面上。 EASY
+
+2. Explicit显式的几何
+   将u,v的点可以显式的按公式映射到x,y,z。
+   特点：
+   通过uv找面上的点，会比较容易。EASY
+   判断在内外。 HARD
+
+由此，几何并没有最好的表示方法，根据需要处理的问题，选择使用显式还是隐式。
+
+    在CG中，常用的隐式表示方法：
+    1. Algebraic Surfaces
+      代数的方法去描述表面
+    2. Constructive Solid Geometry
+      广泛应用在建模软件中
+      通过一些基本几何的基本运算来描述。
+![Constructive Solid Geometry](/img/160880489472851348.png)
+    1. Distance Functions
+      定义一个距离函数（空间中任意一个点，到想到的一个点的距离）的方法的描述。
+      例子： SDF 有向的距离函数 Signed DF
+      求出各自的距离函数，最后找到f(x)=0的面
+    2. Level Set Methods 
+      与DF相同，区别只是把等高线找出来，关注f(x)=0的面
+    3. Fractals 分形
+      拥有自相似的物体。
+
+    常用的显式表示方法：
+    1. Point Cloud 
+      一个点的x,y,z的列表。通过一堆点堆积，需要非常多的点才能表示。通常会变成三角面，将点的密度太小时比较难以画出来
+    2. Ploygon Mesh  
+      CG中最广泛应用
+      多边形面，更容易模拟和渲染，更复杂的数据结构
+      > obj文件中存储的点，法线，纹理，坐标分开表示，最后连接起来将结果放在后面。 
+      > 如f 5/1/1 1/2/1 4/3/1  三个点，每个点的第一个参数表示哪个点，第二个参数表示uv坐标，第三个参数表示法线
+
+##### 曲线 Curves
+应用：Camera path, Animation curve, Vector fonts
+
+1. Bezier Curve: 
+
+   ![Bezier Curve](/img/160880489472851349.png)
+   ![Bezier Curve表示](/img/160880489472851350.png)
+   性质： Affine transformation 前后不变
+          凸包性质，找到最小凸多边形可以包含所有的点，生成的点一定在是选中的点形成的凸包内
+2. Piecewise Bezier Curves 分段的BC
+   将一个大的BC,分成多个小段，对两个小段生成多个点，让生成的点再生成曲线。
+   [参考网站](https://math.hws.edu/eck/cs424/notes2013/canvas/bezier.html)
+
+3. Splines 样条
+   满足连续性，有一系列的点连接。 一个可控的曲线。
+   B-splines： 对BC的扩展，包括所有BC的属性。局部性的特性： 改变一个点，明确改变的的范围
+   https://www.bilibili.com/video/av66548502?from=search&seid=65256805876131485
+
+
+
+
+
