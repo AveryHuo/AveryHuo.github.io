@@ -2,7 +2,7 @@
 title: UE5初入
 cover: false
 date: 2022-05-19 21:28:29
-updated: 2022-05-19 21:28:29
+updated: 2022-07-12 15:52:50
 top_img: false
 categories:
 - UE
@@ -59,3 +59,6 @@ Channel Packing技术 ：将不同的信息存储在一张图的不同通道里
 ## Light
 属性： Static 表示为静态灯光，一般用于烘焙。 Movable 表示百分百动态的灯光（类似于实时光源，过多将消耗性能）。Stationary (介于动态与静态之间，允许动态与烘焙并存)
 Source radius: 反射后显示的源光源的大小，一般需要一个反射接受面才能感觉到不同。 Soft Source radius: 表明光源边缘的柔软度
+
+## 场景编辑技巧
+数字键快速回到各个位置，使用ctrl+数字键保存各个位置视角
