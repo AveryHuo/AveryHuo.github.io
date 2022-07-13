@@ -1,14 +1,29 @@
 ---
-title: 客户端更换Git指南
-date: 2022-05-19 21:28:29
-updated: 2022-05-19 21:28:29
+title: Git Note
+date: 2019-05-13 15:01:05
+updated: 2022-07-13 15:01:05
 top_img: false
 cover: /img/1573879504277.png
-categories:
-- 公司
 tags: 
 - Git
 ---
+
+# 工作流程
+Rebase的工作流程：
+示例：
+![master分支做了更改](/img/gitpic2022071302.jpg)
+![个人分支做了更改](/img/gitpic2022071303.jpg)
+
+使用指令： git rebase 【基】 【自己的分支】
+切到dev分支下：使用
+git rebase master (与 git rebase master dev 等价)
+
+使用工具：记得这里的Branch是选择PICK的分支，右侧为新的基。下图所示，是在最新的master为基，把自己不同的提交pick到顶端去
+![使用Tortoise工具进行变基](/img/gitpic2022071301.jpg)
+
+总结，用指令是更形象更直观的说明rebase后的状态，而工具相关的设计需要根据实际选择的Pick来理解。
+
+# 公司升级方法
 
 ## 安装Git
 
