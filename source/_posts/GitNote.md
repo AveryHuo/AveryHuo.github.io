@@ -23,6 +23,33 @@ git rebase master (与 git rebase master dev 等价)
 
 总结，用指令是更形象更直观的说明rebase后的状态，而工具相关的设计需要根据实际选择的Pick来理解。
 
+参考命令集：
+1. 保存本地更新并rebase远端：
+```
+git stash clear
+git stash 
+git checkout develop
+git checkout .
+git fetch origin develop
+git rebase orgin develop
+git pull origin develop
+git submodule update --force
+git checkout work
+git rebase develop
+git stash pop
+```
+2. 把自己工作的目录推送到远端最新
+```
+git checkout develop
+git checkout .
+git pull origin develop
+git checkout work
+git rebase develop
+git checkout develop
+git merge work
+git push origin develop
+```
+
 # 公司升级方法
 
 ## 安装Git
