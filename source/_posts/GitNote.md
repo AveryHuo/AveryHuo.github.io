@@ -1,7 +1,7 @@
 ---
 title: Git Note
-date: 2019-05-13 15:01:05
-updated: 2022-07-13 15:01:05
+date: 2022-07-13 15:02:24
+updated: 2022-07-14 16:20:52
 top_img: false
 cover: /img/1573879504277.png
 tags: 
@@ -49,6 +49,14 @@ git checkout develop
 git merge work
 git push origin develop
 ```
+
+> Update to revision的操作在Git中需要使用git reset实现。 注意这时丢失非remote端的暂存区提交！ 
+> 1. 继续再使用git checkout .回到准确的那个分支点。
+> 2. 指针重置可以向前也可以向后，只是改变基提交点。
+
+> Revert，会对文件级进行内容判定，可能会产生冲突。
+> 如果与任意revert的点的文件判定产生冲突，则一定会生成新的提交点
+> 以上两种都不会导致本地未保存的内容丢失
 
 # 公司升级方法
 
