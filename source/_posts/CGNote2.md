@@ -1,383 +1,131 @@
 ---
 title: 计算机图形学编程笔记2
-cover: false
-date: 2022-05-19 21:28:29
-updated: 2022-05-19 21:28:29
-top_img: false
+cover: /img/160880489472851356.png
 categories:
 - 图形学
 tags: 
 - 图形学
+katex: true
+top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
+description: CG笔记2
+keywords: "CG, 图形学"
+date: 2022-05-19 20:58:49
+updated: 2022-07-21 16:35:21
+sticky: 1
 ---
 
-==本篇主要针对shader #2196F3==
+#### 一、光线追踪
 
-## 参考文献
-[Unity] - Technical Artist in Shading and Effects
-https://certification.unity.com/products/expert-technical-artist-shading-effects
-[虚幻] - 虚幻引擎职业讲堂：技术美术师
-https://www.unrealengine.com/zh-CN/tech-blog/jobs-in-unreal-engine---technical-artist?sessionInvalidated=true
-[Catlike] - Catlike大神的Unity系列教程
-https://catlikecoding.com/unity/tutorials/
-[霜狼_may] - TA技术美术学习体系框架
-https://www.bilibili.com/video/av77755500
-[毛星云] - 浅墨的游戏编程
-https://zhuanlan.zhihu.com/game-programming
-[云影] - 技术美术的魔法工坊
-https://zhuanlan.zhihu.com/c_1082217056598007808
-[一只大熊猫]-中国特色技术美术
-https://zhuanlan.zhihu.com/c_1078237708161363968
-[知乎] - 技术美术会是一个长期存在的职业吗？
-https://www.zhihu.com/question/325535382/answer/1149431577
-[马甲] - 总结一些TA（技术美术）学习的网站
-https://zhuanlan.zhihu.com/p/84550677
-[书籍] - 《OpenGL 编程指南》红宝书
-https://book.douban.com/subject/26220248/
-[书籍] - 《OpenGL 超级宝典》蓝宝书
-https://book.douban.com/subject/10774590/
-[书籍] - 《DirectX 9.0 3D游戏开发编程基础》
-https://book.douban.com/subject/2111771/
-[书籍] - 計算機圖形: 入門/API類
-https://www.douban.com/doulist/1445744/
+##### 原理
+起因： 光珊化不能很好的处理全局的效果， 如软阴影，较光滑的金属表面（Glossy）反射问题，间接光照（光线多次弹射才进入人眼）
+光追的特点：非常慢
 
-## 一、内置shader库
+光线的假定
+1. 光沿直线传播（并不正确）
+2. 光与光不会碰撞（并不正确）
+3. 光线一定从光源出发最后到达眼睛（reciprocity光线可逆性性质，实际物理上不可逆性）
 
-### Unity支持的語義
+光追：实则是从相机出发经过不断反射折射到光源，由相机出发，此光线沿着直线，遇到阻挡的物体时点（只记录最近的交点），再判定此点到光线是否是在阴影，不在阴影，这时再进行shading。
+![光追原理解析](/img/160880489472851356.png)
 
-* 1，从应用阶段传递模型数据给顶点着色器时支持的语义如下表
-  
-  
-|语义	|描述|
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-|POSITION	  |模型空间中的顶点位置 通常float4  |
-|NORMAL	  |   顶点法线 通常float3|
-|TANGENT	|顶点切线 通常float4|
-TEXCOORD(n)	|该顶点的纹理坐标 n组|
-|COLOR	|顶点颜色 通常fixed4 float4|
+以上其实只考虑了光线弹射一次的情况，那考虑多次弹射时，这时引入一种光追算法： Whitted-Style Ray Tracing
 
-* 2，丛顶点着色器传递到片元着色器时支持的语义如下表：
+##### Recursive Whitted-Style Ray Tracing (1979年)
+
+对于每个光线产生的交点，都被计算回到最终的显示。 如中间产生的折射也算在内。
+Shadow ray: 表示最终与光线连接需要判断是否要显示的光线
+![Whitted光追](/img/160880489472851357.png)
+
+1. 求光线射出去的交点： 
+   * Ray Equation:对于光线上的点，都可以表示为以下等式：
+   ![Ray Equation](/img/160880489472851358.png)
+   * 光线与求交点
+ 对于隐式的图形
+ p是球上的点
+  ![球表示](/img/160880489472851359.png)
+  对于这个p，一定两者都满足，得出：
+   ![球表示](/img/160880489472851360.png)
+   ![t的公式](/img/160880489472851361.png)
+   * 对于显式的图形，求光线与三角形的交点
+  设定光线与三角形必定有0或者1个交点
+  需要两步： 第一步判断是否在三角形内，第二步判断光线是否与平面有交点
+  >平面的定义
+  一系列平面上的点+ 法线
+  判断点p‘是否在平面上，则 平面上的点p - p' 与N 一定垂直，点乘必定为0
+   ![求点与平面交点的方程](/img/160880489472851362.png)
+
+   Moller Trumbore 算法来求光线是否在与平面有交点，使用重点坐标
+   ![Moller Trumbore](/img/160880489472851363.png)
+
+2. 由于求交点的过程太缓慢，需要做加速，使用预处理的方法
+  Bounding Volumes 对得复杂物体，先找出一个包围盒，优先判定光线与包围盒是否有交点，如果没有，直接跳过。
+  轴对齐包围盒Axis-Aligned Bounding Box AABB
+  对于三维空间，有三组分别是X,Y,Z对面，当光线进入全部的对面时，则表示光线进入过此包围盒。
+  ![判定方法](/img/160880489472851364.png)
+  ![最终的公式](/img/160880489472851365.png)
  
-|语义	|描述|
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| SV_POSITION	| 裁剪空间中的顶点坐标 结构体必须包含一个该词修饰的变量| 
-| COLOR0	| 通常用于输出第一组顶点颜色| 
-| COLOR1	| 通常用于输出第二组顶点颜色| 
-| TEXCOORDN（0~7）	| 通常用于输出纹理坐标| 
+  那划分的问题？
+  优先对整个包围盒进行格子划分，先判断与描灰的格子（与物体相交的格子面）的相交（总是认为较快的），再判断与格子内的物体是否有交点
+   * Spatial Partitions 空间划分
+   * Oct-Tree 八叉树，对于一块空间切成八块，二维是四块。通过此种方式把空间切成各种结构，但与维度有关，解决此问题使用KD-Tree
+   * KD-Tree 对于每一层不同的位置或水平垂直方向进行分割，每次拆两次，类似于二叉的分法
+   * BSP-Tree 每一次选一个方向进行分割，区别于KD-Tree则每个方向不确定性
+
+  步骤：
+  1. 做光追之前，优先做出KD-Tree，KD-Tree Preprocessing
+    数据结构生成： 
+    * 分割坐标系xyz
+    * 画在哪
+    * 中间结点的子结点
+    * 实际物体不存在中间结点，只存在叶子结点。
+  2. 光线来了迭代KD-Tree Traverse KD-Tree
+    * 与叶子结点有交点，则需要与此叶子结点的所有物体进行比较，找具体的物体的交点
+    * 与中间结点有交点，找其下的叶子结点再进行比对
+
+  KD-Tree的问题：
+  1. 三角面与包围盒相交的情况，三角形与包围盒求交比较困难
+  2. 三角面与多个包围盒相关的情况，则在多个包围盒里都要存同一个三角面
+
+3. 针对KD-Tree的问题的改善的加速结构 - Bounding Volume Hierachy(BVH)
+  针对物体进行划分，分别求其包围盒。这样解决的KD-Tree的第二个问题。当划分的足够好的情况，也可以避免掉KD-Tree的1问题
+  递归流程
+   * 找到包围盒
+   * 把任意包围盒的物体，拆成两部分
+   * 重新计算包围盒
+  适当停止，将最终物体放到叶子结点
   
+  构建BVHs:
+  如何切分物体？
+  * 永远选择一个最长边切割
+  * 尽可能的构建一个平衡树结构，找到中位的点
+  停止切分的规则：
+  Heuristic: 包围盒内物体小于5时
   
-* 3，片元着色器输出时支持的语义
-  
-|语义	|描述|
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| SV_Target| 	输出值将会存储到渲染目标中| 
+ ![BVH整体算法](/img/160880489472851366.png)
 
-* 4. 數據類型對比
+##### Basic Radiometry 辐射度量学
+Whitted Style光追的问题：
+光线的强度的单位表示？ 
+物体表面与光的作用真实吗？
 
-|类型	|精度|
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-|float	|最高精度 通常32位|
-|half	|中等精度 通常16位|
-|fixed	|最低精度 通常11位|
+辐射度量学给予的：
+* 度量系统， 光照的单位
+* 精准描述光照， Radiant flux, intensity, irradiance, radiance
+* 从物理的基础上准确的显示光照计算
 
-### 常用数学函数
+>学习方法推荐:
+>为什么有？-> 是什么？->怎么用？
+>WHY->WHAT->HOW
 
-| 函数	| 说明	| 实例| 
-| ----------|----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| radians(degree)	| 角度变弧度(一般默认都用弧度)	|  
-| degrees(radian)	| 弧度变角度	|  
-| sin(angle), cos(angle), tan(angle)	| 三角函数	|  
-| asin(x)| 	arc sine, 返回弧度 \[-PI/2, PI/2];	|  
-| acos(x)	| arc cosine,返回弧度 \[0, PI]	|  
-| atan(y, x)	| arc tangent, 返回弧度 \[-PI, PI];	|  
-| atan(y/x)	| arc tangent, 返回弧度 \[-PI/2, PI/2];	|  
-| pow(x, y)	| x的y次方	|  
-| exp(x)	| 指数, log(x)	|  
-| exp2(x)| 	2的x次方， log2(x)	|  
-| sqrt(x)	| x的根号；	|  
-| inversesqrt(x)| 	x根号的倒数	|  
-| abs(x)| 	绝对值	|  
-| sign(x)| 	取当前数值的正负符号,返回 1, 0 或 -1	|  （x>0;x=0;x<0）|  
-| floor(x)	| 底部取整	|  
-| ceil(x)	| 顶部取整	|  
-| fract(x)	| 取小数部分	|  
-| mod(x, y)	| 取模， x - y\*floor(x/y)	|  
-| min(x, y)	| 取最小值	|  
-| max(x, y)| 	取最大值	|  
-| clamp(x, min, max)	| min(max(x, min), max);	|  
-| mix(x, y, a)| 	x, y的线性混叠， x(1-a) + y\*a;	|  
-| step(edge, x)| 	如 x smoothstep(edge0, edge1, x): threshod smooth transition时使用。 edge0<=edge0时为0.0， x>=edge1时为1.0	|  
-| length(x)	| 向量长度	|  
-| distance(p0, p1)| 	两点距离， length(p0-p1);	|  
-| dot(x, y)	| 点积，各分量分别相乘 后 相加	|  
-| cross(x, y)	| 差积 | 	x\[1]\*y\[2]-y\[1]\*x\[2], x\[2]\*y\[0] - y\[2]\*x\[0], x\[0]\*y\[1] - y\[0]\*x\[1] |  
-| normalize(x)	| 归一化| 	length(x)=1;| 
-| faceforward(N, I, Nref)| 	如 dot(Nref, I)< 0则N, 否则 -N	| 
-| reflect(I, N)	| I的反射方向| 	I -2\*dot(N, I)\*N, N必须先归一化| 
-| refract(I, N, eta)| 	折射	| k=1.0-etaeta(1.0 - dot(N, I) * dot(N, I)); 如k<0.0 则0.0，否则 etaI - (etadot(N, I)+sqrt(k))\*N| 
-| matrixCompMult(matX, matY)| 	矩阵相乘, 每个分量 自行相乘	| r\[j] = x\[j]\*y\[j];| 
-| lessThan(vecX, vecY)	| 向量 每个分量比较 x < y	| 
-| lessThanEqual(vecX, vecY)| 	向量 每个分量比较 x<=y	| 
-| greaterThan(vecX, vecY)	| 向量 每个分量比较 x>y	| 
-| greaterThanEqual(vecX, vecY)	| 向量 每个分量比较 x>=y	| 
-| equal(vecX, vecY)	| 向量 每个分量比较 x==y	| 
-| notEqual(vecX, vexY)| 	向量 每个分量比较 x!=y| 	
-| any(bvecX)	| 只要有一个分量是true， 则true	| 
-| all(bvecX)	| 所有分量是true， 则true	| 
-| not(bvecX)	| 所有分量取反| 
+1. Radiant Energy and Flux(Power)
+   Radiant Enery: 光波辐射的能量 Joule 焦尔
+    ![Radiant Energy](/img/160880489472851367.png)
+   Radiant Flux(Power): 单位时间内产生的能量 Watt 与lumen，Lumen表示光源的亮度
+    ![Radiant Flux](/img/160880489472851368.png)
+    单位时间通过的光子数量
 
-
-### 1. UnityCG.cginc 
-* 包含最常用的帮助函数，宏，结构钵
-*  数据结构:
-struct appdata_base：顶点着色器输入，包含位置、法线和一个纹理坐标。
-struct appdata_tan：顶点着色器输入，包含位置、法线、切线和一个纹理坐标。
-struct appdata_full：顶点着色器输入，包含位置、法线、切线、顶点颜色和两个纹理坐标。
-struct appdata_img: 顶点着色器输入，包含位置和一个纹理坐标。
-
-* 顶点变换函数
- 
-
-| 功能                                    | 描述                                                                                                                       |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| float4 UnityObjectToClipPos(float3 pos) | 将对象空间中的点变换到齐次坐标中的摄像机裁剪空间。这等效于 mul(UNITY_MATRIX_MVP, float4(pos, 1.0))，应该在适当的位置使用。 |
-| float3 UnityObjectToViewPos(float3 pos) | 将对象空间中的点变换到视图空间。这等效于 mul(UNITY_MATRIX_MV, float4(pos, 1.0)).xyz，应该在适当的位置使用。                |
-
-
-* 通用helper函数
-  
-| 功能	| 描述| 
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| float3 WorldSpaceViewDir (float4 v)	| 返回从给定对象空间顶点位置朝向摄像机的世界空间方向（未标准化）。| 
-| float3 ObjSpaceViewDir (float4 v)	| 返回从给定对象空间顶点位置朝向摄像机的对象空间方向（未标准化）。| 
-| float2 ParallaxOffset (half h, half height, half3 viewDir)	| 计算视差法线贴图的 UV 偏移。| 
-| fixed Luminance (fixed3 c)	| 将颜色转换为亮度（灰阶）。| 
-| fixed3 DecodeLightmap (fixed4 color)	| 从 Unity 光照贴图（RGBM 或 dLDR，具体取决于平台）解码颜色。| 
-| float4 EncodeFloatRGBA (float v)	| 将 \[0..1) 范围浮点数编码为 RGBA 颜色，用于存储在低精度渲染目标中。| 
-| float DecodeFloatRGBA (float4 enc)	| 将 RGBA 颜色解码为浮点数。| 
-| float2 EncodeFloatRG (float v)	| 将 \[0..1) 范围浮点数编码为 float2。| 
-| float DecodeFloatRG (float2 enc)	| 解码先前编码的 RG 浮点数。| 
-| float2 EncodeViewNormalStereo (float3 n)	| 将视图空间法线编码为 0 到 1 范围内的两个数字。| 
-| float3 DecodeViewNormalStereo (float4 enc4)	| 从 enc4.xy 解码视图空间法线。| 
-
-* 仅支持前向渲染的helper函数， 仅当使用前向渲染（ForwardBase 或 ForwardAdd 通道类型）时，这些函数才有用。
-
-| 功能	| 描述| 
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| float3 WorldSpaceLightDir (float4 v)	| 根据给定的对象空间顶点位置计算朝向光源的世界空间方向（未标准化）。| 
-| float3 ObjSpaceLightDir (float4 v)	| 根据给定对象空间顶点位置计算朝向光源的对象空间方向（未标准化）。| 
-| float3 Shade4PointLights (...)	| 计算四个点光源的光照，将光源数据紧密打包到矢量中。前向渲染使用它来计算每顶点光照。| 
-
-* 屏幕空间用的helper函数
-* 以下 helper 函数可计算用于采样屏幕空间纹理的坐标。它们返回 float4，其中用于纹理采样的最终坐标可以通过透视除法（例如 xy/w）计算得出。
- 
- | 功能	| 描述| 
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-|float4 ComputeScreenPos (float4 clipPos)	| 计算用于执行屏幕空间贴图纹理采样的纹理坐标。输入是裁剪空间位置。| 
-|float4 ComputeGrabScreenPos (float4 clipPos)	| 计算用于 GrabPass 纹理采样的纹理坐标。输入是裁剪空间位置。| 
-
-* UnityCG.cginc 中的顶点光照 helper 函数：
-* 仅当使用每顶点光照着色器（“Vertex”通道类型）时，这些函数才有用。
-
- | 功能	| 描述| 
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| float3 ShadeVertexLights (float4 vertex, float3 normal)	| 根据给定的对象空间位置和法线计算四个每顶点光源和环境光的光照。| 
-
-### 2. UnityShaderVariables.cginc 【自动添加】
- * 包含常用的内置全局变量，如UNITY_MATRIX_MVP
-
-### 3. HLSLSupport.cginc 【自动添加】
- * 跨平台用的宏和帮助定义
-  
-### 4. AutoLight.cginc 【表面着色器使用】
-* 光照和阴影的函数库
-
-### 5. Lighting.cginc 【表面着色器自动添加】
- * 包含标准表面着色器的光照模型
-   
-### 6. TerrainEngine.cginc 
-* 提供为地形vegetation相关shader的帮助函数
-
-
-
-## 二、 基础的光照模型
-
-### Unlit 頂點著色器模板：
-
-``` c
-Shader "Unlit/MyShader"
-{
-    Properties
-    {
-        _MainTex ("Texture", 2D) = "white" {}
-		_SpecularColor("Specular",color)=(1,1,1,1)
-		_Shininess("Shininess",range(1,64))=8
-    }
-    SubShader
-    {
-        Tags { "RenderType"="Opaque" }
-        LOD 100
-
-        Pass
-        {
-             CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-
-            #include "UnityCG.cginc"
-			#include "Lighting.cginc"
-            struct v2f
-            {
-            	float3 normal:NORMAL;
-                float2 uv : TEXCOORD0;
-                float4 pos : SV_POSITION;
-                float4 vertex : TEXCOORD1;
-            };
-
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-			float4 _SpecularColor;
-			float _Shininess;
-
-            v2f vert (appdata_base v)
-            {
-                v2f o;
-                o.pos = UnityObjectToClipPos(v.vertex);
-                o.vertex = v.vertex;
-                o.normal = v.normal;
-                o.uv = TRANSFORM_TEX(v.texcoord.xy, _MainTex);
-                return o;
-            }
-
-            fixed4 frag (v2f i) : SV_Target
-            {
-                // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-
-                // 在这里实现光照
-
-                return col;
-            }
-            ENDCG
-        }
-    }
-}
-
-```
-
-### 1. Lambert 漫反射模型
-* 最基础的光照模型: 法向量与入射光的点积作为反射光
-* 将反射光乘上主色再乘上环境即可
-
-``` c
- fixed4 frag (v2f i) : SV_Target
-{
-	// sample the texture
-	fixed4 col = tex2D(_MainTex, i.uv);
-
-	//获取法向量
-	float3 N = UnityObjectToWorldNormal(i.normal);
-	//获取入射光
-	float3 L = normalize(WorldSpaceLightDir(i.vertex));
-
-	// Diffuse:
-	float diffuseScale = saturate(dot(N,L));
-	col = UNITY_LIGHTMODEL_AMBIENT + _LightColor0* col * diffuseScale;
-
-
-	return col;
-}
-```
-
-### 2. Phong 镜面反射模型
-``` c
-fixed4 frag (v2f i) : SV_Target
-{
-	// sample the texture
-	fixed4 col = tex2D(_MainTex, i.uv);
-
-	//获取法向量
-	float3 N = UnityObjectToWorldNormal(i.normal);
-	//获取入射光
-	float3 L = normalize(WorldSpaceLightDir(i.vertex));
-	//视角坐标
-	float3 V = normalize(WorldSpaceViewDir(i.vertex));
-
-	// Diffuse:
-	float diffuseScale = saturate(dot(N,L));
-	col = UNITY_LIGHTMODEL_AMBIENT + _LightColor0* col * diffuseScale;
-
-	//Phong:
-	float3 R = -reflect(L,N); // reflect(I,N) = 2* dot(N,L)*N - L;
-	R = normalize(R);
-	float specularScale = pow(saturate(dot(V,R)),_Shininess);
-	col += _SpecularColor*specularScale;
-
-	return col;
-}
-```
-
-### 3. Blin-Phong 半角镜面反射模型
-
-``` c
-fixed4 frag (v2f i) : SV_Target
-{
-	// sample the texture
-	fixed4 col = tex2D(_MainTex, i.uv);
-
-	//获取法向量
-	float3 N = UnityObjectToWorldNormal(i.normal);
-	//获取入射光
-	float3 L = normalize(WorldSpaceLightDir(i.vertex));
-	//视角坐标
-	float3 V = normalize(WorldSpaceViewDir(i.vertex));
-
-	// Diffuse:
-	float diffuseScale = saturate(dot(N,L));
-	col = UNITY_LIGHTMODEL_AMBIENT + _LightColor0* col * diffuseScale;
-
-	//Phong:
-	// float3 R = -reflect(L,N); // reflect(I,N) = 2* dot(N,L)*N - L;
-	// R = normalize(R);
-	// float specularScale = pow(saturate(dot(V,R)),_Shininess);
-	// col += _SpecularColor*specularScale;
-
-	//Blin-Phong:
-	float3 H =  normalize(L+V);
-	float specularScale = pow(saturate(dot(H,N)),_Shininess);
-	col += _SpecularColor*specularScale;
-
-	return col;
-}
-```
-
-
-### 4. 菲涅尔环境反射
-
-``` c
-....
-Properties
-  {
-	  _Color("Color Tint", Color) = (1,1,1,1)
-	  _ReflectColor("Reflection Color",Color) = (1,1,1,1)
-	  _FresnelScale("Fresnel Scale",range(0,1)) = 0.5
-	  _CubeMap("Reflection CubeMap",cube) = "_skybox"{}
-}
-.......
- fixed4 frag(v2f i) : SV_Target
-    {
-        fixed3 worldNormal = normalize(i.worldNormal);
-        fixed3 worldViewDir = normalize(i.worldViewDir);
-        fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-
-        fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
-        fixed3 col = texCUBE(_CubeMap, i.worldRef).rgb;
-        fixed3 reflection = col * _ReflectColor.rgb;
-
-        fixed3 diffuse = _LightColor0.rgb*_Color.rgb*saturate(dot(worldNormal, worldLightDir));
-        fixed fresnel = _FresnelScale + (1 - _FresnelScale)*pow(1 - dot(worldViewDir, worldNormal), 5);
-
-        UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
-        fixed3 color = ambient + lerp(diffuse, reflection, saturate(fresnel))*atten;
-        return fixed4(color,1.0);
-    }
-```
+2. Radiant intensity
+  每个单位立体角上的power
+  立体角： 三维上对于角度的延伸，任何一个点光源的辐射，如果是一个均匀的发射光源，则可以是各个power的积分除上4 PI。
+3. Irradiance
+4. Radiance
