@@ -9,8 +9,8 @@ katex: true
 top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记2
 keywords: "CG, 图形学"
-date: 2022-05-19 20:58:49
-updated: 2022-07-21 16:35:21
+date: 2022-05-19 21:28:29
+updated: 2022-07-29 17:32:58
 sticky: 1
 ---
 
@@ -118,14 +118,25 @@ Whitted Style光追的问题：
 >WHY->WHAT->HOW
 
 1. Radiant Energy and Flux(Power)
-   Radiant Enery: 光波辐射的能量 Joule 焦尔
+   Radiant Enery: 光波辐射的能量 Joule 焦尔，很少用在CG中
     ![Radiant Energy](/img/160880489472851367.png)
-   Radiant Flux(Power): 单位时间内产生的能量 Watt 与lumen，Lumen表示光源的亮度
+   Radiant Flux(Power): 单位时间内产生的能量 Watt 与lumen，Lumen表示光源的亮度，图形学用的
     ![Radiant Flux](/img/160880489472851368.png)
     单位时间通过的光子数量
 
 2. Radiant intensity
   每个单位立体角上的power
   立体角： 三维上对于角度的延伸，任何一个点光源的辐射，如果是一个均匀的发射光源，则可以是各个power的积分除上4 PI。
+   ![微分立体角](/img/160880489472851369.png)
 3. Irradiance
+   每一个面积上对应的power
+   Power per unit area! 能量除去面积. 定义必须面得与光线垂直的面积，其他情况不能算。
 4. Radiance
+  光线的属性，power per unit solid angle, per projected unit area. 单位立体角和单位立体面积微分两次
+  考虑某一个确定的面，和某一个确定的角，这样就与光线的特征相近。
+  Incident Radiance = Irradiance per unit solid angle  入射进来。考虑有方向的irradiance。
+  Exiting Radiance = Intensity per unit solid area 小的面辐射出去，往哪个方向去。
+  
+
+##### Bidirectional Reflectance Distribution Function BRDF
+一方向的光进来，会往多少不同的方向去反射多少能量
