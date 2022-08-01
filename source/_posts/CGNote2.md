@@ -10,7 +10,7 @@ top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记2
 keywords: "CG, 图形学"
 date: 2022-05-19 21:28:29
-updated: 2022-07-29 17:32:58
+updated: 2022-08-01 11:40:48
 sticky: 1
 ---
 
@@ -139,4 +139,23 @@ Whitted Style光追的问题：
   
 
 ##### Bidirectional Reflectance Distribution Function BRDF
-一方向的光进来，会往多少不同的方向去反射多少能量
+一方向的光进来，会往多少不同的方向去反射多少能量。 
+1. BRDF = 任意一个出射方向radiance的微分 / 入射点上的irradiance的微分
+ ![BRDF](/img/160880489472851370.png)
+
+2. 反射方程
+![Reflection Equation](/img/160880489472851371.png)
+
+3. 渲染方程
+ 任何一个出射的radiance也有可以为其他面上的入射radiance
+ 所有的限制在物体表面的渲染都满足以下的方程：
+ ![The Rendering Equation](/img/160880489472851372.png)
+ 更完整的渲染方程
+![The Rendering Equation](/img/160880489472851373.png)
+对渲染方程进行变换，在前两次，直接光照+一次间接光照可以通过光栅化来解决，但后面多次间接光照则需要用到光线追踪
+![公式变形，光线多次弹射的](/img/160880489472851374.png)
+
+> 概率论相关
+> 连续的情况： Probability Distribution Function.这样的曲线描述，某一个点x取旁边的dx的值，其中的面积就是概率密度p(x)
+> 期望值 = 每个值与概率（连续的就是p(x)）相乘，加一起求和/个数 
+![对于函数的概率](/img/160880489472851375.png)
