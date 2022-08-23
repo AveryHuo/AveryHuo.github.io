@@ -674,42 +674,26 @@ void bezier(const std::vector<cv::Point2f> &control_points, cv::Mat &window)
     // recursive Bezier algorithm.
     for (double t = 0.0; t <= 1.0; t += 0.001)
     {
-        cv::Point2f point = recursive_bezier(control_points, t);
+        auto point = recursive_bezier(control_points, t);
         window.at<cv::Vec3b>(point.y, point.x)[1] = 255;
 
-        //anti-aliasing
-        float x = point.x - std::floor(point.x);
-        float y = point.y - std::floor(point.y);
-        int x_flag = x < 0.5f ? -1 : 1;
-        int y_flag = y < 0.5f ? -1 : 1;
-
-        // 距离采样点最近的4个坐标点
-        cv::Point2f p00 = cv::Point2f(std::floor(point.x) + 0.5f, std::floor(point.y) + 0.5f);
-        cv::Point2f p01 = cv::Point2f(std::floor(point.x + x_flag * 1.0f) + 0.5f, std::floor(point.y) + 0.5f);
-        cv::Point2f p10 = cv::Point2f(std::floor(point.x) + 0.5f, std::floor(point.y + y_flag * 1.0f) + 0.5f);
-        cv::Point2f p11 = cv::Point2f(std::floor(point.x + x_flag * 1.0f) + 0.5f, std::floor(point.y + y_flag * 1.0f) + 0.5f);
-
-        std::vector<cv::Point2f> vec;
-        vec.push_back(p01);
-        vec.push_back(p10);
-        vec.push_back(p11);
-
-        // 计算最近的坐标点与采样点距离
-        cv::Point2f distance = p00 - point;
-        float len = sqrt(distance.x * distance.x + distance.y * distance.y);
-
-        // 对边缘点进行着色
-        for(auto p:vec)
+        std::vector<cv::Point2f> points(4);
+        points[0] = cv::Point2f(std::floor(point.x + 0.5), std::floor(point.y + 0.5));
+        points[1] = cv::Point2f(std::floor(point.x + 0.5), std::floor(point.y - 0.5));
+        points[2] = cv::Point2f(std::floor(point.x - 0.5), std::floor(point.y + 0.5));
+        points[3] = cv::Point2f(std::floor(point.x - 0.5), std::floor(point.y - 0.5));
+    
+        cv::Point2f distance = points[0] - point; //距离采样点最近的像素点坐标是+0.5后的点
+        float d0 = sqrt(distance.x * distance.x + distance.y * distance.y); //取这个距离作为参照
+        
+        for (auto p : points)
         {
-            // 根据距离比, 计算边缘点影响系数 
+            
             cv::Point2f d = p - point;
-            float l = sqrt(d.x * d.x + d.y * d.y);
-            float percnet = len / l;
-
-            cv::Vec3d color = window.at<cv::Vec3b>(p.y, p.x);
-            // 此处简单粗暴取最大值
-            color[1] = std::max(color[1], (double)255 * percnet);
-            window.at<cv::Vec3b>(p.y, p.x) = color;
+            float percnet = d0 / sqrt(d.x * d.x + d.y * d.y); //计算其他像素点与最近距离的比值
+            float color = window.at<cv::Vec3b>(p.y, p.x)[1];
+            color = std::max(color, 255 * percnet);//取最大值效果更好
+            window.at<cv::Vec3b>(p.y, p.x)[1] = color;
         }
     }
 }
