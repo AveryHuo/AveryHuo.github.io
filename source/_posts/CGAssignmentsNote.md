@@ -2,7 +2,7 @@
 title: GAMES101作业笔记
 cover: /img/160880489472852501.png
 date: 2022-05-25 17:30:37
-updated: 2022-06-30 10:34:25
+updated: 2022-08-23 16:10:01
 top_img: false
 categories:
 - 图形学
@@ -622,3 +622,96 @@ Eigen::Vector3f bump_fragment_shader(const fragment_shader_payload& payload)
     return result_color * 255.f;
 }
 ```
+
+#### 四、作业4
+需要实现 de Casteljau 算法来绘制由 4 个控制点表示的 Bézier 曲线 (当你正确实现该
+算法时，你可以支持绘制由更多点来控制的 Bézier 曲线)。
+你需要修改的函数在提供的 main.cpp 文件中。
+• bezier：该函数实现绘制 Bézier 曲线的功能。它使用一个控制点序列和一个
+OpenCV：：Mat 对象作为输入，没有返回值。它会使 t 在 0 到 1 的范围内进
+行迭代，并在每次迭代中使 t 增加一个微小值。对于每个需要计算的 t，将
+调用另一个函数 recursive_bezier，然后该函数将返回在 Bézier 曲线上 t
+处的点。最后，将返回的点绘制在 OpenCV ：：Mat 对象上。
+• recursive_bezier：该函数使用一个控制点序列和一个浮点数 t 作为输入，
+实现 de Casteljau 算法来返回 Bézier 曲线上对应点的坐标。
+
+要求：
+• [20 分] De Casteljau 算法：
+对于给定的控制点，你的代码能够产生正确的 Bézier 曲线。
+• [5 分] 奖励分数：
+实现对 Bézier 曲线的反走样。(对于一个曲线上的点，不只把它对应于一个像
+素，你需要根据到像素中心的距离来考虑与它相邻的像素的颜色。)
+
+可能会有的问题：需要对每一个点进行差值
+``` c++
+cv::Point2f recursive_bezier(const std::vector<cv::Point2f>& control_points, float t)
+{
+    // TODO: Implement de Casteljau's algorithm
+
+    if (control_points.size() == 0) {
+        // Error!!
+        return cv::Point2f();
+    }
+    else if (control_points.size() == 1) {
+        return control_points[0];
+    }
+    else{
+        std::vector<cv::Point2f> points;
+        for (size_t i = 0; i < control_points.size() - 1; i++)
+        {
+            points.push_back(control_points[i] + (control_points[i+1] - control_points[i]) * t);
+        }
+        return recursive_bezier(points, t);
+    }
+    
+    return cv::Point2f();
+
+}
+
+void bezier(const std::vector<cv::Point2f> &control_points, cv::Mat &window) 
+{
+    // TODO: Iterate through all t = 0 to t = 1 with small steps, and call de Casteljau's 
+    // recursive Bezier algorithm.
+    for (double t = 0.0; t <= 1.0; t += 0.001)
+    {
+        cv::Point2f point = recursive_bezier(control_points, t);
+        window.at<cv::Vec3b>(point.y, point.x)[1] = 255;
+
+        //anti-aliasing
+        float x = point.x - std::floor(point.x);
+        float y = point.y - std::floor(point.y);
+        int x_flag = x < 0.5f ? -1 : 1;
+        int y_flag = y < 0.5f ? -1 : 1;
+
+        // 距离采样点最近的4个坐标点
+        cv::Point2f p00 = cv::Point2f(std::floor(point.x) + 0.5f, std::floor(point.y) + 0.5f);
+        cv::Point2f p01 = cv::Point2f(std::floor(point.x + x_flag * 1.0f) + 0.5f, std::floor(point.y) + 0.5f);
+        cv::Point2f p10 = cv::Point2f(std::floor(point.x) + 0.5f, std::floor(point.y + y_flag * 1.0f) + 0.5f);
+        cv::Point2f p11 = cv::Point2f(std::floor(point.x + x_flag * 1.0f) + 0.5f, std::floor(point.y + y_flag * 1.0f) + 0.5f);
+
+        std::vector<cv::Point2f> vec;
+        vec.push_back(p01);
+        vec.push_back(p10);
+        vec.push_back(p11);
+
+        // 计算最近的坐标点与采样点距离
+        cv::Point2f distance = p00 - point;
+        float len = sqrt(distance.x * distance.x + distance.y * distance.y);
+
+        // 对边缘点进行着色
+        for(auto p:vec)
+        {
+            // 根据距离比, 计算边缘点影响系数 
+            cv::Point2f d = p - point;
+            float l = sqrt(d.x * d.x + d.y * d.y);
+            float percnet = len / l;
+
+            cv::Vec3d color = window.at<cv::Vec3b>(p.y, p.x);
+            // 此处简单粗暴取最大值
+            color[1] = std::max(color[1], (double)255 * percnet);
+            window.at<cv::Vec3b>(p.y, p.x) = color;
+        }
+    }
+}
+```
+
