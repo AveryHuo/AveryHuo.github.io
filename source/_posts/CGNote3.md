@@ -10,7 +10,7 @@ top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记3
 keywords: "CG, 图形学"
 date: 2022-08-12 18:31:18
-updated: 2022-08-23 14:40:39
+updated: 2022-08-24 10:56:47
 sticky: 1
 ---
 
@@ -223,3 +223,30 @@ Exposure = time X irradiance
 使用，景深对应CoC比较小的一段。 （表示清晰的范围）
 对于不同的深度，与Lens联系起来，推导如下：
  ![DoF](/img/1608804894728513111.png)
+
+##### 十、Lumigraph
+记录所有可能的光的方向
+
+通常取两个平面(u,v)(s,t)，四维方程记录所有的光线
+* Light Field Camera 光场照相机 由原来的irradiance -> radiance
+对比普通照相机，每个像素结果记录了完整的光场信息
+可以做到虚拟移动相机的位置
+问题：
+由于存储信息问题，分辨率会变差
+为了分辨率，需要非常高成本
+
+##### 十一、Physical Base Color
+光谱可视范围：400-700之间
+SPD 谱功率密度，在每个波长上的光的数量
+
+Color
+* Color is a phenomenon of human perception; it is not a 
+universal property of light 
+* Different wavelengths of light are not “colors”
+
+Metamerism 同色异谱
+通过调整不同的光谱使得人眼看到的颜色一样
+ ![同色异谱](/img/1608804894728513112.png)
+颜色匹配函数
+使用调合RGB三种值来配出所有颜色
+

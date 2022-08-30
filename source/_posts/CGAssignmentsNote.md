@@ -2,7 +2,7 @@
 title: GAMES101作业笔记
 cover: /img/160880489472852501.png
 date: 2022-05-25 17:30:37
-updated: 2022-08-23 16:10:01
+updated: 2022-08-30 18:10:07
 top_img: false
 categories:
 - 图形学
@@ -699,3 +699,392 @@ void bezier(const std::vector<cv::Point2f> &control_points, cv::Mat &window)
 }
 ```
 
+
+#### 五、作业5
+需要修改的函数是：
+• Renderer.cpp 中的 Render()：这里你需要为每个像素生成一条对应的光
+线，然后调用函数 castRay() 来得到颜色，最后将颜色存储在帧缓冲区的相
+应像素中。
+• Triangle.hpp 中的 rayTriangleIntersect(): v0, v1, v2 是三角形的三个
+顶点，orig 是光线的起点，dir 是光线单位化的方向向量。tnear, u, v 是你需
+要使用我们课上推导的 Moller-Trumbore 算法来更新的参数。
+
+> Renderer.cpp的推导：
+> 1. 将i,y 的屏幕坐标转成左下角为0，1的且以中心点0.5摆放
+> 2. 将坐标系转成中心为(0,1)范围
+> 3. 转为方形
+> 4. 关联上fov
+> 5. y轴需要反过来！
+> 6. 小蓝点异常？ 将宽高-1
+
+```c++
+void Renderer::Render(const Scene& scene)
+{
+    std::vector<Vector3f> framebuffer(scene.width * scene.height);
+
+    float scale = std::tan(deg2rad(scene.fov * 0.5f));
+    float imageAspectRatio = scene.width / (float)scene.height;
+
+    // Use this variable as the eye position to start your rays.
+    Vector3f eye_pos(0);
+    int m = 0;
+    for (int j = 0; j < scene.height; ++j)
+    {
+        for (int i = 0; i < scene.width; ++i)
+        {
+            // generate primary ray direction
+              // TODO: Find the x and y positions of the current pixel to get the direction
+            // vector that passes through it.
+            // Also, don't forget to multiply both of them with the variable *scale*, and
+            // x (horizontal) variable with the *imageAspectRatio*       
+
+            float x = (2 * ((i + 0.5) / (scene.width-1)) - 1) * imageAspectRatio * scale;
+            float y =  (1 - 2 * ((j + 0.5) / (scene.height-1))) * scale;
+
+            Vector3f dir = Vector3f(x, y, -1); // Don't forget to normalize this direction!
+            framebuffer[m++] = castRay(eye_pos, dir, scene, 0);
+        }
+        UpdateProgress(j / (float)scene.height);
+    }
+
+    // save framebuffer to file
+    FILE* fp = fopen("binary.ppm", "wb");
+    (void)fprintf(fp, "P6\n%d %d\n255\n", scene.width, scene.height);
+    for (auto i = 0; i < scene.height * scene.width; ++i) {
+        static unsigned char color[3];
+        color[0] = (char)(255 * clamp(0, 1, framebuffer[i].x));
+        color[1] = (char)(255 * clamp(0, 1, framebuffer[i].y));
+        color[2] = (char)(255 * clamp(0, 1, framebuffer[i].z));
+        fwrite(color, 1, 3, fp);
+    }
+    fclose(fp);    
+}
+```
+
+Moller Trumbore 算法来求光线是否在与平面有交点，使用重点坐标
+![Moller Trumbore](/img/160880489472851363.png)
+
+```c++
+
+bool rayTriangleIntersect(const Vector3f& v0, const Vector3f& v1, const Vector3f& v2, const Vector3f& orig,
+                          const Vector3f& dir, float& tnear, float& u, float& v)
+{
+    // TODO: Implement this function that tests whether the triangle
+    // that's specified bt v0, v1 and v2 intersects with the ray (whose
+    // origin is *orig* and direction is *dir*)
+    // Also don't forget to update tnear, u and v.
+    auto e1 = v1 - v0;
+    auto e2 = v2 - v0;
+    auto s = orig - v0;
+    auto s1 = crossProduct(dir, e2);
+    auto s2 = crossProduct(s, e1);
+    float t = dotProduct(s2, e2) / dotProduct(s1, e1);
+    float b1 = dotProduct(s1, s) / dotProduct(s1, e1);
+    float b2 = dotProduct(s2, dir) / dotProduct(s1, e1);
+    if (t > 0 && b1 > 0 && b2 > 0 && (1 - b1 - b2) > 0) {
+        tnear = t;
+        u = b1;
+        v = b2;
+        return true;
+    }
+
+    return false;
+}
+```
+
+> 生成的Ppm需要用此工具打开 https://www.fosshub.com/IrfanView.html?dwl=iview460_x64_setup.exe
+
+#### 六、作业6
+本练习要求你实现 Ray-Bounding
+Volume 求交与 BVH 查找。
+首先，你需要从上一次编程练习中引用以下函数：
+• Render() in Renderer.cpp: 将你的光线生成过程粘贴到此处，并且按照新框
+架更新相应调用的格式。
+• Triangle::getIntersection in Triangle.hpp: 将你的光线-三角形相交函数
+粘贴到此处，并且按照新框架更新相应相交信息的格式。
+
+在本次编程练习中，你需要实现以下函数：
+• IntersectP(const Ray& ray, const Vector3f& invDir,
+const std::array<int, 3>& dirIsNeg) in the Bounds3.hpp: 这个函数的
+作用是判断包围盒 BoundingBox 与光线是否相交，你需要按照课程介绍的算
+法实现求交过程。
+• getIntersection(BVHBuildNode* node, const Ray ray)in BVH.cpp: 建
+立 BVH 之后，我们可以用它加速求交过程。该过程递归进行，你将在其中调
+用你实现的 Bounds3::IntersectP.
+
+```c++
+
+void Renderer::Render(const Scene& scene)
+{
+    std::vector<Vector3f> framebuffer(scene.width * scene.height);
+
+    float scale = tan(deg2rad(scene.fov * 0.5));
+    float imageAspectRatio = scene.width / (float)scene.height;
+    Vector3f eye_pos(-1, 5, 10);
+    int m = 0;
+    for (uint32_t j = 0; j < scene.height; ++j) {
+        for (uint32_t i = 0; i < scene.width; ++i) {
+            // generate primary ray direction
+            float x = (2 * (i + 0.5) / (float)scene.width - 1) *
+                      imageAspectRatio * scale;
+            float y = (1 - 2 * (j + 0.5) / (float)scene.height) * scale;
+            
+            Vector3f dir = Vector3f(x, y, -1);
+            // Don't forget to normalize this direction!
+            dir = normalize(dir);
+            Ray ray(eye_pos, dir);
+            framebuffer[m++] = scene.castRay(ray, 0);
+        }
+        UpdateProgress(j / (float)scene.height);
+    }
+    UpdateProgress(1.f);
+
+    // save framebuffer to file
+    FILE* fp = fopen("binary.ppm", "wb");
+    (void)fprintf(fp, "P6\n%d %d\n255\n", scene.width, scene.height);
+    for (auto i = 0; i < scene.height * scene.width; ++i) {
+        static unsigned char color[3];
+        color[0] = (unsigned char)(255 * clamp(0, 1, framebuffer[i].x));
+        color[1] = (unsigned char)(255 * clamp(0, 1, framebuffer[i].y));
+        color[2] = (unsigned char)(255 * clamp(0, 1, framebuffer[i].z));
+        fwrite(color, 1, 3, fp);
+    }
+    fclose(fp);    
+}
+
+inline bool Bounds3::IntersectP(const Ray& ray, const Vector3f& invDir,
+                                const std::array<int, 3>& dirIsNeg) const
+{
+    // invDir: ray direction(x,y,z), invDir=(1.0/x,1.0/y,1.0/z), use this because Multiply is faster that Division
+    // dirIsNeg: ray direction(x,y,z), dirIsNeg=[int(x>0),int(y>0),int(z>0)], use this to simplify your logic
+    // TODO test if ray bound intersects
+    
+    float t_Min_x = (pMin.x - ray.origin.x) * invDir[0];
+    float t_Min_y = (pMin.y - ray.origin.y) * invDir[1];
+    float t_Min_z = (pMin.z - ray.origin.z) * invDir[2];
+    float t_Max_x = (pMax.x - ray.origin.x) * invDir[0];
+    float t_Max_y = (pMax.y - ray.origin.y) * invDir[1];
+    float t_Max_z = (pMax.z - ray.origin.z) * invDir[2];
+    if (!dirIsNeg[0])
+    {
+        float t = t_Min_x;
+        t_Min_x = t_Max_x;
+        t_Max_x = t;
+    }
+    if (!dirIsNeg[1])
+    {
+        float t = t_Min_y;
+        t_Min_y = t_Max_y;
+        t_Max_y = t;
+    }
+    if (!dirIsNeg[2])
+    {
+        float t = t_Min_z;
+        t_Min_z = t_Max_z;
+        t_Max_z = t;
+    }
+
+    float t_enter = std::max(t_Min_x, std::max(t_Min_y, t_Min_z));
+    float t_exit = std::min(t_Max_x, std::min(t_Max_y, t_Max_z));
+    if (t_enter < t_exit && t_exit >= 0)
+        return true;
+    else
+        return false;
+}
+
+Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
+{
+    // TODO Traverse the BVH to find intersection
+
+    Intersection intersect;
+    Vector3f invdir(1. / ray.direction.x, 1. / ray.direction.y, 1. / ray.direction.z);
+    std::array<int, 3> dirIsNeg;
+    dirIsNeg[0] = ray.direction.x > 0;
+    dirIsNeg[1] = ray.direction.y > 0;
+    dirIsNeg[2] = ray.direction.z > 0;
+    if (!node->bounds.IntersectP(ray, invdir, dirIsNeg))
+    {
+        return intersect;
+    }
+    if (node->left == nullptr && node->right == nullptr)
+    {
+        return node->object->getIntersection(ray);
+    }
+    Intersection h1 = getIntersection(node->left, ray);
+    Intersection h2 = getIntersection(node->right, ray);
+    return h1.distance < h2.distance ? h1 : h2;
+    return intersect;
+
+}
+```
+
+SAH的方式： 参考 https://www.cnblogs.com/coolwx/p/14375763.html
+```c++
+BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
+{
+    BVHBuildNode* node = new BVHBuildNode();
+
+    // Compute bounds of all primitives in BVH node
+    Bounds3 bounds;
+    for (int i = 0; i < objects.size(); ++i)
+        bounds = Union(bounds, objects[i]->getBounds());
+    if (objects.size() == 1) {
+        // Create leaf _BVHBuildNode_
+        node->bounds = objects[0]->getBounds();
+        node->object = objects[0];
+        node->left = nullptr;
+        node->right = nullptr;
+        return node;
+    }
+    else if (objects.size() == 2) {
+        node->left = recursiveBuild(std::vector{objects[0]});
+        node->right = recursiveBuild(std::vector{objects[1]});
+
+        node->bounds = Union(node->left->bounds, node->right->bounds);
+        return node;
+    }
+    else
+    {
+        Bounds3 centroidBounds;
+        //算出最大的包围盒（通用的，因为两个方法都要用到）
+        for (int i = 0; i < objects.size(); ++i)
+            centroidBounds =
+                Union(centroidBounds, objects[i]->getBounds().Centroid());
+
+        std::vector<Object*> leftshapes;
+        std::vector<Object*> rightshapes;
+
+            switch (splitMethod)//这里注意了在BVH.h里面有个枚举类，构造函数中的初始将决定是普通方法，还是SAH
+            {
+            case SplitMethod::NAIVE:
+            {
+                int dim = centroidBounds.maxExtent();//算出最大的跨度对应的值，x为0，y为1，z为2
+                int index = objects.size() / 2;
+                switch (dim)
+                //排序，针对最大的跨度排序
+                {
+                case 0:
+                    std::sort(objects.begin(), objects.end(), [](auto f1, auto f2) {
+                        return f1->getBounds().Centroid().x <
+                               f2->getBounds().Centroid().x;
+                    });
+                    break;
+                case 1:
+                    std::sort(objects.begin(), objects.end(), [](auto f1, auto f2) {
+                        return f1->getBounds().Centroid().y <
+                               f2->getBounds().Centroid().y;
+                    });
+                    break;
+                case 2:
+                    std::sort(objects.begin(), objects.end(), [](auto f1, auto f2) {
+                        return f1->getBounds().Centroid().z <
+                               f2->getBounds().Centroid().z;
+                    });
+                    break;
+                }
+
+                auto beginning = objects.begin();
+                auto middling = objects.begin() + index;
+                auto ending = objects.end();
+                 //递归算法，枢轴是中间元素。
+                leftshapes = std::vector<Object *>(beginning, middling);
+                rightshapes = std::vector<Object *>(middling, ending);
+            }
+            break;
+            case SplitMethod::SAH:
+            {
+                float nArea = centroidBounds.SurfaceArea();//算出最大的
+
+                int minCostCoor = 0;
+                int mincostIndex = 0;
+                float minCost = std::numeric_limits<float>::infinity();
+                std::map<int, std::map<int, int>> indexMap;
+                //indexmap用于记录x，y，z（前一个int代表x，y，z，后一个map代表那个轴对应的map）
+                //遍历x，y，z的划分
+                for(int i = 0; i < 3; i++)
+                {
+                    int bucketCount = 12;//桶的个数，这里定了12个桶，就是在某一个轴上面划分了12个区域
+                    std::vector<Bounds3> boundsBuckets;
+                    std::vector<int> countBucket;
+                    for(int j = 0; j < bucketCount; j++)
+                    {
+                        boundsBuckets.push_back(Bounds3());
+                        countBucket.push_back(0);
+                    }
+
+                    std::map<int, int> objMap;
+
+                    for(int j = 0; j < objects.size(); j++)
+                    {
+                        int bid =  bucketCount * (centroidBounds.Offset(objects[j]->getBounds().Centroid()))[i];//算出对应x，y。z上的id值，这里【i】代表x，y，z
+                        if(bid > bucketCount - 1)//实质是可以划分13个区域的，将最后一个区域合并。
+                        {
+                            bid = bucketCount - 1;
+                        }
+                        Bounds3 b = boundsBuckets[bid];
+                        b = Union(b, objects[j]->getBounds().Centroid());
+                        boundsBuckets[bid] = b;
+                        countBucket[bid] = countBucket[bid] + 1;
+                        objMap.insert(std::make_pair(j, bid));
+                    }
+
+                    indexMap.insert(std::make_pair(i, objMap));
+                    //对于每一个划分，计算他所对应的花费，方法是对于桶中的每一个面积，计算他的花费，最后进行计算
+                    //找出这个划分。
+                    for(int j = 1; j < boundsBuckets.size(); j++)
+                    {
+                        Bounds3 A;
+                        Bounds3 B;
+                        int countA = 0;
+                        int countB = 0;
+                        for(int k = 0; k < j; k++)
+                        {
+                            A = Union(A, boundsBuckets[k]);
+                            countA += countBucket[k];
+                        }
+
+                        for(int k = j; k < boundsBuckets.size(); k++)
+                        {
+                            B = Union(B, boundsBuckets[k]);
+                            countB += countBucket[k];
+                        }
+
+                        float cost = 1 + (countA * A.SurfaceArea() + countB * B.SurfaceArea()) / nArea;//计算花费
+                        //找出这个花费。
+                        if(cost < minCost)
+                        {
+                            minCost = cost;
+                            mincostIndex = j;
+                            minCostCoor = i;
+                        }
+                    }
+                }
+                //加入左右数组，这里很重要，具体还是看那篇博客
+                for(int i = 0; i < objects.size(); i++)
+                {
+                    if(indexMap[minCostCoor][i] < mincostIndex)
+                    {
+                        leftshapes.push_back(objects[i]);
+                    }
+                    else
+                    {
+                        rightshapes.push_back(objects[i]);
+                    }
+                }
+            }
+            break;
+            dafault:
+            break;
+        }
+
+        assert(objects.size() == (leftshapes.size() + rightshapes.size()));
+        //递归计算，同普通方法
+        node->left = recursiveBuild(leftshapes);
+        node->right = recursiveBuild(rightshapes);
+
+        node->bounds = Union(node->left->bounds, node->right->bounds);
+    }
+
+    return node;
+}
+```
