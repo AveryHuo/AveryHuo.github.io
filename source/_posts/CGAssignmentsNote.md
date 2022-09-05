@@ -2,7 +2,7 @@
 title: GAMES101作业笔记
 cover: /img/160880489472852501.png
 date: 2022-05-25 17:30:37
-updated: 2022-08-30 18:10:07
+updated: 2022-09-05 17:25:48
 top_img: false
 categories:
 - 图形学
@@ -813,6 +813,49 @@ const std::array<int, 3>& dirIsNeg) in the Bounds3.hpp: 这个函数的
 用你实现的 Bounds3::IntersectP.
 
 ```c++
+inline Intersection Triangle::getIntersection(Ray ray)
+{
+    Intersection inter;
+
+    if (dotProduct(ray.direction, normal) > 0)
+        return inter;
+    double u, v, t_tmp = 0;
+    Vector3f pvec = crossProduct(ray.direction, e2);
+    double det = dotProduct(e1, pvec);
+    if (fabs(det) < EPSILON)
+        return inter;
+
+    double det_inv = 1. / det;
+    Vector3f tvec = ray.origin - v0;
+    u = dotProduct(tvec, pvec) * det_inv;
+    if (u < 0 || u > 1)
+        return inter;
+    Vector3f qvec = crossProduct(tvec, e1);
+    v = dotProduct(ray.direction, qvec) * det_inv;
+    if (v < 0 || u + v > 1)
+        return inter;
+    t_tmp = dotProduct(e2, qvec) * det_inv;
+
+    // TODO find ray triangle intersection
+    /*
+    * 
+    coords：光线经过的那一点的坐标，这里使用ray（double）（注意，我们在Ray.h中重载了（），用于计算t时刻的光线坐标）
+    happend：光线和三角形是否相交？
+    m：材质
+    normal：交点处三角形的法线
+    distance：光线经过的时间，也就是我们算出来的t_tmp。
+    object：事实上你进入Objects.h,就会发现基类Object（接口，里面一堆纯虚函数），这里作为一个指针，指向本对象，也就是this（框架的编程还是很漂亮的），指代我们的三角形。
+    */
+    if (t_tmp < 0)
+        return inter;
+    inter.distance = t_tmp;
+    inter.happened = true;
+    inter.m = m;
+    inter.obj = this;
+    inter.normal = normal;
+    inter.coords = ray(t_tmp);
+    return inter;
+}
 
 void Renderer::Render(const Scene& scene)
 {
@@ -906,6 +949,7 @@ Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
     {
         return intersect;
     }
+    // 根据BVH的定义可知，当为叶子结点时，说明此为最小相交Object
     if (node->left == nullptr && node->right == nullptr)
     {
         return node->object->getIntersection(ray);
@@ -920,7 +964,7 @@ Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
 
 SAH的方式： 参考 https://www.cnblogs.com/coolwx/p/14375763.html
 ```c++
-BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
+BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*>objects)
 {
     BVHBuildNode* node = new BVHBuildNode();
 
@@ -937,8 +981,8 @@ BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
         return node;
     }
     else if (objects.size() == 2) {
-        node->left = recursiveBuild(std::vector{objects[0]});
-        node->right = recursiveBuild(std::vector{objects[1]});
+        node->left = recursiveBuild(std::vector{ objects[0] });
+        node->right = recursiveBuild(std::vector{ objects[1] });
 
         node->bounds = Union(node->left->bounds, node->right->bounds);
         return node;
@@ -949,132 +993,134 @@ BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
         //算出最大的包围盒（通用的，因为两个方法都要用到）
         for (int i = 0; i < objects.size(); ++i)
             centroidBounds =
-                Union(centroidBounds, objects[i]->getBounds().Centroid());
+            Union(centroidBounds, objects[i]->getBounds().Centroid());
 
         std::vector<Object*> leftshapes;
         std::vector<Object*> rightshapes;
 
-            switch (splitMethod)//这里注意了在BVH.h里面有个枚举类，构造函数中的初始将决定是普通方法，还是SAH
-            {
-            case SplitMethod::NAIVE:
-            {
-                int dim = centroidBounds.maxExtent();//算出最大的跨度对应的值，x为0，y为1，z为2
-                int index = objects.size() / 2;
-                switch (dim)
+        switch (splitMethod)//这里注意了在BVH.h里面有个枚举类，构造函数中的初始将决定是普通方法，还是SAH
+        {
+        case SplitMethod::NAIVE:
+        {
+            int dim = centroidBounds.maxExtent();//算出最大的跨度对应的值，x为0，y为1，z为2
+            int index = objects.size() / 2;
+            switch (dim)
                 //排序，针对最大的跨度排序
-                {
-                case 0:
-                    std::sort(objects.begin(), objects.end(), [](auto f1, auto f2) {
-                        return f1->getBounds().Centroid().x <
-                               f2->getBounds().Centroid().x;
-                    });
-                    break;
-                case 1:
-                    std::sort(objects.begin(), objects.end(), [](auto f1, auto f2) {
-                        return f1->getBounds().Centroid().y <
-                               f2->getBounds().Centroid().y;
-                    });
-                    break;
-                case 2:
-                    std::sort(objects.begin(), objects.end(), [](auto f1, auto f2) {
-                        return f1->getBounds().Centroid().z <
-                               f2->getBounds().Centroid().z;
-                    });
-                    break;
-                }
-
-                auto beginning = objects.begin();
-                auto middling = objects.begin() + index;
-                auto ending = objects.end();
-                 //递归算法，枢轴是中间元素。
-                leftshapes = std::vector<Object *>(beginning, middling);
-                rightshapes = std::vector<Object *>(middling, ending);
-            }
-            break;
-            case SplitMethod::SAH:
             {
-                float nArea = centroidBounds.SurfaceArea();//算出最大的
+            case 0:
+                std::sort(objects.begin(), objects.end(), [](auto f1, auto f2) {
+                    return f1->getBounds().Centroid().x <
+                        f2->getBounds().Centroid().x;
+                    });
+                break;
+            case 1:
+                std::sort(objects.begin(), objects.end(), [](auto f1, auto f2) {
+                    return f1->getBounds().Centroid().y <
+                        f2->getBounds().Centroid().y;
+                    });
+                break;
+            case 2:
+                std::sort(objects.begin(), objects.end(), [](auto f1, auto f2) {
+                    return f1->getBounds().Centroid().z <
+                        f2->getBounds().Centroid().z;
+                    });
+                break;
+            }
 
-                int minCostCoor = 0;
-                int mincostIndex = 0;
-                float minCost = std::numeric_limits<float>::infinity();
-                std::map<int, std::map<int, int>> indexMap;
-                //indexmap用于记录x，y，z（前一个int代表x，y，z，后一个map代表那个轴对应的map）
-                //遍历x，y，z的划分
-                for(int i = 0; i < 3; i++)
+            auto beginning = objects.begin();
+            auto middling = objects.begin() + index;
+            auto ending = objects.end();
+            //递归算法，枢轴是中间元素。
+            leftshapes = std::vector<Object*>(beginning, middling);
+            rightshapes = std::vector<Object*>(middling, ending);
+        }
+        break;
+        case SplitMethod::SAH:
+        {
+            float nArea = centroidBounds.SurfaceArea();//算出最大的
+
+            int minCostCoor = 0;
+            int mincostIndex = 0;
+            float minCost = std::numeric_limits<float>::infinity();
+            std::map<int, std::map<int, int>> indexMap;
+            //indexmap用于记录x，y，z（前一个int代表x，y，z，后一个map代表那个轴对应的map）
+            //遍历x，y，z的划分
+            for (int i = 0; i < 3; i++)
+            {
+                int bucketCount = 12;//桶的个数，这里定了12个桶，就是在某一个轴上面划分了12个区域
+                std::vector<Bounds3> boundsBuckets;
+                std::vector<int> countBucket;
+                for (int j = 0; j < bucketCount; j++)
                 {
-                    int bucketCount = 12;//桶的个数，这里定了12个桶，就是在某一个轴上面划分了12个区域
-                    std::vector<Bounds3> boundsBuckets;
-                    std::vector<int> countBucket;
-                    for(int j = 0; j < bucketCount; j++)
+                    boundsBuckets.push_back(Bounds3());
+                    countBucket.push_back(0);
+                }
+
+                std::map<int, int> objMap;
+                for (int j = 0; j < objects.size(); j++)
+                {
+                    Vector3f objCentroidOffset = centroidBounds.Offset(objects[j]->getBounds().Centroid());
+                    double v = objCentroidOffset[i];
+                    int bid = bucketCount * v;//算出对应x，y。z上的id值，这里【i】代表x，y，z
+                    if (bid > bucketCount - 1)//实质是可以划分13个区域的，将最后一个区域合并。
                     {
-                        boundsBuckets.push_back(Bounds3());
-                        countBucket.push_back(0);
+                        bid = bucketCount - 1;
+                    }
+                    Bounds3 b = boundsBuckets[bid];
+                    b = Union(b, objects[j]->getBounds().Centroid());
+                    boundsBuckets[bid] = b;
+                    countBucket[bid] = countBucket[bid] + 1;
+                    objMap.insert(std::make_pair(j, bid));
+                }
+
+                indexMap.insert(std::make_pair(i, objMap));
+                //对于每一个划分，计算他所对应的花费，方法是对于桶中的每一个面积，计算他的花费，最后进行计算
+                //找出这个划分。
+                for (int j = 1; j < boundsBuckets.size(); j++)
+                {
+                    Bounds3 A;
+                    Bounds3 B;
+                    int countA = 0;
+                    int countB = 0;
+                    for (int k = 0; k < j; k++)
+                    {
+                        A = Union(A, boundsBuckets[k]);
+                        countA += countBucket[k];
                     }
 
-                    std::map<int, int> objMap;
-
-                    for(int j = 0; j < objects.size(); j++)
+                    for (int k = j; k < boundsBuckets.size(); k++)
                     {
-                        int bid =  bucketCount * (centroidBounds.Offset(objects[j]->getBounds().Centroid()))[i];//算出对应x，y。z上的id值，这里【i】代表x，y，z
-                        if(bid > bucketCount - 1)//实质是可以划分13个区域的，将最后一个区域合并。
-                        {
-                            bid = bucketCount - 1;
-                        }
-                        Bounds3 b = boundsBuckets[bid];
-                        b = Union(b, objects[j]->getBounds().Centroid());
-                        boundsBuckets[bid] = b;
-                        countBucket[bid] = countBucket[bid] + 1;
-                        objMap.insert(std::make_pair(j, bid));
+                        B = Union(B, boundsBuckets[k]);
+                        countB += countBucket[k];
                     }
 
-                    indexMap.insert(std::make_pair(i, objMap));
-                    //对于每一个划分，计算他所对应的花费，方法是对于桶中的每一个面积，计算他的花费，最后进行计算
-                    //找出这个划分。
-                    for(int j = 1; j < boundsBuckets.size(); j++)
+                    float cost = 1 + (countA * A.SurfaceArea() + countB * B.SurfaceArea()) / nArea;//计算花费
+                    //找出这个最小花费。
+                    if (cost < minCost)
                     {
-                        Bounds3 A;
-                        Bounds3 B;
-                        int countA = 0;
-                        int countB = 0;
-                        for(int k = 0; k < j; k++)
-                        {
-                            A = Union(A, boundsBuckets[k]);
-                            countA += countBucket[k];
-                        }
-
-                        for(int k = j; k < boundsBuckets.size(); k++)
-                        {
-                            B = Union(B, boundsBuckets[k]);
-                            countB += countBucket[k];
-                        }
-
-                        float cost = 1 + (countA * A.SurfaceArea() + countB * B.SurfaceArea()) / nArea;//计算花费
-                        //找出这个花费。
-                        if(cost < minCost)
-                        {
-                            minCost = cost;
-                            mincostIndex = j;
-                            minCostCoor = i;
-                        }
+                        minCost = cost;
+                        mincostIndex = j;
+                        minCostCoor = i;
                     }
                 }
-                //加入左右数组，这里很重要，具体还是看那篇博客
-                for(int i = 0; i < objects.size(); i++)
+                //以上得出的是一个轴的mincostIndex
+            }
+            // 找出最理想的花费方式的值，以此为中间，分出左右树
+            for (int i = 0; i < objects.size(); i++)
+            {
+                if (indexMap[minCostCoor][i] < mincostIndex)
                 {
-                    if(indexMap[minCostCoor][i] < mincostIndex)
-                    {
-                        leftshapes.push_back(objects[i]);
-                    }
-                    else
-                    {
-                        rightshapes.push_back(objects[i]);
-                    }
+                    leftshapes.push_back(objects[i]);
+                }
+                else
+                {
+                    rightshapes.push_back(objects[i]);
                 }
             }
-            break;
-            dafault:
-            break;
+        }
+        break;
+    default:
+        break;
         }
 
         assert(objects.size() == (leftshapes.size() + rightshapes.size()));
@@ -1088,3 +1134,266 @@ BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
     return node;
 }
 ```
+> SAH的方式，精髓在于把一个轴向分成一定数量的桶，在把所有物体根据重心坐标的偏移分到这些桶里，再用公式找到以哪个桶为中心时COST最低。 这是一个轴的，再将另外几个轴按相同算法算出。最后取最划算的轴和最划算的中心位置桶，得出最终的高效的BVH结构。
+> 课件的例子中，如果使用NAIVE方法，构建自然更快，但最终render时会慢。对于更复杂的场景，SAH的效果将会更好。
+
+#### 七、作业7
+路径追踪
+
+本次实验中，你只需要修改这一个函数:
+• castRay(const Ray ray, int depth)in Scene.cpp: 在其中实现 Path Tracing 算法
+可能用到的函数有：
+• intersect(const Ray ray)in Scene.cpp: 求一条光线与场景的交点
+• sampleLight(Intersection pos, float pdf) in Scene.cpp: 在场景的所有
+光源上按面积 uniform 地 sample 一个点，并计算该 sample 的概率密度
+3
+• sample(const Vector3f wi, const Vector3f N) in Material.cpp: 按照该
+材质的性质，给定入射方向与法向量，用某种分布采样一个出射方向
+• pdf(const Vector3f wi, const Vector3f wo, const Vector3f N) in Material.cpp: 给定一对入射、出射方向与法向量，计算 sample 方法得到该出射
+方向的概率密度
+• eval(const Vector3f wi, const Vector3f wo, const Vector3f N) in Material.cpp: 给定一对入射、出射方向与法向量，计算这种情况下的 f_r 值
+可能用到的变量有：
+• RussianRoulette in Scene.cpp: P_RR, Russian Roulette 的概率
+
+ ![参考流程](/img/1608804894728513113.png)
+
+ ```c++
+//核心实现 Scene.cpp
+// Implementation of Path Tracing
+Vector3f Scene::castRay(const Ray &ray, int depth) const
+{
+    // TO DO Implement Path Tracing Algorithm here
+    //判断光线是否与场景有相关，没有直接return
+    Intersection p_inter = intersect(ray);
+    if (!p_inter.happened) {
+        return {};
+    }
+    
+    if (p_inter.m->hasEmission()) {
+        return p_inter.m->getEmission();
+    }
+    
+    float EPLISON = 0.0001;
+    Vector3f l_dir;
+    Vector3f l_indir;
+
+    // sampleLight(inter, pdf_light)
+    Intersection x_inter;
+    float pdf_light = 0.0f;
+    sampleLight(x_inter, pdf_light);
+
+    // Get x, ws, NN, emit from inter
+    Vector3f p = p_inter.coords;
+    Vector3f x = x_inter.coords;
+    Vector3f ws_dir = (x - p).normalized();
+    float ws_distance = (x - p).norm();
+    Vector3f N = p_inter.normal.normalized();
+    Vector3f NN = x_inter.normal.normalized();
+    Vector3f emit = x_inter.emit;
+
+    // Shoot a ray from p to x
+    Ray ws_ray(p, ws_dir);
+    Intersection ws_ray_inter = intersect(ws_ray);
+    // If the ray is not blocked in the middle
+    if (ws_ray_inter.distance - ws_distance > -EPLISON) {
+        l_dir = emit * p_inter.m->eval(ray.direction, ws_ray.direction, N)
+            * dotProduct(ws_ray.direction, N)
+            * dotProduct(-ws_ray.direction, NN)
+            / std::pow(ws_distance, 2)
+            / pdf_light;
+    }
+
+    // Test Russian Roulette with probability RussianRoulette
+    if (get_random_float() > RussianRoulette) {
+        return l_dir;
+    }
+
+    l_indir = 0.0;
+
+    Vector3f wi_dir = p_inter.m->sample(ray.direction, N).normalized();
+    Ray wi_ray(p_inter.coords, wi_dir);
+    // If ray r hit a non-emitting object at q
+    Intersection wi_inter = intersect(wi_ray);
+    if (wi_inter.happened && (!wi_inter.m->hasEmission())) {
+        l_indir = castRay(wi_ray, depth + 1) * p_inter.m->eval(ray.direction, wi_ray.direction, N)
+            * dotProduct(wi_ray.direction, N)
+            / p_inter.m->pdf(ray.direction, wi_ray.direction, N)
+            / RussianRoulette;
+    }
+
+    return l_dir + l_indir;
+}
+
+ //Sphere.hpp
+ Intersection getIntersection(Ray ray){
+        Intersection result;
+        result.happened = false;
+        Vector3f L = ray.origin - center;
+        float a = dotProduct(ray.direction, ray.direction);
+        float b = 2 * dotProduct(ray.direction, L);
+        float c = dotProduct(L, L) - radius2;
+        float t0, t1;
+        if (!solveQuadratic(a, b, c, t0, t1)) return result;
+        if (t0 < 0) t0 = t1;
+        if (t0 < 0) return result;
+        
+        //提升球体的相交判定精度
+        if(t0 > 0.5){
+            result.happened=true;
+
+            result.coords = Vector3f(ray.origin + ray.direction * t0);
+            result.normal = normalize(Vector3f(result.coords - center));
+            result.m = this->m;
+            result.obj = this;
+            result.distance = t0;
+        }
+        return result;
+
+    }
+// 多线程
+void Renderer::Render(const Scene& scene)
+{
+    std::vector<Vector3f> framebuffer(scene.width * scene.height);
+
+    float scale = tan(deg2rad(scene.fov * 0.5));
+    float imageAspectRatio = scene.width / (float)scene.height;
+    Vector3f eye_pos(278, 273, -800);
+    int m = 0;
+
+
+    // change the spp value to change sample ammount
+    int spp = 16;
+    std::cout << "SPP: " << spp << "\n";
+    const int num_threads = 32;
+    std::thread th[num_threads];
+    int thread_height = scene.height / num_threads;
+    auto renderRows = [&](uint32_t start_height, uint32_t end_height) {
+        for (uint32_t j = start_height; j < end_height; ++j) {
+            for (uint32_t i = 0; i < scene.width; ++i) {
+                // generate primary ray direction
+                float x = (2 * (i + 0.5) / (float)scene.width - 1) *
+                    imageAspectRatio * scale;
+                float y = (1 - 2 * (j + 0.5) / (float)scene.height) * scale;
+
+                Vector3f dir = normalize(Vector3f(-x, y, 1));
+                for (int k = 0; k < spp; k++) {
+                    framebuffer[(int)(j * scene.width + i)] += scene.castRay(Ray(eye_pos, dir), 0) / spp;
+                }
+            }
+            mtx.lock();
+            progress++;
+            UpdateProgress(progress / (float)scene.height);
+            mtx.unlock();
+        }};
+    for (int t = 0; t < num_threads; ++t) {
+        th[t] = std::thread(renderRows, t * thread_height, (t + 1) * thread_height);
+    }
+    for (int t = 0; t < num_threads; ++t) {
+        th[t].join();
+    }
+
+    UpdateProgress(1.f);
+
+    // save framebuffer to file
+    FILE* fp = fopen("binary.ppm", "wb");
+    (void)fprintf(fp, "P6\n%d %d\n255\n", scene.width, scene.height);
+    for (auto i = 0; i < scene.height * scene.width; ++i) {
+        static unsigned char color[3];
+        color[0] = (unsigned char)(255 * std::pow(clamp(0, 1, framebuffer[i].x), 0.6f));
+        color[1] = (unsigned char)(255 * std::pow(clamp(0, 1, framebuffer[i].y), 0.6f));
+        color[2] = (unsigned char)(255 * std::pow(clamp(0, 1, framebuffer[i].z), 0.6f));
+        fwrite(color, 1, 3, fp);
+    }
+    fclose(fp);
+}
+//微表面：参考：https://blog.csdn.net/qq_36242312/article/details/116307626?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-116307626-blog-121942469.pc_relevant_multi_platform_featuressortv2dupreplace&spm=1001.2101.3001.4242.1&utm_relevant_index=3
+float DistributionGGX(Vector3f N, Vector3f H, float roughness)
+{
+    float a = roughness * roughness;
+    float a2 = a * a;
+    float NdotH = std::max(dotProduct(N, H), 0.0f);
+    float NdotH2 = NdotH * NdotH;
+
+    float nom = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom = M_PI * denom * denom;
+
+    return nom / std::max(denom, 0.0000001f); // prevent divide by zero for roughness=0.0 and NdotH=1.0
+}
+
+float GeometrySchlickGGX(float NdotV, float roughness)
+{
+    float r = (roughness + 1.0);
+    float k = (r * r) / 8.0;
+
+    float nom = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+
+    return nom / denom;
+}
+
+float GeometrySmith(Vector3f N, Vector3f V, Vector3f L, float roughness)
+{
+    float NdotV = std::max(dotProduct(N, V), 0.0f);
+    float NdotL = std::max(dotProduct(N, L), 0.0f);
+    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
+    float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+
+    return ggx1 * ggx2;
+}
+Vector3f Material::eval(const Vector3f &wi, const Vector3f &wo, const Vector3f &N){
+    switch(m_type){
+        case DIFFUSE:
+        {
+            // calculate the contribution of diffuse   model
+            float cosalpha = dotProduct(N, wo);
+            if (cosalpha > 0.0f) {
+                Vector3f diffuse = Kd / M_PI;
+                return diffuse;
+            }
+            else
+                return Vector3f(0.0f);
+            break;
+        }
+        case Microfacet:
+        {
+            // Disney PBR 方案
+            float cosalpha = dotProduct(N, wo);
+            if (cosalpha > 0.0f) {
+                float roughness = 0.35;
+
+                Vector3f V = -wi;
+                Vector3f L = wo;
+                Vector3f H = normalize(V + L);
+
+                // 计算 distribution of normals: D
+                float D = DistributionGGX(N, H, roughness);
+
+                // 计算 shadowing masking term: G
+                float G = GeometrySmith(N, V, L, roughness);
+
+                // 计算 fresnel 系数: F
+                float F;
+                float etat = 1.85;
+                fresnel(wi, N, etat, F);
+
+                Vector3f nominator = D * G * F;
+                float denominator = 4 * std::max(dotProduct(N, V), 0.0f) * std::max(dotProduct(N, L), 0.0f);
+                Vector3f specular = nominator / std::max(denominator, 0.001f);
+
+                // 能量守恒
+                float ks_ = F;
+                float kd_ = 1.0f - ks_;
+
+                Vector3f diffuse = 1.0f / M_PI;
+
+                // 因为在 specular 项里已经考虑了折射部分的比例：F，所以折射部分不需要再乘以 ks_ （ks_ * Ks * specular）
+                return Ks * specular + kd_ * Kd * diffuse;
+            }
+            else
+                return Vector3f(0.0f);
+            break;
+        }
+    }
+}
+ ```
