@@ -10,7 +10,7 @@ top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记2
 keywords: "CG, 图形学"
 date: 2022-05-19 21:28:29
-updated: 2022-09-13 15:22:02
+updated: 2022-09-14 17:37:18
 sticky: 1
 ---
 
@@ -125,15 +125,18 @@ Whitted Style光追的问题：
     单位时间通过的光子数量
 
 2. Radiant intensity
-  每个单位立体角上的power
-  立体角： 三维上对于角度的延伸，任何一个点光源的辐射，如果是一个均匀的发射光源，则可以是各个power的积分除上4 PI。
+  每个单位立体角(unit solid angle)上的power: power per solid angle
+  Solid Angle(立体角)： 球的立体角：两种除r平方（圆的立体角：弧长除r）三维上对于角度的延伸，任何一个点光源的辐射，如果是一个均匀的发射光源，则可以是各个power的积分除上4 PI。
    ![微分立体角](/img/160880489472851369.png)
-3. Irradiance
-   每一个面积上对应的power
+  > 特别地，对于单位球，立体角就是投影到的单体面的面积
+   
+3. Irradiance： 无方向
+   每一个面积上对应的power： power per projected unit area
    Power per unit area! 能量除去面积. 定义必须面得与光线垂直的面积，其他情况不能算。
-4. Radiance
+
+4. Radiance： 有方向
   光线的属性，power per unit solid angle, per projected unit area. 单位立体角和单位立体面积微分两次
-  考虑某一个确定的面，和某一个确定的角，这样就与光线的特征相近。
+  考虑某一个确定的面，和某一个确定的方向（角），这样就与光线的特征相近。
   Incident Radiance = Irradiance per unit solid angle  入射进来。考虑有方向的irradiance。
   Exiting Radiance = Intensity per unit solid area 小的面辐射出去，往哪个方向去。
   
