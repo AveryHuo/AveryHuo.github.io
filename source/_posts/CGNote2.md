@@ -10,7 +10,7 @@ top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记2
 keywords: "CG, 图形学"
 date: 2022-05-19 21:28:29
-updated: 2022-09-14 17:37:18
+updated: 2022-09-15 11:15:49
 sticky: 1
 ---
 
@@ -133,6 +133,7 @@ Whitted Style光追的问题：
 3. Irradiance： 无方向
    每一个面积上对应的power： power per projected unit area
    Power per unit area! 能量除去面积. 定义必须面得与光线垂直的面积，其他情况不能算。
+   图形学上，可以直接理解为一个面上收到的所有的能量
 
 4. Radiance： 有方向
   光线的属性，power per unit solid angle, per projected unit area. 单位立体角和单位立体面积微分两次
@@ -140,17 +141,26 @@ Whitted Style光追的问题：
   Incident Radiance = Irradiance per unit solid angle  入射进来。考虑有方向的irradiance。
   Exiting Radiance = Intensity per unit solid area 小的面辐射出去，往哪个方向去。
   
+> radiance与irradiance关联起来，一个面的所有radiance积分即为irradiance
 
 ##### Bidirectional Reflectance Distribution Function BRDF
 一方向的光进来，会往多少不同的方向去反射多少能量。 
 1. BRDF = 任意一个出射方向radiance的微分 / 入射点上的irradiance的微分
+
+某一个面 dE(wi) 的irradiance接收到的光线，就是对应某一个方向L的radiance即公式中表示radiance乘以此方向的立体角。
+考虑一个dA微面，在某个方向Wi接收到的irradiance，然后会如何被分配到各个立体角上去，这样的一个比例称为BRDF。 dA出去的radiance / dA收到的Irradiance
  ![BRDF](/img/160880489472851370.png)
 
+举例：镜面反射，一个光就会被反射到较集中的出射方向上，漫反射，一束光就会被均等地反射到各个方向上
+
 2. 反射方程
+   对于每一个入射方向dwi全部加起来，对于每一条光线，都可以通过BRDF计算出其特定出射角度的反射比例，用入射光的irradiance与此比例相乘并进行半球积分即可得到 反射方程
 ![Reflection Equation](/img/160880489472851371.png)
 
-3. 渲染方程
- 任何一个出射的radiance也有可以为其他面上的入射radiance
+1. 渲染方程
+ 任何一个出射的radiance也有可以为其他面上的入射radiance，因此这里会出现递归的情况。
+
+ 半球（表示做 $H^{2}$ 或 $\Omega$+）
  所有的限制在物体表面的渲染都满足以下的方程：
  ![The Rendering Equation](/img/160880489472851372.png)
  更完整的渲染方程
