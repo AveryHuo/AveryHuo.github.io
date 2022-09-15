@@ -9,12 +9,16 @@ katex: true
 top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
 description: CG笔记4
 keywords: "CG, 图形学, opengl"
-date: 2022-09-14 14:38:18
-updated: 2022-09-14 16:29:39
+date: 2022-09-14 18:23:51
+updated: 2022-09-15 16:33:44
 sticky: 1
 ---
 
 本笔记针对 GLSL-PathTracer源码学习
+主要使用opengl实现
+
+> opencl： computing language 专注处理GPGPU情况，让显卡更能处理图形以外的计算, opencv， 图片分析的库，用于数字处理等。
+
 
 # 一、各格式文件介绍
 gltf：
@@ -41,7 +45,7 @@ hdr文件：环境贴图
 * imguizmo: Immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui
 * imgui: 实时GUI框架
 * gl3w: 一个获取opengl函数地址的库（gl3w is the easiest way to get your hands on the functionality offered by the OpenGL core profile specification.）参考：https://blog.csdn.net/Weies/article/details/116103739
-* SDL2: Simple DirectMedia Layer的缩写，简单直接的多媒体层，不仅包括图像处理，音频处理，输入输出，还支持多线程和事件的开发，而且SDL是跨平台的。因为SDL开源性质，所以非常多的应用都是用SDL作为底层。参考： https://zhuanlan.zhihu.com/p/428302382
+* SDL2: Simple DirectMedia Layer的缩写，相类似的有glfw，简单直接的多媒体层，不仅包括图像处理，音频处理，输入输出，还支持多线程和事件的开发，而且SDL是跨平台的。因为SDL开源性质，所以非常多的应用都是用SDL作为底层。参考： https://zhuanlan.zhihu.com/p/428302382
 
 
 # 三、主体流程
@@ -50,7 +54,7 @@ hdr文件：环境贴图
 2. SDL创建主window，得到全局SDL_GLContext
 3. 初始化gl3w
 4. 初始化imgui,并与sdl和gl3w的对象绑定
-5. 初始化Renderer对象
+5. 初始化Renderer对象，shader的Program初始化也在这里
 6. 进入主循环UPDATE: MainLoop(window, context)
 7. 删除renderer对象，清理gl对象，sdl对象，删除窗口
 
@@ -58,14 +62,16 @@ hdr文件：环境贴图
 
 1. while处理完所有SDL_Event
 2. imgui大循环处理所有事件
-3. Update 处理imgui的鼠标事件，最后执行renderer的Update
-date: 
-        scene->instancesModified?
+3. Update 处理imgui的鼠标事件，最后执行renderer的Update：
+   ![Update流程](/img/1608804894728513116.png)
+        object的transform发生变动: scene->instancesModified?
             更新transform, materials, BVH
-        scene->envMapModified?
+
+        添加新的envMap时： scene->envMapModified?
             envmap的加载和shader应用
-        scene->enableDenoiser?
+        界面选项：scene->enableDenoiser?
             应用oidn的Denoiser
+        
         scene->dirty?
             这里直接清空所有 gl buffer空间，准备re-render
         没有dirty?
