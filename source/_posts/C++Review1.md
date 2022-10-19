@@ -1,8 +1,9 @@
 ---
 title: C++ 复习1
 cover: false
+cover: false
 date: 2022-05-19 21:28:29
-updated: 2022-05-19 21:28:29
+updated: 2022-10-19 10:10:05
 top_img: false
 categories:
 - CPlusPlus
@@ -432,4 +433,43 @@ Screen &Screen::set(pos r)
 myScreen.display(cout).set('s');
 ```
 
+#### 析构函数
+参考文章：https://blog.csdn.net/yangkunqiankun/article/details/74885784
 
+对于非指针类型的对象，离开作用域会主动调用析构
+另外由于vector的扩容机制问题，也会导致对象的复制拷贝过程，从而对于对象会导致其析构
+
+```c++
+void initShaders() {
+    ShaderInclude::ShaderSource vecShaderSource = ShaderInclude::load(shaderDir + "vec.glsl");
+    ShaderInclude::ShaderSource fragShaderSource = ShaderInclude::load(shaderDir + "frag.glsl");
+
+    auto vertShader = Shader(vecShaderSource, GL_VERTEX_SHADER);
+    auto fragShader = Shader(fragShaderSource, GL_FRAGMENT_SHADER);
+    auto fragShader2 = Shader(ShaderInclude::load(shaderDir + "frag2.glsl"), GL_FRAGMENT_SHADER);
+    std::vector<Shader> shaders1{ vertShader, fragShader };
+    std::vector<Shader> shaders2{ vertShader, fragShader2 };
+
+    printf("Dummy 1\n");
+    shaderProgram = new ShaderProgram(shaders1);
+    shaderProgram2 = new ShaderProgram(shaders2);
+}
+
+//以上函数Shader的析构会调用多少次？
+// Shader delete!: 2
+// Shader delete!: 1
+// Shader delete!: 3
+// Shader delete!: 1
+// Dummy 1
+// Shader delete!: 1
+// Shader delete!: 2
+// Shader delete!: 1
+// Shader delete!: 3
+// Shader delete!: 1
+// Shader delete!: 3
+// Shader delete!: 1
+// Shader delete!: 2
+// Shader delete!: 3
+// Shader delete!: 2
+// Shader delete!: 1
+```
