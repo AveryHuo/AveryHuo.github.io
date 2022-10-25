@@ -6,9 +6,9 @@ date: 2022-10-19 17:54:05
 updated: 2022-10-25 17:02:37
 top_img: false
 categories:
-- 引擎,图形学
+- 引擎
 tags: 
-- Game,Engine,图形学,CG
+- Engine
 ---
 
 # 1.游戏引擎导论
