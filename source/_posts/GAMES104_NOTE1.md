@@ -1,7 +1,6 @@
 ---
 title: GAMES104-NOTE1
 cover: /img/1608804894728513117.png
-cover: false
 date: 2022-10-19 17:54:05
 updated: 2022-10-25 17:02:37
 top_img: false
