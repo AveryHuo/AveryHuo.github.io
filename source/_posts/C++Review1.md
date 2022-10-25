@@ -1,7 +1,6 @@
 ---
 title: C++ 复习1
 cover: false
-cover: false
 date: 2022-05-19 21:28:29
 updated: 2022-10-19 10:10:05
 top_img: false
