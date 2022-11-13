@@ -2,7 +2,7 @@
 title: WPF
 cover: false
 date: 2022-05-19 21:28:29
-updated: 2022-05-19 21:28:29
+updated: 2022-11-11 18:22:29
 top_img: false
 categories:
 - WPF
@@ -329,3 +329,49 @@ Converter={StaticResource BooleanToVisibilityConverter}
 
 DataContext：
 对于一整个xaml都需要使用的VM,可以指定一个DataContext作为VM
+
+
+## 关于表格头部定制
+两种方式：
+1. 使用SizeChanged记录回调：
+```c#
+listView.SizeChanged += (s, e) =>
+    {
+        ((GridViewColumn)((GridView)listView.View).Columns[0]).Width = e.NewSize.Width;
+        //or any other maths you want to do to set column width.
+    };
+```
+
+2. 继承一个IValueConverter，对值写一个适配器
+```c#
+ public class WidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int columnsCount = System.Convert.ToInt32(parameter);
+            double width = (double)value;
+            return width/columnsCount;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+```
+
+```xml
+<local:WidthConverter x:Key="WidthConverter"/>
+...
+<ListView Name="lv">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Width="{Binding ElementName=lv, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=3}" Header="Column_1" />
+                        <GridViewColumn Width="{Binding ElementName=lv, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=3}" Header="Column_2" />
+                        <GridViewColumn Width="{Binding ElementName=lv, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=3}" Header="Column_3" />
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+```
