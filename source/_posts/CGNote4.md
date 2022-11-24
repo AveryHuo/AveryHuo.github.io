@@ -87,4 +87,20 @@ hdr文件：环境贴图
         应用 tonemapShader 绘制
 5. SDL_GL_SwapWindow(window)
 
-# 五、GLSL实现的Path trace
+# 五、颜色空间
+* Gamma校正： pow(x, 1/2.2) （颜色进行变亮） => 进入Linear空间
+
+![颜色空间](/img/1608804894728513188.png) 
+
+现在的CRT显示器都会对颜色自动进行2.2幂的处理，因此实际的颜色在显示器中显示会较弱，比如(0.5,0,0)到显示器中，显示出来实际是(0.218,0,0)， 而想真正在显示器中显示(0.5,0,0)，则需要输入(0.73,0,0)。
+这里的0.73实际就是对0.5进行了Gamma校正
+
+- 图片一般存储的都是线性空间的值。 Virtually all images (for diffuse textures) are stored gamma encoded. That means ^(1/2.2) was automatically applied before saving the file.
+
+- 对于sRGB格式的图片，已经是存了一次gamma校正结果的颜色值。 We want to load textures as SRGB so OpenGL automatically does gamma decoding by applying ^2.2 (or equivalent, not exactly that as described in https://www.khronos.org/reg... ) so we can work in linear space in the rendering pipeline, which is more correct (better for lighting & post processing effects).
+
+- 图片显示到显示器，需要记得对颜色值做一次Gamma校正（提亮），实际到CRT显示器会自动进行反校正。 Before sending our image to the monitor, we need to encode again to gamma space. That means applying ^(1/2.2). As I understand this is needed because all monitors nowadays automatically perform gamma decoding (^2.2 again) in order to be backward compatible. CRT monitors did that "automatically" because of issues in the technology (as explained in the tutorial).
+
+> 对于Unity中， 如果选择了Gamma，那Unity不会对输入和输出做任何处理，换句话说，反gamma 、Gamma校正都不会发生，除非你自己手动实现。
+> 如果选了Linear，那么就是上文提到的统一线性空间的流程了。对于sRGB纹理，Unity在进行纹理采样之前会自动进行反Gamma，对于Linear纹理则没有这一步。
+> 而在输出前，Unity会自动进行Gamma Correction再让显示器输出。
