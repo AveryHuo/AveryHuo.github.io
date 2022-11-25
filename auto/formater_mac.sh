@@ -1,0 +1,1 @@
+python3 /Users/averyhuo/Documents/weblog/AveryHuo.github.io/auto/readandupdatetime.py /Users/averyhuo/Documents/weblog/AveryHuo.github.io /Users/averyhuo/Documents/weblog/AveryHuo.github.io/source/_posts/GAMES104_NOTE2.md
