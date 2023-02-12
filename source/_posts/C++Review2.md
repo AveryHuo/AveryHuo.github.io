@@ -1,7 +1,6 @@
 ---
 title: C++ 复习2
 cover: /img/image-20230202174221474.png
-cover: false
 date: 2023-02-01 22:43:40
 updated: 2023-02-09 17:33:42
 top_img: false
