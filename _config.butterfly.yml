@@ -81,7 +81,7 @@ favicon: /img/favicon.png
 # Avatar (頭像)
 avatar:
   img: /img/my.jpeg
-  effect: true
+  effect: false 
 
 # Disable all banner image
 disable_top_img: false
@@ -632,7 +632,7 @@ aside:
       link: https://github.com/AveryHuo
   card_announcement:
     enable: true
-    content: 欢迎来到我的博客空间，这里有我平时的学习心得和记录。
+    content: 欢迎！欢迎来到我的博客空间，这里有我平时的学习心得和记录。
   card_recent_post:
     enable: true
     limit: 5 # if set 0 will show all
