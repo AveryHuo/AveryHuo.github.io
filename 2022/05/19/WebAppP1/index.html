@@ -1,0 +1,491 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>天天生鲜项目实例P1 | Avery的城堡</title><meta name="keywords" content="Python,Note,Django,实例"><meta name="author" content="霍家鹏"><meta name="copyright" content="霍家鹏"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="相关背景概念  B2B, O2O, B2C, C2C…  数据库设计   对数据库进行授权    使用后台管理   项目搭建 1.一个模块对应一个APP 2.将所有app归类到一个apps文件夹 3.[可选]  设置一个系统路径，这样就不用注册APP时添加前缀文件夹 sys.path.insert(0, os.path.join(BASE_DIR, &amp;#x27;apps&amp;#x27;)) 4.添加t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="天天生鲜项目实例P1">
+<meta property="og:url" content="http://www.hjp.wiki/2022/05/19/WebAppP1/index.html">
+<meta property="og:site_name" content="Avery的城堡">
+<meta property="og:description" content="相关背景概念  B2B, O2O, B2C, C2C…  数据库设计   对数据库进行授权    使用后台管理   项目搭建 1.一个模块对应一个APP 2.将所有app归类到一个apps文件夹 3.[可选]  设置一个系统路径，这样就不用注册APP时添加前缀文件夹 sys.path.insert(0, os.path.join(BASE_DIR, &amp;#x27;apps&amp;#x27;)) 4.添加t">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.hjp.wiki/img/1573441070020.png">
+<meta property="article:published_time" content="2022-05-19T13:28:29.000Z">
+<meta property="article:modified_time" content="2022-05-19T13:28:29.000Z">
+<meta property="article:author" content="霍家鹏">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Note">
+<meta property="article:tag" content="Django">
+<meta property="article:tag" content="实例">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.hjp.wiki/img/1573441070020.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://www.hjp.wiki/2022/05/19/WebAppP1/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: 霍家鹏","link":"链接: ","source":"来源: Avery的城堡","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '天天生鲜项目实例P1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-19 21:28:29'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/my.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">97</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Avery的城堡</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">天天生鲜项目实例P1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-05-19T13:28:29.000Z" title="发表于 2022-05-19 21:28:29">2022-05-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-19T13:28:29.000Z" title="更新于 2022-05-19 21:28:29">2022-05-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python/">Python</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="天天生鲜项目实例P1"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="相关背景概念">相关背景概念</h2>
+<blockquote>
+<p>B2B, O2O, B2C, C2C…</p>
+</blockquote>
+<h2 id="数据库设计">数据库设计</h2>
+<p><img src="/img/1573441070020.png" alt="enter description here"></p>
+<blockquote>
+<p>对数据库进行授权<br>
+<img src="/img/1573442010455.png" alt="enter description here"></p>
+</blockquote>
+<blockquote>
+<p>使用后台管理<br>
+<img src="/img/1573442404015.png" alt="enter description here"></p>
+</blockquote>
+<h2 id="项目搭建">项目搭建</h2>
+<p><strong>1.一个模块对应一个APP</strong><br>
+<strong>2.将所有app归类到一个apps文件夹</strong><br>
+<strong>3.[可选]  设置一个系统路径，这样就不用注册APP时添加前缀文件夹</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sys.path.insert(<span class="number">0</span>, os.path.join(BASE_DIR, <span class="string">&#x27;apps&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<p><strong>4.添加templates包和static包</strong></p>
+<blockquote>
+<p>TEMPLATES_DIR = os.path.join(BASE_DIR, ‘templates’)<br>
+TEMPLATES = [<br>
+{<br>
+‘BACKEND’: ‘django.template.backends.django.DjangoTemplates’,<br>
+‘DIRS’: [TEMPLATES_DIR],<br>
+…<br>
+STATICFILES_DIRS = [os.path.join(BASE_DIR, ‘static’)]</p>
+</blockquote>
+<p><strong>5.添加templates和static路径到setting</strong></p>
+<p><strong>6.配置数据库为Mysql</strong></p>
+<blockquote>
+<p>‘ENGINE’: ‘django.db.backends.mysql’,<br>
+‘NAME’: ‘dailyfresh’,<br>
+‘USER’: ‘root’,<br>
+‘PASSWORD’:‘bk102435’,<br>
+‘HOST’:‘39.97.170.176’,<br>
+‘PORT’:3306,</p>
+</blockquote>
+<p><strong>7.设置语言</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">LANGUAGE_CODE = <span class="string">&#x27;zh-hans&#x27;</span></span><br><span class="line">TIME_ZONE = <span class="string">&#x27;Asia/Shanghai&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><strong>8.配置项目总的urls</strong><br>
+<strong>9.为各应用创建urls</strong></p>
+<p><strong>10.数据层准备，创建db包，<a target="_blank" rel="noopener" href="http://xn--basemodel-4s4ov64i.py">创建basemodel.py</a></strong></p>
+<p><strong>11.[可选]创建各models 或 链接现有数据库</strong></p>
+<blockquote>
+<p>Inpectdb 也可针对某张表：<br>
+python <a target="_blank" rel="noopener" href="http://manage.py">manage.py</a> inspectdb TableName &gt; <a target="_blank" rel="noopener" href="http://output.py">output.py</a><br>
+链接： <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/037bd7e20a7a">https://www.jianshu.com/p/037bd7e20a7a</a></p>
+</blockquote>
+<p><strong>12.指定django认证系统的模型</strong><br>
+这样superuser的模型表就被指定到自己的user表</p>
+<blockquote>
+<p>settings.py中加入<br>
+AUTH_USER_MODEL = ‘user.User’</p>
+</blockquote>
+<h3 id="13-可能出现的问题">13.  可能出现的问题</h3>
+<p>不确定是不是使用pymysql导致的，这里会有两个问题</p>
+<ul>
+<li>1.现在django使用mysqlclient，而且恶心的是会在启动时自动验证版本号，pymysql最高只到0.9.3。这里根据报错直接那代码注释即可！</li>
+<li>2.makemigration出错，提示在django代码里的operations.py中的last_executed_query函数，由于python3与Python2的decode与encode函数区别，这里也需要把.decode…去掉。</li>
+</ul>
+<h2 id="User模块-注册">User模块 - 注册</h2>
+<p><strong>1.准备views函数</strong></p>
+<ul>
+<li>views.py添加相应函数<br>
+register函数为接收跳转网页, register_handler函数接收处理及逻辑</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">register</span>():</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">register_handle</span>():</span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>urls.py配置对应view函数路径</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">path(<span class="string">&#x27;register&#x27;</span>,views.register,name=<span class="string">&#x27;register&#x27;</span>)</span><br><span class="line">path(<span class="string">&#x27;register_handle&#x27;</span>,views.register_handle,name=<span class="string">&#x27;register_handle&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>2.templates里放入html信息</strong></p>
+<ul>
+<li>编辑表单&lt;form&gt;<br>
+添加method,action.<br>
+写法升级：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">action=<span class="string">&quot;&#123;% url &#x27;user:detail&#x27; %&#125;&quot;</span> </span><br></pre></td></tr></table></figure>
+<p>旧的写法:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">action = <span class="string">&quot;/user/register_handle&quot;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意事项：</p>
+<ol>
+<li>网页使用跳转，需要在urls.py中指定name:<br>
+如下：所对应的地址段需要设置不同的正则</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">path(<span class="string">&#x27;add/&#x27;</span>, calc_views.add, name=<span class="string">&#x27;add&#x27;</span>),  <span class="comment"># new</span></span><br><span class="line">path(<span class="string">&#x27;add/&lt;int:a&gt;/&lt;int:b&gt;/&#x27;</span>, calc_views.old_add2_redirect,name=<span class="string">&#x27;add&#x27;</span>),</span><br></pre></td></tr></table></figure>
+<p>2.使用shell, 用reverse测试<br>
+地址反射的机制：django.urls reverse<br>
+3.定义一个跳转函数来做：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">urls.py中加入如下：</span><br><span class="line"> path(<span class="string">&#x27;add/&lt;int:a&gt;/&lt;int:b&gt;/&#x27;</span>, calc_views.old_add2_redirect,name=<span class="string">&#x27;add&#x27;</span>),</span><br><span class="line">path(<span class="string">&#x27;new_add/&lt;int:a&gt;/&lt;int:b&gt;/&#x27;</span>, calc_views.add2, name=<span class="string">&#x27;add2&#x27;</span>),</span><br><span class="line"></span><br><span class="line">views.py中加入如下：</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">old_add2_redirect</span>(<span class="params">request</span>):</span><br><span class="line"><span class="keyword">return</span> HttpResponseRedirect(</span><br><span class="line">       reverse(<span class="string">&#x27;add2&#x27;</span>, args=(a, b))</span><br><span class="line">   )</span><br><span class="line">测试网址： http://<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8000</span>/add/<span class="number">5</span>/<span class="number">6</span>/ </span><br><span class="line">这时最终就将跳到美术http://<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8000</span>/new_add/<span class="number">5</span>/<span class="number">6</span>/</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><strong>3.使用类视图</strong></p>
+<blockquote>
+<p>1.优化去register_handle函数，使用get/post判断实现不同的跳转类型<br>
+2.基于1的优化，使用类视图方式加载</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.views.generic <span class="keyword">import</span> View</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RegisterView</span>(<span class="title class_ inherited__">View</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get</span>(<span class="params">self, request</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">post</span>(<span class="params">self, request</span>):</span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p><strong>3.激活用户</strong></p>
+<ol>
+<li>使用itsdangerous为网址进行加密签名</li>
+<li>调用django.core.mail 的send_mail来发送邮件，把链接成文本发送过去</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.conf <span class="keyword">import</span> settings</span><br><span class="line"><span class="keyword">from</span> django.core.mail <span class="keyword">import</span> send_mail</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_register_active_email</span>(<span class="params">to_email, username, token</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;send active email&#x27;&#x27;&#x27;</span></span><br><span class="line">    subject = <span class="string">&quot;天天生鲜欢迎消息&quot;</span></span><br><span class="line">    message = <span class="string">&quot;&quot;</span></span><br><span class="line">    sender = settings.DEFAULT_FROM_EMAIL</span><br><span class="line">    receiver = [to_email]</span><br><span class="line">    html_message = <span class="string">&quot;&lt;h1&gt;%s, 欢迎你&lt;/h1&gt;请点击下面链接激活&lt;br/&gt;&lt;a href=\&quot;http://127.0.0.1:8000/user/active/%s\&quot;&gt;http://127.0.0.1:8000/user/active/%s&lt;/a&gt;&quot;</span> % (</span><br><span class="line">    username, token, token)</span><br><span class="line">    send_mail(subject, message, sender, receiver, html_message=html_message)</span><br><span class="line">    time.sleep(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>也可使用Python的发email库</p>
+</blockquote>
+<blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">active_email</span>(<span class="params">self, email_addr, active_code</span>):</span><br><span class="line">    <span class="comment"># 第三方 SMTP 服务 # 授权码：cmatkgceuuxcbddc</span></span><br><span class="line">    mail_host = <span class="string">&quot;smtp.qq.com&quot;</span>  <span class="comment"># 设置服务器</span></span><br><span class="line">    mail_user = <span class="string">&quot;1024037035@qq.com&quot;</span>  <span class="comment"># 用户名</span></span><br><span class="line">    mail_pass = <span class="string">&quot;cmatkgceuuxcbddc&quot;</span>  <span class="comment"># 口令</span></span><br><span class="line">    sender = <span class="string">&#x27;1024037035@qq.com&#x27;</span></span><br><span class="line">    receivers = [email_addr]  <span class="comment"># 接收邮件，可设置为你的QQ邮箱或者其他邮箱</span></span><br><span class="line">     <span class="comment"># 三个参数：第一个为文本内容，第二个 plain 设置文本格式，第三个 utf-8 设置编码</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        smtp_obj = smtplib.SMTP()</span><br><span class="line">        smtp_obj.connect(mail_host, <span class="number">25</span>)  <span class="comment"># 25 为 SMTP 端口号</span></span><br><span class="line">        smtp_obj.login(mail_user, mail_pass)</span><br><span class="line">        smtp_obj.sendmail(sender, receivers, message.as_string())</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="string">&quot;邮件发送成功&quot;</span></span><br><span class="line">    <span class="keyword">except</span> smtplib.SMTPException:</span><br><span class="line">         <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">          <span class="string">&quot;Error: 无法发送邮件&quot;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol start="3">
+<li>在Url中配置激活的功能</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">path(<span class="string">&#x27;active/&lt;token&gt;&#x27;</span>,ActiveView.as_view(), name=<span class="string">&#x27;active&#x27;</span>),</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>在views.py中写一个ActiveView的视图来处理激活</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ActiveView</span>(<span class="title class_ inherited__">View</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get</span>(<span class="params">self, request, token</span>):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            serializer = Serializer(settings.SECRET_KEY, <span class="number">3600</span>)</span><br><span class="line">            <span class="comment"># print(type(token))</span></span><br><span class="line">            token = token.encode()</span><br><span class="line">            info = serializer.loads(token)</span><br><span class="line">            user_id = info[<span class="string">&#x27;confirm&#x27;</span>]</span><br><span class="line">            user = User.objects.get(<span class="built_in">id</span>=user_id)</span><br><span class="line">            user.is_active = <span class="number">1</span></span><br><span class="line">            user.save()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 跳转到登陆页面</span></span><br><span class="line">            <span class="keyword">return</span> redirect(reverse(<span class="string">&#x27;user:login&#x27;</span>))</span><br><span class="line">        <span class="keyword">except</span> SignatureExpired <span class="keyword">as</span> e:</span><br><span class="line">            <span class="comment"># 激活链接过期</span></span><br><span class="line">            <span class="keyword">return</span> HttpResponse(<span class="string">&#x27;激活链接已过期&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>4.使用celery做为异步处理</strong></p>
+<p><img src="/img/1574171584470.png" alt="enter description here"></p>
+<p>1.配置一个项目目录为：celery_tasks/tasks.py的文件<br>
+2.在tasks.py写入配置如</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># use celery</span></span><br><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"><span class="comment"># create celery instance</span></span><br><span class="line">app = Celery(<span class="string">&#x27;celery_tasks.tasks&#x27;</span>, broker=<span class="string">&#x27;redis://:pwd@39.97.170.176:6379/8&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># define task function</span></span><br><span class="line"><span class="meta">@app.task</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_register_active_email</span>(<span class="params">to_email, username, token</span>):</span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>3.执行的脚本函数里写入：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 发送邮件1</span></span><br><span class="line">send_register_active_email.delay(email, username, secret_info)</span><br></pre></td></tr></table></figure>
+<p>4.在有redis的电脑上</p>
+<ul>
+<li>复制项目代码</li>
+<li>在tasks.py中加入初始化django的代码</li>
+<li></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> django</span><br><span class="line"><span class="keyword">from</span> django.core.wsgi <span class="keyword">import</span> get_wsgi_application</span><br><span class="line"></span><br><span class="line">os.environ.setdefault(<span class="string">&#x27;DJANGO_SETTINGS_MODULE&#x27;</span>, <span class="string">&#x27;dailyfresh.settings&#x27;</span>)</span><br><span class="line">django.setup()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动worker</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">celery -A celery_tasks.tasks worker -l info</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动redis , 大功告成，测试</li>
+</ul>
+<blockquote>
+<p>可能出现的问题<br>
+在windows系统中：<br>
+使用这种方式来启动worker: pip install eventlet -&gt; celery -A your_app_name worker --pool=eventlet<br>
+或： celery -A your_app_name worker --pool=solo -l info<br>
+或：<br>
+at worker side:<br>
+set FORKED_BY_MULTIPROCESSING = 1<br>
+then<br>
+celery -A myworker worker --loglevel=info</p>
+</blockquote>
+<h2 id="User模块-登录">User模块 - 登录</h2>
+<p><strong>LoginView，使用自带的授权</strong></p>
+<p>授权，如果成功则会返回user对象：：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user = authenticate(username=username, password=pwd)</span><br></pre></td></tr></table></figure>
+<p>登录：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">login(request, user)</span><br></pre></td></tr></table></figure>
+<p>添加URL及表单部分，参考注册流程</p>
+<p><strong>为减少数据库操作，使用redis存储</strong></p>
+<p>1.安装 django-redis<br>
+2.settings加入如下配置即可：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#Django 缓存配置</span></span><br><span class="line">CACHES = &#123;</span><br><span class="line">    <span class="string">&quot;default&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;BACKEND&quot;</span>: <span class="string">&quot;django_redis.cache.RedisCache&quot;</span>,</span><br><span class="line">        <span class="string">&quot;LOCATION&quot;</span>: <span class="string">&quot;redis://127.0.0.1:6379/9&quot;</span>, <span class="comment">#服务器地址</span></span><br><span class="line">        <span class="string">&quot;OPTIONS&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;CLIENT_CLASS&quot;</span>: <span class="string">&quot;django_redis.client.DefaultClient&quot;</span>,</span><br><span class="line">            <span class="string">&quot;CONNECTION_POOL_KWARGS&quot;</span>: &#123;<span class="string">&quot;max_connections&quot;</span>: <span class="number">100</span>&#125;, <span class="comment"># 最大连接数</span></span><br><span class="line">            <span class="string">&quot;PASSWORD&quot;</span>: <span class="string">&quot;bk102435&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#配置session存储</span></span><br><span class="line">SESSION_ENGINE = <span class="string">&#x27;django.contrib.sessions.backends.cache&#x27;</span></span><br><span class="line">SESSION_CACHE_ALIAS = <span class="string">&#x27;default&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><strong>把用户名记在cookie</strong></p>
+<p>1.登录成功时，把username字段存在cookie中</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">response = redirect(reverse(<span class="string">&#x27;goods:index&#x27;</span>))</span><br><span class="line">remember = request.POST.get(<span class="string">&#x27;remember&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> remember == <span class="string">&#x27;on&#x27;</span>:</span><br><span class="line">	response.set_cookie(<span class="string">&#x27;username&#x27;</span>, username, max_age=<span class="number">7</span>*<span class="number">24</span>*<span class="number">3600</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	response.delete_cookie(<span class="string">&#x27;username&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>2.get方法中取出cookie数据</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if &#x27;username&#x27; in request.COOKIES:</span><br><span class="line">	username = request.COOKIES.get(&#x27;username&#x27;)</span><br><span class="line">	checked = &#x27;checked&#x27;</span><br><span class="line">else:</span><br><span class="line">	username = &#x27;&#x27;</span><br><span class="line">	checked = &#x27;&#x27;</span><br><span class="line">return render(request, &#x27;login.html&#x27;, &#123;&#x27;username&#x27;:username, &#x27;checked&#x27;:checked&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="User-模块-用户中心">User 模块 - 用户中心</h2>
+<p><strong>从模板网页中抽象</strong></p>
+<ol>
+<li>将共同部分放在一个html， 不同部分使用</li>
+</ol>
+<p>base_user_center.html:</p>
+<p><img src="/img/1574937645193.png" alt="enter description here"></p>
+<p>2.在对应的功能页面继承</p>
+<p><img src="/img/1574937788143.png" alt="enter description here"></p>
+<p><strong>使用if 做功能块显示隐藏</strong></p>
+<p>如上方的：</p>
+<p><img src="/img/1574937430699.png" alt="enter description here"></p>
+<p><strong>使用官方提供的授权管理</strong></p>
+<p>有些页面需要登录后才能显示，如这里的用户中心页<br>
+使用django的login_required装饰器来做</p>
+<p><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/en/2.2/topics/auth/default/">https://docs.djangoproject.com/en/2.2/topics/auth/default/</a></p>
+<ol>
+<li>当用户已登录过，将直接跳转至所需页面</li>
+<li>当未登录，将默认跳转至/accounts/login/?next=/polls/3/.</li>
+<li>login_url可在settings.LOGIN_URL中配置 或login_url参数中配置</li>
+<li>next可在redirect_field_name参数中配置</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib.auth.decorators <span class="keyword">import</span> login_required</span><br><span class="line"></span><br><span class="line"><span class="meta">@login_required(<span class="params">login_url=<span class="string">&#x27;/accounts/login/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">my_view</span>(<span class="params">request</span>):</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>处理用户通过非登录界面过来的</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 处理通过跳转的请求值#</span></span><br><span class="line">              <span class="comment"># 设置下一步自动跳转 #</span></span><br><span class="line">              next_url = request.GET.get(<span class="string">&#x27;next&#x27;</span>, reverse(<span class="string">&#x27;goods:index&#x27;</span>))</span><br><span class="line">              response = redirect(reverse(next_url))</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：需要将form表单的action设成无action，这样提交的内容将按当前内容来指定！</p>
+</blockquote>
+<p>6.使用Mixin优化写法</p>
+<ul>
+<li>新建utils文件夹，新建一个LoginRequireMixin类</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LoginRequiredMixin</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">as_view</span>(<span class="params">cls, **initkwargs</span>):</span><br><span class="line">        view = <span class="built_in">super</span>(LoginRequiredMixin, cls).as_view(**initkwargs)</span><br><span class="line">        <span class="keyword">return</span> login_required(view)</span><br></pre></td></tr></table></figure>
+<p>在所有view函数中继承</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AddressView</span>(LoginRequiredMixin, View):</span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Mixin的原理是，执行一个子类没有的函数，Python继承规则是第一个父类先找，找到cls所代表的类的父类，再调用其as_view<br>
+super(A,cls) 找到A的父类，并将cls转成父类对象！</p>
+</blockquote>
+<p><strong>使用官方提供的是否登录标识</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> request.user.is_authenticated:</span><br><span class="line">    <span class="comment"># Do something for authenticated users.</span></span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="comment"># Do something for anonymous users.</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>因此在html中加入如下代码：</p>
+<p><img src="/img/1574937768754.png" alt="enter description here"></p>
+<p><strong>使用官方提供的退出登录</strong></p>
+<p>logout函数</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&#123;% url &#x27;user:logout&#x27; %&#125;&quot;</span>&gt;</span>退出<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LogoutView</span>(<span class="title class_ inherited__">View</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get</span>(<span class="params">self, request</span>):</span><br><span class="line">        logout(request)</span><br><span class="line">        <span class="keyword">return</span> redirect(reverse(<span class="string">&#x27;goods:index&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<p><strong>实现地址页的功能</strong></p>
+<blockquote>
+<p>1.使用request.user拿到user对象<br>
+2.Address.objects.create/get 来操作数据库<br>
+3.post请求中收到后再进行操作<br>
+4.Post请求完毕后，在get请求中再取数据库的地址来到html<br>
+5.显示get请求的结果到html</p>
+</blockquote>
+<p><strong>抽象Model里的管理器</strong></p>
+<p>model.py里：</p>
+<p>需要继承manager</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AddressManager</span>(models.Manager):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;自定义模型管理器&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_default_address</span>(<span class="params">self, user</span>):</span><br><span class="line">        <span class="comment">#self.model: 获取self对象所在模型类</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            address = self.get(user=user, is_default=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">except</span> self.DoesNotExist <span class="keyword">as</span> e:</span><br><span class="line">            address = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">return</span> address</span><br><span class="line">		</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Address</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;地址模型类&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    <span class="comment"># 在这里使用定义的管理器</span></span><br><span class="line">    objects = AddressManager()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>需要使用Address.objects.get_default_address来调用。这样传入self</p>
+</blockquote>
+<p><strong>用户中心的历史记录显示</strong></p>
+<p><img src="/img/1575029000281.png" alt="enter description here"></p>
+<p>参考redis资料<br>
+<a target="_blank" rel="noopener" href="https://django-redis-chs.readthedocs.io/zh_CN/latest/#">https://django-redis-chs.readthedocs.io/zh_CN/latest/#</a></p>
+<ol>
+<li>
+<p>获取StrictRedis对象<br>
+一般做法：</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> redis <span class="keyword">import</span> StrictRedis</span><br><span class="line">sr = StrictRedis(host=<span class="string">&#x27;127.0.0.1&#x27;</span>, port=<span class="string">&#x27;6379&#x27;</span>, db=<span class="number">9</span>)</span><br></pre></td></tr></table></figure>
+<p>但可以使用原生端的使用方式：</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django_redis <span class="keyword">import</span> get_redis_connection</span><br><span class="line">con = get_redis_connection(<span class="string">&quot;default&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>获取redis数据并返回界面</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#获取redis数据连接</span></span><br><span class="line">      con = get_redis_connection(<span class="string">&quot;default&quot;</span>)</span><br><span class="line">      <span class="comment">#获取数据</span></span><br><span class="line">      history_key = <span class="string">&#x27;history_%id&#x27;</span>%user.<span class="built_in">id</span></span><br><span class="line">      <span class="comment">#拿前五个</span></span><br><span class="line">      sku_ids = con.lrange(history_key, <span class="number">0</span>, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get</span>(<span class="params">self, request</span>):</span><br><span class="line">       user = request.user</span><br><span class="line">       address = Address.objects.get_default_address(user)</span><br><span class="line"></span><br><span class="line">       <span class="comment">#获取redis数据连接</span></span><br><span class="line">       con = get_redis_connection(<span class="string">&quot;default&quot;</span>)</span><br><span class="line">       <span class="comment">#获取数据</span></span><br><span class="line">       history_key = <span class="string">&#x27;history_%id&#x27;</span>%user.<span class="built_in">id</span></span><br><span class="line">       <span class="comment">#拿前五个</span></span><br><span class="line">       sku_ids = con.lrange(history_key, <span class="number">0</span>, <span class="number">4</span>)</span><br><span class="line">       <span class="comment">#获取此ID内的物体</span></span><br><span class="line">       <span class="comment"># goods_li = GoodsSKU.objects.filter(id__in=sku_ids)</span></span><br><span class="line">       goods_li = []</span><br><span class="line">       <span class="keyword">for</span> <span class="built_in">id</span> <span class="keyword">in</span> sku_ids:</span><br><span class="line">           goods = GoodsSKU.objects.get(<span class="built_in">id</span>=<span class="built_in">id</span>)</span><br><span class="line">           goods_li.append(goods)</span><br><span class="line">       <span class="comment">#数据组装</span></span><br><span class="line">       context = &#123;<span class="string">&#x27;page&#x27;</span>: <span class="string">&#x27;user&#x27;</span>,</span><br><span class="line">                  <span class="string">&#x27;address&#x27;</span>: address,</span><br><span class="line">                  <span class="string">&#x27;goods_li&#x27;</span>:goods_li&#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">return</span> render(request, <span class="string">&#x27;user_center_info.html&#x27;</span>, context)</span><br></pre></td></tr></table></figure>
+<p>3.在Html中配置数据，显示使用for goods, 和empty表示</p>
+<p><img src="/img/1575033223646.png" alt="enter description here"></p>
+<h2 id="分布式FastDFS文件系统">分布式FastDFS文件系统</h2>
+<p><img src="/img/1575033366217.png" alt="enter description here"></p>
+<p>客户端先发请求到Tracker服务器，服务器将返回一个Storage服务器地址，客户端再上传到此Storage服务器</p>
+<p><img src="/img/1575033456146.png" alt="enter description here"></p>
+<p>电商网站的图片数据一般不放在Django服务器，以防服务器存储器爆掉<br>
+<img src="/img/1575034858096.png" alt="enter description here"></p>
+<p>FastDFS 采用hash值标识存储文件</p>
+<p><strong>文件上传</strong></p>
+<p><img src="/img/1575035108391.png" alt="enter description here"><br>
+<img src="/img/1575035161292.png" alt="enter description here"></p>
+<p><strong>文件下载</strong></p>
+<p><img src="/img/1575035213445.png" alt="enter description here"></p>
+<p><img src="/img/1575035246421.png" alt="enter description here"></p>
+<p><strong>安装配置</strong></p>
+<p><img src="/img/1575290159935.png" alt="安装"></p>
+<p><img src="/img/1575290242736.png" alt="服务器配置"></p>
+<p><img src="/img/1575290266752.png" alt="服务器配置"></p>
+<p><img src="/img/1575290288546.png" alt="启动"></p>
+<p><img src="/img/1575290314506.png" alt="安装Nginx"></p>
+<p><strong>结合nginx使用，提高多人访问的效率</strong></p>
+<p>获取文件需要借助nginx来获取静态文件。</p>
+<p><img src="/img/1575290314506.png" alt="安装Nginx"></p>
+<p><img src="/img/1575603749178.png" alt="fastdfs-nginx"></p>
+<p>注： 是conf目录<br>
+<img src="/img/1575634128185.png" alt="连接fadfs与nginx"></p>
+<p><img src="/img/1575634466665.png" alt="http server配置"></p>
+<p><img src="/img/1575635246200.png" alt="server配置"></p>
+<p><img src="/img/1575635485238.png" alt="启动"></p>
+<p>上传测试: windows电脑下：</p>
+<ol>
+<li>去github下下载zip，解压</li>
+<li>把fdfs_client文件夹复制到自己conda环境下</li>
+<li>复制远端的client.conf，修改base_path和 网址（一般不用改）</li>
+<li>注释掉fdfs_client.sendfile这句代码在storage_client.py</li>
+<li>写一个Python文件，一定要在自己的conda环境下！</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> fdfs_client.client <span class="keyword">import</span> Fdfs_client</span><br><span class="line"></span><br><span class="line">client = Fdfs_client(<span class="string">&#x27;F:/Projects/django_env/client.conf&#x27;</span>)</span><br><span class="line">ret = client.upload_by_filename(<span class="string">&#x27;timg.jpg&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(ret)</span><br></pre></td></tr></table></figure>
+<p>上传成功后：可以使用我们的 <a target="_blank" rel="noopener" href="http://39.97.170.176:8888/">http://39.97.170.176:8888/</a> 做为前缀加上地址来访问图片<br>
+<img src="/img/1575640031870.png" alt="测试上传"></p>
+<p><strong>fdfs工作流程</strong></p>
+<p><img src="/img/1575981798051.png" alt="fdfs工作流程"></p>
+<p><strong>实现fdfs</strong></p>
+<ul>
+<li>写一个如下结构：<br>
+<img src="/img/1575984532516.png" alt="fdfs文件"></li>
+<li>storage.py中继承官方的Storage类并重写方法</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.core.files.storage <span class="keyword">import</span> Storage</span><br><span class="line"><span class="keyword">from</span> fdfs_client.client <span class="keyword">import</span> Fdfs_client</span><br><span class="line"><span class="keyword">from</span> django.conf <span class="keyword">import</span> settings</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">FDFSStorage</span>(<span class="title class_ inherited__">Storage</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, client_conf=<span class="literal">None</span>, base_url=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="keyword">if</span> client_conf <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            client_conf = settings.FDFS_CLIENT_CONF</span><br><span class="line">        self.client_conf = client_conf</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> base_url <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            base_url = settings.FDFS_URL</span><br><span class="line">        self.base_url = base_url</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_open</span>(<span class="params">self, name, mode=<span class="string">&#x27;rb&#x27;</span></span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_save</span>(<span class="params">self, name, content</span>):</span><br><span class="line">        client = Fdfs_client(self.client_conf)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 上传文件内容</span></span><br><span class="line">        res = client.upload_by_buffer(content.read())</span><br><span class="line">        <span class="comment"># return dict</span></span><br><span class="line">        <span class="comment"># &#123;</span></span><br><span class="line">        <span class="comment">#     &#x27;Group name&#x27;: group_name,</span></span><br><span class="line">        <span class="comment">#     &#x27;Remote file_id&#x27;: remote_file_id,</span></span><br><span class="line">        <span class="comment">#     &#x27;Status&#x27;: &#x27;Upload successed.&#x27;,</span></span><br><span class="line">        <span class="comment">#     &#x27;Local file name&#x27;: &#x27;&#x27;,</span></span><br><span class="line">        <span class="comment">#     &#x27;Uploaded size&#x27;: upload_size,</span></span><br><span class="line">        <span class="comment">#     &#x27;Storage IP&#x27;: storage_ip</span></span><br><span class="line">        <span class="comment"># &#125; if success else None</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> res.get(<span class="string">&#x27;Status&#x27;</span>) !=  <span class="string">&#x27;Upload successed.&#x27;</span>:</span><br><span class="line">            <span class="comment"># 上传失败</span></span><br><span class="line">            <span class="keyword">raise</span> Exception(<span class="string">&#x27;上传文件到DFS失败&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 获取返回的文件ID</span></span><br><span class="line">        filename = res.get(<span class="string">&#x27;Remote file_id&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 返回文件ID</span></span><br><span class="line">        <span class="keyword">return</span> filename</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">exists</span>(<span class="params">self, name</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">url</span>(<span class="params">self, name</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;返回文件url&#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">return</span> self.base_url+name</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>最后在settings中加入</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#配置文件存储器</span></span><br><span class="line">DEFAULT_FILE_STORAGE = <span class="string">&#x27;utils.fdfs.storage.FDFSStorage&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#设置fdfs 的client.conf文件路径</span></span><br><span class="line">FDFS_CLIENT_CONF=<span class="string">&#x27;./utils/fdfs/client.conf&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#FDFS服务器地址</span></span><br><span class="line">FDFS_URL=<span class="string">&#x27;http://39.97.170.176:8888/&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><strong>总结</strong></p>
+<p>使用fdfs好处：</p>
+<ol>
+<li>海量存储，存储内容易扩展</li>
+<li>解决文件内容重复</li>
+<li>结合nginx，提高网站提供图片的效率</li>
+</ol>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/Note/">Note</a><a class="post-meta__tags" href="/tags/Django/">Django</a><a class="post-meta__tags" href="/tags/%E5%AE%9E%E4%BE%8B/">实例</a></div><div class="post_share"><div class="social-share" data-image="/img/1573441070020.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/gh/overtrue/share.js@master/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/weixin.jpg" target="_blank"><img class="post-qr-code-img" src="/img/weixin.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/05/19/WPFNote/"><img class="prev-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">WPF</div></div></a></div><div class="next-post pull-right"><a href="/2022/05/19/WebAppP2/"><img class="next-cover" src="/img/1576549292557.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">天天生鲜项目实例P2</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/05/19/DjangoApplication/" title="Django 实例 Web Application"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Django 实例 Web Application</div></div></a></div><div><a href="/2022/05/19/WebAppP2/" title="天天生鲜项目实例P2"><img class="cover" src="/img/1576549292557.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">天天生鲜项目实例P2</div></div></a></div><div><a href="/2022/05/19/Centos_Django/" title="Centos 部署 Django"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Centos 部署 Django</div></div></a></div><div><a href="/2022/05/19/Conda_Handles/" title="Conda 常用操作"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Conda 常用操作</div></div></a></div><div><a href="/2022/05/19/DjangoSetup/" title="Django  初步构建"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Django  初步构建</div></div></a></div><div><a href="/2022/05/19/DjangoTest/" title="Django  初始测试"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Django  初始测试</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/my.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">霍家鹏</div><div class="author-info__description">Keep going. Keep study.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">97</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/AveryHuo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/AveryHuo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:jackhamsir@sina.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的博客空间，这里有我平时的学习心得和记录。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E8%83%8C%E6%99%AF%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">相关背景概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.</span> <span class="toc-text">数据库设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA"><span class="toc-number">3.</span> <span class="toc-text">项目搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">3.1.</span> <span class="toc-text">13.  可能出现的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#User%E6%A8%A1%E5%9D%97-%E6%B3%A8%E5%86%8C"><span class="toc-number">4.</span> <span class="toc-text">User模块 - 注册</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#User%E6%A8%A1%E5%9D%97-%E7%99%BB%E5%BD%95"><span class="toc-number">5.</span> <span class="toc-text">User模块 - 登录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#User-%E6%A8%A1%E5%9D%97-%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83"><span class="toc-number">6.</span> <span class="toc-text">User 模块 - 用户中心</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8FFastDFS%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">7.</span> <span class="toc-text">分布式FastDFS文件系统</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/01/C++Review2/" title="C++ 复习2"><img src="/img/image-20230202174221474.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="C++ 复习2"/></a><div class="content"><a class="title" href="/2023/02/01/C++Review2/" title="C++ 复习2">C++ 复习2</a><time datetime="2023-02-09T09:33:42.000Z" title="更新于 2023-02-09 17:33:42">2023-02-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/01/GAMES104_NOTE4/" title="GAMES104-NOTE4"><img src="/img/image-20230106174810993.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GAMES104-NOTE4"/></a><div class="content"><a class="title" href="/2023/01/01/GAMES104_NOTE4/" title="GAMES104-NOTE4">GAMES104-NOTE4</a><time datetime="2023-02-01T14:36:20.000Z" title="更新于 2023-02-01 22:36:20">2023-02-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/19/C++Review1/" title="C++ 复习1">C++ 复习1</a><time datetime="2023-02-01T07:38:50.000Z" title="更新于 2023-02-01 15:38:50">2023-02-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/06/GAMES104_NOTE3/" title="GAMES104-NOTE3"><img src="/img/image-20221206143528541.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GAMES104-NOTE3"/></a><div class="content"><a class="title" href="/2022/12/06/GAMES104_NOTE3/" title="GAMES104-NOTE3">GAMES104-NOTE3</a><time datetime="2023-01-06T10:06:28.000Z" title="更新于 2023-01-06 18:06:28">2023-01-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/24/GAMES104_NOTE2/" title="GAMES104-NOTE2"><img src="/img/image-20221123153956216.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GAMES104-NOTE2"/></a><div class="content"><a class="title" href="/2022/11/24/GAMES104_NOTE2/" title="GAMES104-NOTE2">GAMES104-NOTE2</a><time datetime="2022-11-25T09:18:58.000Z" title="更新于 2022-11-25 17:18:58">2022-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2023 By 霍家鹏</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><a target="_blank" rel="noopener" href="http://beian.miit.gov.cn"><img class="icp-icon" src="icp图片"><span>粤ICP备2020091327号</span></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+      Array.from($mermaidWrap).forEach((item, index) => {
+        const mermaidSrc = item.firstElementChild
+        const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+        const mermaidID = 'mermaid-' + index
+        const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+        mermaid.mermaidAPI.render(mermaidID, mermaidDefinition, (svgCode) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        })
+      })
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
