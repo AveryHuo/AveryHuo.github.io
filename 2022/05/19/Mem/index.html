@@ -1,0 +1,626 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>内存管理 | Avery的城堡</title><meta name="keywords" content="Unity学习"><meta name="author" content="霍家鹏"><meta name="copyright" content="霍家鹏"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="物理内存 当指令不连贯时，将会产生大量的时间浪费，DOTS和ECS从这个方面优化了内存的访问性能。   日志常见： OOM，显存大小无法分配过来的报错信息    三级缓存： 台式：主流在8~16MB 移动端：高端如845，2M  虚拟内存   交换内存： 当操作系统内存不够时，尝试把不用的内存(deadmemory)交换到硬盘上，从而节省出更多物理内存。 为什么移动端没有内存交换：移动设备IO速度">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存管理">
+<meta property="og:url" content="http://www.hjp.wiki/2022/05/19/Mem/index.html">
+<meta property="og:site_name" content="Avery的城堡">
+<meta property="og:description" content="物理内存 当指令不连贯时，将会产生大量的时间浪费，DOTS和ECS从这个方面优化了内存的访问性能。   日志常见： OOM，显存大小无法分配过来的报错信息    三级缓存： 台式：主流在8~16MB 移动端：高端如845，2M  虚拟内存   交换内存： 当操作系统内存不够时，尝试把不用的内存(deadmemory)交换到硬盘上，从而节省出更多物理内存。 为什么移动端没有内存交换：移动设备IO速度">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.hjp.wiki/img/1578646439353.png">
+<meta property="article:published_time" content="2022-05-19T13:28:29.000Z">
+<meta property="article:modified_time" content="2022-05-19T13:28:29.000Z">
+<meta property="article:author" content="霍家鹏">
+<meta property="article:tag" content="Unity学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.hjp.wiki/img/1578646439353.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://www.hjp.wiki/2022/05/19/Mem/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: 霍家鹏","link":"链接: ","source":"来源: Avery的城堡","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '内存管理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-19 21:28:29'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/my.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">97</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Avery的城堡</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">内存管理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-05-19T13:28:29.000Z" title="发表于 2022-05-19 21:28:29">2022-05-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-19T13:28:29.000Z" title="更新于 2022-05-19 21:28:29">2022-05-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Unity%E5%AD%A6%E4%B9%A0/">Unity学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="内存管理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="物理内存">物理内存</h2>
+<p>当指令不连贯时，将会产生大量的时间浪费，DOTS和ECS从这个方面优化了内存的访问性能。</p>
+<p><img src="/img/1578646439353.png" alt="DOTS的目的"></p>
+<blockquote>
+<p>日志常见： OOM，显存大小无法分配过来的报错信息<br>
+<img src="/img/1578646594733.png" alt="移动设备的区别"></p>
+</blockquote>
+<blockquote>
+<p>三级缓存：<br>
+台式：主流在8~16MB<br>
+移动端：高端如845，2M</p>
+</blockquote>
+<h2 id="虚拟内存">虚拟内存</h2>
+<p><img src="/img/1578646743161.png" alt="虚拟内存"></p>
+<blockquote>
+<p>交换内存： 当操作系统内存不够时，尝试把不用的内存(deadmemory)交换到硬盘上，从而节省出更多物理内存。<br>
+为什么移动端没有内存交换：移动设备IO速度慢，存储器的可擦写次数较台式少。<br>
+IOS提供了把不活跃的内存压缩起来放到一个特定空间。Virtual memory 很大。</p>
+</blockquote>
+<h2 id="内存寻址范围">内存寻址范围</h2>
+<p>可简单认为64位CPU寻址范围大。</p>
+<h2 id="安卓内存管理">安卓内存管理</h2>
+<p><img src="/img/1578647010062.png" alt="安卓内存"></p>
+<blockquote>
+<p>Page: 一般4K一个Page<br>
+回收和分配以page为单位<br>
+用户态和内核态</p>
+</blockquote>
+<blockquote>
+<p>LMK, low memeory killer<br>
+分类：<br>
+Native： adbd等，adb的守护线程<br>
+System: 系统服务<br>
+Persistent: 电话，信息，蓝牙等等<br>
+Foreground: 应用<br>
+Perceptible: 搜索等等<br>
+Services： 服务，云服务等<br>
+Home:主界面<br>
+Previous: 之前上一个应用<br>
+Cached:　后台</p>
+</blockquote>
+<blockquote>
+<p>从低层开始往上杀。 Foreground其实就是闪退的表现。杀到System就重启了。<br>
+<img src="/img/1578651845843.png" alt="优化级"></p>
+</blockquote>
+<h2 id="安卓内存指标">安卓内存指标</h2>
+<p><img src="/img/1578652129043.png" alt="内存指标"></p>
+<blockquote>
+<p>RSS: 当前APP所使用的所有内存<br>
+PSS: 公共库分配出来的内存<br>
+USS：只有自己使用的内存，一般在此处优化</p>
+</blockquote>
+<blockquote>
+<p>procrank 指令</p>
+</blockquote>
+<h2 id="Unity内存管理">Unity内存管理</h2>
+<p><img src="/img/1578652476304.png" alt="Unity引擎"></p>
+<h4 id="1-Unity-内存按照分配方式分为：">1. Unity 内存按照分配方式分为：</h4>
+<ul>
+<li>Native Memory</li>
+<li>Managed Memory</li>
+<li>Editor &amp; Runtime 是不同的
+<ul>
+<li>不止是统计看到的内存大小不同，甚至是内存分配时机和方式也不同</li>
+<li>Asset 在 Runtime 中如果不读取，是不会进内存的，但 Editor 打开就占内存。因为 Editor 不注重 Runtime 的表现，更注重编辑器中编辑时的流畅。</li>
+<li>但如果游戏庞大到几十个 G，如果第一次打开项目，会消耗很多时间，有的大的会几天，甚至到一周。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-Unity-内存按照管理者分为：">2. Unity 内存按照管理者分为：</h4>
+<ul>
+<li>引擎管理内存，开发者一般使用不到</li>
+<li>用户管理内存（应优先考虑）</li>
+</ul>
+<h4 id="3-Unity-检测不到的内存">3. Unity 检测不到的内存</h4>
+<p>用户分配的 native 内存</p>
+<ul>
+<li>自己写的 Native 插件（C++ 插件）， Unity 无法分析已经编译过的 C++ 是如何去分配和使用内存的。</li>
+<li>Lua 完全由自己管理内存，Unity 无法统计到内部的使用情况。</li>
+</ul>
+<h4 id="4-Unity-Native-Memory-管理">4. Unity Native Memory 管理</h4>
+<p>Unity 重载了所有分配内存的操作符（C++ alloc、new），使用这些重载的时候，会需要一个额外的 memory label （Profiler-shaderlab-object-memory-detail-snapshot，里面的名字就是 label：指当前内存要分配到哪一个类型池里面）</p>
+<ul>
+<li>Allocator: 使用重载过的分配符去分配内存时，Allocator 会根据你的 memory label 分配到不同 Allocator 池里面，每个 Allocator 池 单独做自己的跟踪。因此当我们去 Runtime get memory label 下面的池时就可以问 Allocator，里面有多少东西 多少兆。</li>
+<li>NewAsRoot: Allocator 在 NewAsRoot （Memory  “island”（没听清）） 中生成。在这个 Memory Root 下面会有很多子内存：shader：当我们加载一个 Shader 进内存的时候，会生成一个 Shader 的 root。Shader 底下有很多数据：sub shader、Pass 等会作为 memory “island” (root) 的成员去依次分配。因此当我们最后统计 Runtime 的时候，我们会统计 Root，而不会统计成员，因为太多了没法统计。</li>
+<li>及时返给unity: 因为是 C++ 的，因此当我们 delete、free 一个内存的时候会立刻返回内存给系统，与托管内存堆不一样。</li>
+</ul>
+<h4 id="5-最佳实践-Native-内存">5. 最佳实践 Native 内存</h4>
+<ul>
+<li>
+<p>Scene</p>
+<ul>
+<li>Unity 是一个 C++ 引擎，所有实体最终都会反映在 C++ 上，而不是托管堆里面。因此当我们实例化一个 GameObject 的时候，在 Unity 底层会构建一个或多个 Object 来存储这个 GameObject 的信息，例如很多 Components。因此当 Scene 有过多 GameObject 的时候，Native 内存就会显著上升。</li>
+<li>当我们看 Profiler，发现 Native 内存大量上升的时候，应先去检查 Scene。</li>
+</ul>
+</li>
+<li>
+<p>Audio</p>
+<ul>
+<li>
+<p>DSP buffer （声音的缓冲）</p>
+<ul>
+<li>
+<p>当一个声音要播放的时候，它需要向 CPU 去发送指令——我要播放声音。但如果声音的数据量非常小，就会造成频繁地向 CPU 发送指令，会造成 I\O。</p>
+</li>
+<li>
+<p>当 Unity 用到 FMOD 声音引擎时（Unity 底层也用到 FMOD），会有一个 Buffer，当 Buffer 填充满了，才会向 CPU 发送“我要播放声音”的指令。</p>
+</li>
+<li>
+<p>DSP buffer 会导致两种问题：</p>
+<ul>
+<li>如果（设置的） buffer 过大，会导致声音的延迟。要填充满 buffer 是要很多声音数据的，但声音数据又没这么大，因此会导致一定的<strong>声音延迟</strong>。</li>
+<li>如果 DSP buffer 太小，会导致 CPU 负担上升，满了就发，消耗增加。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/class-AudioManager.html">Audio</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Force to mono</p>
+<ul>
+<li>在导入声音的时候有一个设置，很多音效师为了声音质量，会把声音设为双声道。但 95% 的声音，左右声道放的是完全一样的数据。这导致了 1M 的声音会变成 2M，体现在包体里和内存里。因此一般对于声音不是很敏感的游戏，会建议改成 Force to mono，强制单声道。</li>
+</ul>
+</li>
+<li>
+<p>Format</p>
+</li>
+<li>
+<p>Compression Format（看文档，有使用建议）</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Code Size</p>
+<ul>
+<li>C++ 模板泛型的滥用会影响到 Code Size、打包的速度。</li>
+</ul>
+</li>
+<li>
+<p>AssetBundle</p>
+<ul>
+<li>
+<p>TypeTree</p>
+<ul>
+<li>Unity 的每一种类型都有很多数据结构的改变，为了对此做兼容，Unity 会在生成数据类型序列化的时候，顺便会生成 TypeTree：当前我这一个版本里用到了哪些变量，对应的数据类型是什么。在反序列化的时候，会根据 TypeTree 来进行反序列化。
+<ul>
+<li>如果上一个版本的类型在这个版本中没有，TypeTree 就没有它，因此不会碰到它。</li>
+<li>如果要用一个新的类型，但在这个版本中不存在，会用一个默认值来序列化，从而保证了不会在不同的版本序列化中出错，这个就是 TypeTree 的作用。</li>
+</ul>
+</li>
+<li>Build AssetBundle 中有开关可以关掉 TypeTree。当你确认当前 AssetBundle 的使用和 Build Unity 的版本一模一样，这时候可以把 TypeTree 关掉。
+<ul>
+<li>例如如果用同样的 Unity 打出来的 AssetBundle 和 APP，TypeTree 则完全可以关掉。</li>
+</ul>
+</li>
+<li>TypeTree 好处：
+<ul>
+<li>内存减少。TypeTree 本身是数据，也要占内存。</li>
+<li>包大小会减少，因为 TypeTree 会序列化到 AssetBundle 包中，以便读取。</li>
+<li>Build 和运行时会变快。源代码中可以看到，因为每一次 Serialize 东西的时候，如果发现需要 Serialize TypeTree，则会 Serialize 两次：
+<ul>
+<li>第一次先把 TypeTree Serialize 出来</li>
+<li>第二次把实际的东西 Serialize 出来</li>
+<li>反序列化也会做同样的事情，1. TypeTree 反序列化，2. 实际的东西反序列化。</li>
+</ul>
+</li>
+<li>因此如果确定 TypeTree 不会对兼容性造成影响，可以把它关掉。这样对 Size 大小和 Build Runtime 都会获得收益。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>压缩方式：</p>
+<ul>
+<li>
+<p>Lz4</p>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/2019.3/Documentation/ScriptReference/BuildCompression.LZ4.html">BuildCompression.LZ4</a></p>
+<ul>
+<li>LZ4HC “Chunk Based” Compression. 非常快</li>
+<li>和 Lzma 相比，平均压缩比率差 30%。也就是说会导致包体大一点，但是（作者说）速度能快 10 倍以上。</li>
+</ul>
+</li>
+<li>
+<p>Lzma</p>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/2019.3/Documentation/ScriptReference/BuildCompression.LZMA.html">BuildCompression.LZMA</a></p>
+<ul>
+<li>Lzma 基本上就不要用了，因为解压和读取速度上都会比较慢。</li>
+<li>还会占大量内存
+<ul>
+<li>因为是 Steam based 而不是 Chunk Based 的，因此需要一次全解压</li>
+<li>Chunk Based 可以一块一块解压
+<ul>
+<li>如果发现一个文件在第 5-10 块，那么 LZ4 会依次将 第 5 6 7 8 9 10 块分别解压出来，每次（chunk 的）解压会重用之前的内存，来减少内存的峰值。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>预告：中国版 Unity 会在下个版本（1月5号或2月份）推出新的功能：基于 LZ4 的 AssetBundle 加密，只支持 LZ4。</p>
+</li>
+<li>
+<p>Size &amp; count</p>
+<ul>
+<li>AssetBundle 包打多大是很玄学的问题，但每一个 Asset 打一个 Bundle 这样不太好。
+<ul>
+<li>有一种减图片大小的方式，把 png 的头都提出来。因为头的色板是通用的，而数据不通用。AssetBundle 也一样，一部分是它的头，一部分是实际打包的部分。因此如果每个 Asset 都打 Bundle 会导致 AssetBundle 的头比数据还要大。</li>
+</ul>
+</li>
+<li>官方的建议是每个 AssetBundle 包大概 1M~2M 左右大小，考虑的是网络带宽。但现在 5G 的时候，可以考虑适当把包体加大。还是要看实际用户的情况。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Resource 文件夹（<strong>Do not use it</strong>. 除非在 debug 的时候）</p>
+<ul>
+<li>Resource 和 AssetBundle 一样，也有头来索引。Resource  在打进包的时候会做一个红黑树，来帮助 Resource 来检索资源在什么位置，</li>
+<li>如果 Resource 非常大，那么红黑树也会非常大。</li>
+<li>红黑树是不可卸载的。在刚开始游戏的时候就会加载进内存中，会持续对游戏造成内存压力。</li>
+<li>会极大拖慢游戏的启动时间。因为红黑树没加载完，游戏不能启动。</li>
+</ul>
+</li>
+<li>
+<p>Texture</p>
+<ul>
+<li>
+<p>upload buffer，和声音的很像：填满多大，就向 CPU push 一次。</p>
+</li>
+<li>
+<p>r/w</p>
+<ul>
+<li>Texture 没必要就不要开 read and write。正常 Texture 读进内存，解析完了，放到 upload buffer 里后，内存里的就会 delete 掉。</li>
+<li>但如果检测到你开了 r/w 就不会 delete 了，就会在显存和内存中各一份。</li>
+</ul>
+</li>
+<li>
+<p>Mip Maps</p>
+<ul>
+<li>UI 没必要开，可以省大量内存。</li>
+</ul>
+</li>
+<li>
+<p>Mesh</p>
+<ul>
+<li>r/w</li>
+<li>compression
+<ul>
+<li>有些版本 Compression 开了不如不开，内存占用可能更严重，具体需要自己试。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Assets</p>
+<ul>
+<li>Assets 的数量实际上和 asset 整个的纹理是有关系的。（？）</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://learn.unity.com/tutorial/memory-management-in-unity">Memory Management in Unity - Unity Learn</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="6-Unity-Managed-Memory">6. Unity Managed Memory</h4>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/BestPracticeUnderstandingPerformanceInUnity4-1.html">Understanding the managed heap</a></p>
+<ul>
+<li>
+<p>VM 内存池</p>
+<ul>
+<li>mono 虚拟机的内存池</li>
+<li>VM 会返还内存给 OS 吗？
+<ul>
+<li><strong>会</strong></li>
+</ul>
+</li>
+<li>返还条件是什么？
+<ul>
+<li>GC 不会把内存返还给系统</li>
+<li>内存也是以 Block 来管理的。当一个 Block 连续六次 GC 没有被访问到，这块内存才会被返还到系统。（mono runtime 基本看不到，IL2cpp runtime 可能会看到多一点）</li>
+</ul>
+</li>
+<li>不会频繁地分配内存，而是一次分配一大块。</li>
+</ul>
+</li>
+<li>
+<p>GC 机制（BOEHM Non-generational 不分代的）</p>
+<ul>
+<li>
+<p>GC 机制考量</p>
+<ul>
+<li>Throughput(（回收能力）
+<ul>
+<li>一次回收，会回收多少内存</li>
+</ul>
+</li>
+<li>Pause times（暂停时长）==mark text==
+<ul>
+<li>进行回收的时候，对主线程的影响有多大</li>
+</ul>
+</li>
+<li>Fragmentation（碎片化）
+<ul>
+<li>回收内存后，会对整体回收内存池的贡献有多少</li>
+</ul>
+</li>
+<li>Mutator overhead（额外消耗）
+<ul>
+<li>回收本身有 overhead，要做很多统计、标记的工作</li>
+</ul>
+</li>
+<li>Scalability（可扩展性）
+<ul>
+<li>扩展到多核、多线程会不会有 bug</li>
+</ul>
+</li>
+<li>Protability（可移植性）
+<ul>
+<li>不同平台是否可以使用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>BOEHM</p>
+<ul>
+<li>
+<p>Non-generational（不分代的）</p>
+<p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8934bc1f-3e98-4544-b6de-6ea5b80e2850/Untitled.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8934bc1f-3e98-4544-b6de-6ea5b80e2850/Untitled.png"></p>
+<ul>
+<li>分代是指：大块内存、小内存、超小内存是分在不同内存区域来进行管理的。还有长久内存，当有一个内存很久没动的时候会移到长久内存区域中，从而省出内存给更频繁分配的内存。</li>
+</ul>
+</li>
+<li>
+<p>Non-compacting（非压缩式）</p>
+<p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/33a4002e-f37e-4405-b9b3-815c0f43caba/Untitled.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/33a4002e-f37e-4405-b9b3-815c0f43caba/Untitled.png"></p>
+<ul>
+<li>当有内存被回收的时候，压缩内存会把上图空的地方重新排布。</li>
+<li>但 Unity 的 BOEHM 不会！它是非压缩式的。空着就空着，下次要用了再填进去。
+<ul>
+<li>历史原因：Unity 和 Mono 合作上，Mono 并不是一直开源免费的，因此 Unity 选择不升级 Mono，与实际 Mono 版本有差距。</li>
+<li>下一代 GC
+<ul>
+<li>==Incremental GC（渐进式 GC） #F44336==
+<ul>
+<li>现在如果我们要进行一次 GC，主线程被迫要停下来，遍历所有 GC Memory “island”（没听清），来决定哪些 GC 可以回收。</li>
+<li>==Incremental GC 把暂停主线程的事分帧做了。一点一点分析，主线程不会有峰值。总体 GC 时间不变，但会改善 GC 对主线程的卡顿影响。 #F44336==</li>
+</ul>
+</li>
+<li>SGen 或者升级 Boehm？
+<ul>
+<li>SGen 是分代的，能避免内存碎片化问题，调动策略，速度较快</li>
+</ul>
+</li>
+<li>IL2CPP
+<ul>
+<li>现在 IL2CPP 的 GC 机制是 Unity 自己重新写的，是升级版的 Boehm</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Memory fragmentation 内存碎片化</p>
+<p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/96caa361-8d1a-4f8e-a0b6-87d521bb7f14/Untitled.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/96caa361-8d1a-4f8e-a0b6-87d521bb7f14/Untitled.png"></p>
+<ul>
+<li>为什么内存下降了，但总体内存池还是上升了？
+<ul>
+<li>因为内存太大了，内存池没地方放它，虽然有很多内存可用。（内存已被严重碎片化）</li>
+</ul>
+</li>
+<li>当开发者大量加载小内存，使用释放*N，例如配置表、巨大数组，GC 会涨一大截。
+<ul>
+<li>建议==先操作大内存，再操作小内存，以保证内存以最大效率被重复利用。 #F44336==</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Zombie Memory（僵尸内存）</p>
+<ul>
+<li>内存泄露说法是不对的，内存只是没有任何人能够管理到，但实际上内存没有被泄露，一直在内存池中，被 zombie 掉了，这种叫 Zombie 内存。</li>
+<li>无用内容
+<ul>
+<li>Coding 时候或者团队配合的时候有问题，加载了一个东西进来，结果从头到尾只用了一次。</li>
+<li>有些开发者写了队列调度策略，但是策略写的不好，导致一些他觉得会被释放的东西，没有被释放掉。</li>
+<li>找是否有活跃度实际上并不高的内存。</li>
+</ul>
+</li>
+<li>没有释放</li>
+<li>通过代码管理和性能工具分析</li>
+</ul>
+</li>
+<li>
+<p>最佳实践</p>
+<ul>
+<li>Don’t Null it, but Destroy it（显式用 Destory，别用 Null）</li>
+<li>Class VS Struct</li>
+<li>Pool In Pool（池中池）
+<ul>
+<li>VM 本身有内存池，但建议开发者对高频使用的小部件，自己建一个内存池。例如子弹等。</li>
+</ul>
+</li>
+<li>Closures and anonymous methods（闭包和匿名函数）
+<ul>
+<li>如果看 IL，所有匿名函数和闭包会 new 成一个 class，因此所有变量和要 new 的东西都是要占内存的。这样会导致协程。
+<ul>
+<li>有些开发者会在游戏开始启用一个协程，直到游戏结束才释放，这是错误的。</li>
+<li>只要协程不被释放掉，所有内存都会在内存里。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Coroutines（协程）
+<ul>
+<li>可看做闭包和匿名函数的一个特例</li>
+<li>最佳实践：用的时候生产一个，不用的时候 destroy 掉。</li>
+</ul>
+</li>
+<li>Configurations（配置表）
+<ul>
+<li>不要把整个配置表都扔进去，是否能通过啥来切分下配置表</li>
+</ul>
+</li>
+<li>Singleton
+<ul>
+<li>慎用</li>
+<li>游戏一开始到游戏死掉，一直在内存中。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>UPR 工具</p>
+<p><a target="_blank" rel="noopener" href="https://connect.unity.com/p/unite-2019-unity-uprxing-neng-bao-gao-gong-neng-jie-shao">Unite 2019 | Unity UPR性能报告功能介绍 - Unity Connect</a></p>
+<ul>
+<li>免费，在中国增强版里</li>
+</ul>
+</li>
+</ul>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Unity%E5%AD%A6%E4%B9%A0/">Unity学习</a></div><div class="post_share"><div class="social-share" data-image="/img/1578646439353.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/gh/overtrue/share.js@master/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/weixin.jpg" target="_blank"><img class="post-qr-code-img" src="/img/weixin.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/05/19/LuaSourceStudy/"><img class="prev-cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Lua源码研究</div></div></a></div><div class="next-post pull-right"><a href="/2022/05/19/OrderAlgorithm/"><img class="next-cover" src="/img/1585903822933.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">排序算法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/05/19/AddressableStudy/" title="Addressable 研究"><img class="cover" src="/img/1579072055300.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Addressable 研究</div></div></a></div><div><a href="/2022/05/19/ECSSamplesStudy/" title="ECSSamples研究"><img class="cover" src="/img/1606017767279.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">ECSSamples研究</div></div></a></div><div><a href="/2022/05/19/LWRPDesc/" title="LWRP官方说明"><img class="cover" src="/img/1578468743022.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">LWRP官方说明</div></div></a></div><div><a href="/2022/05/19/PlayableAnimStudy/" title="Playable动画系统研究"><img class="cover" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">Playable动画系统研究</div></div></a></div><div><a href="/2022/05/19/QuaterionStudy/" title="四元数旋转函数学习"><img class="cover" src="/img/1578566566815.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">四元数旋转函数学习</div></div></a></div><div><a href="/2022/05/19/UnityAndTencentCloud/" title="腾讯云开发-使用Unity开发服务器逻辑并自动部署"><img class="cover" src="/img/1605700406892.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-19</div><div class="title">腾讯云开发-使用Unity开发服务器逻辑并自动部署</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/my.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">霍家鹏</div><div class="author-info__description">Keep going. Keep study.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">97</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/AveryHuo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/AveryHuo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:jackhamsir@sina.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的博客空间，这里有我平时的学习心得和记录。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98"><span class="toc-number">1.</span> <span class="toc-text">物理内存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="toc-number">2.</span> <span class="toc-text">虚拟内存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E8%8C%83%E5%9B%B4"><span class="toc-number">3.</span> <span class="toc-text">内存寻址范围</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%8D%93%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">安卓内存管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%8D%93%E5%86%85%E5%AD%98%E6%8C%87%E6%A0%87"><span class="toc-number">5.</span> <span class="toc-text">安卓内存指标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unity%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">6.</span> <span class="toc-text">Unity内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Unity-%E5%86%85%E5%AD%98%E6%8C%89%E7%85%A7%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E5%88%86%E4%B8%BA%EF%BC%9A"><span class="toc-number">6.0.1.</span> <span class="toc-text">1. Unity 内存按照分配方式分为：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Unity-%E5%86%85%E5%AD%98%E6%8C%89%E7%85%A7%E7%AE%A1%E7%90%86%E8%80%85%E5%88%86%E4%B8%BA%EF%BC%9A"><span class="toc-number">6.0.2.</span> <span class="toc-text">2. Unity 内存按照管理者分为：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-Unity-%E6%A3%80%E6%B5%8B%E4%B8%8D%E5%88%B0%E7%9A%84%E5%86%85%E5%AD%98"><span class="toc-number">6.0.3.</span> <span class="toc-text">3. Unity 检测不到的内存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-Unity-Native-Memory-%E7%AE%A1%E7%90%86"><span class="toc-number">6.0.4.</span> <span class="toc-text">4. Unity Native Memory 管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5-Native-%E5%86%85%E5%AD%98"><span class="toc-number">6.0.5.</span> <span class="toc-text">5. 最佳实践 Native 内存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-Unity-Managed-Memory"><span class="toc-number">6.0.6.</span> <span class="toc-text">6. Unity Managed Memory</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/01/C++Review2/" title="C++ 复习2"><img src="/img/image-20230202174221474.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="C++ 复习2"/></a><div class="content"><a class="title" href="/2023/02/01/C++Review2/" title="C++ 复习2">C++ 复习2</a><time datetime="2023-02-09T09:33:42.000Z" title="更新于 2023-02-09 17:33:42">2023-02-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/01/GAMES104_NOTE4/" title="GAMES104-NOTE4"><img src="/img/image-20230106174810993.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GAMES104-NOTE4"/></a><div class="content"><a class="title" href="/2023/01/01/GAMES104_NOTE4/" title="GAMES104-NOTE4">GAMES104-NOTE4</a><time datetime="2023-02-01T14:36:20.000Z" title="更新于 2023-02-01 22:36:20">2023-02-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/19/C++Review1/" title="C++ 复习1">C++ 复习1</a><time datetime="2023-02-01T07:38:50.000Z" title="更新于 2023-02-01 15:38:50">2023-02-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/06/GAMES104_NOTE3/" title="GAMES104-NOTE3"><img src="/img/image-20221206143528541.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GAMES104-NOTE3"/></a><div class="content"><a class="title" href="/2022/12/06/GAMES104_NOTE3/" title="GAMES104-NOTE3">GAMES104-NOTE3</a><time datetime="2023-01-06T10:06:28.000Z" title="更新于 2023-01-06 18:06:28">2023-01-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/24/GAMES104_NOTE2/" title="GAMES104-NOTE2"><img src="/img/image-20221123153956216.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GAMES104-NOTE2"/></a><div class="content"><a class="title" href="/2022/11/24/GAMES104_NOTE2/" title="GAMES104-NOTE2">GAMES104-NOTE2</a><time datetime="2022-11-25T09:18:58.000Z" title="更新于 2022-11-25 17:18:58">2022-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2023 By 霍家鹏</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><a target="_blank" rel="noopener" href="http://beian.miit.gov.cn"><img class="icp-icon" src="icp图片"><span>粤ICP备2020091327号</span></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+      Array.from($mermaidWrap).forEach((item, index) => {
+        const mermaidSrc = item.firstElementChild
+        const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+        const mermaidID = 'mermaid-' + index
+        const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+        mermaid.mermaidAPI.render(mermaidID, mermaidDefinition, (svgCode) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        })
+      })
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
