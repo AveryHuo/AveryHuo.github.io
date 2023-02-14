@@ -897,7 +897,8 @@ cout << select_pair1 << endl;
 习惯上建议在开始写C++文件时，都加上namespaces。方便日后扩展时不会千万类名冲突，如上例中的pair就容易与标准库中重名冲突。
 
 ## 15. 类模板与函数模板
-类模板使用如2.13的complex的写法，使用typename关键字。而函数模板，则使用class关键字如13。
+类模板使用如2.13的complex的写法，而函数模板，则如13。注意只有在模板内的typename和class是共通的，由于历史原因，class更早期就有，后面就有了typename。
+使用模板的默认参数，类似于函数默认值的方式，为缺少参数自动添加缺省值！
 
 ## 16. 成员模板
 在类的成员中，也有需要定义模板的地方，标准库中多数用在构造函数上。
@@ -918,3 +919,146 @@ MyPair<BaseClass, BaseClass> classPair2;
 MyPair<BaseClass, BaseClass> TestPair1(classPair1);
 MyPair<SubClass, SubClass> TestPair2(classPair2);//报错，无法从把父类转子类
 ```
+
+## 17. 特化与偏特化
+可以理解为与模板的泛化相反，指定类型，偏特化则是对部分参数进行特化
+```c++
+template<>
+struct MyPair<int, std::string>: public MyUnaryFunc<int, std::string>{
+    int first;
+    std::string second;
+    MyPair(): first(0), second("d"){
+        std::cout << "dsa" << std::endl;
+    }
+    MyPair(const int& a, const std::string& b): first(a), second(b){
+        std::cout << "aaa" << std::endl;
+    }
+    template<class U1, class U2>
+            MyPair(const MyPair<U1, U2> &p):first(p.first), second(p.second){};
+};
+
+//偏特化
+template<typename T>
+struct MyPair<std::string , T>: public MyUnaryFunc<int, T>{
+    int first;
+    std::string second;
+    MyPair(): first(0), second(T()){
+        std::cout << "KKK" << std::endl;
+    }
+    MyPair(const int& a, const T& b): first(a), second(b){
+        std::cout << "KKKK" << std::endl;
+    }
+    template<class U1, class U2>
+            MyPair(const MyPair<U1, U2> &p):first(p.first), second(p.second){};
+};
+```
+## 18.template template parameter
+对于模板中再放入模板的情况。 
+```c++
+template<typename T, template<typename T> class Container>
+class XCls{
+public:
+    Container<T> c;
+    XCls(){
+        std::cout << "ttp: container"<< std::endl;
+    }
+};
+
+template<typename T, template<class T> class SmartPtr>
+class XCls2{
+public:
+    SmartPtr<T> c;
+    XCls2():c(new T){
+        std::cout << "ttp: ptr"<< std::endl;
+    }
+};
+
+template<typename T, class Squence=std::deque<T>>
+class XCls3{
+public:
+    Squence c;
+    XCls3(){
+        std::cout << "this is not ttp"<< std::endl;
+    }
+};
+XCls<int, Lst> xcl_obj;
+XCls2<int, shared_ptr> xcl2_sp;
+//    XCls2<int, unique_ptr> xcl2_up;//报错 由于unique_ptr有多个template，需要强制指明
+//    XCls2<string, weak_ptr> xcl2_wp; //报错 由于weak_ptr未实现构造
+XCls2<int, auto_ptr> xcl2_ap;
+XCls3<int, list<int>> xcl3_obj;
+```
+> 对于模板的默认值的情况，这种不属于模板模板参数，因为还是必须指明模板参数。如上例XCls3
+> 这里注意选中MSVC的编译器，使用CLANG会阻止定义模板模板参数，只能改为如下的方式：但无法按原样使用
+> [关于clang的提示错误](https://stackoverflow.com/questions/20875033/clang-vs-vcerror-declaration-of-t-shadows-template-parameter)
+```c++
+template<typename T> class Container;
+template<typename T, Container<T>>
+class XCls{
+...
+};
+```
+
+## 19.关于__cplusplus
+返回当前C++标准的值，msvc环境下需要添加编译选项，否则永远输出199711。
+
+[MSVC官方解释](https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170)
+
+```c++
+if (MSVC)
+    add_compile_options(/Zc:__cplusplus)
+endif()
+```
+
+## 20.三个c++11的主题
+### 20.1 可变参数模板
+语法上支持...，可以直接解包
+```c++
+//写法一
+void print(){
+
+}
+
+template<typename T, typename... Args>
+void
+print(const T& t, const Args&... args){
+    cout << t << endl; //cout << sizeof...(args) << t << endl;
+    print(args...);
+}
+//print(5, bitset<15>(370), "abc");
+
+//写法2
+template<typename T>
+using Lst = list<T, allocator<T>>;
+
+template<typename T>
+ostream &
+print(ostream& os, const T& t){
+    os << t << endl;
+    return os;
+}
+
+template<typename T, typename... Args>
+ostream &
+print(ostream& os, const T& t, const Args&... args){
+    os << t << endl;
+    return print(os, args...);
+}
+//print(cout, 5, bitset<15>(370), "abc");
+```
+### 20.2 auto
+类似于c#的var，可以自动获取类型，常用于迭代器
+
+### 20.3 range base iterator
+使用冒号解开容器，可以使用引用符来接收参数，这样就可以实现改值操作。
+```c++
+list<int> m = {1,32,4,5,4,6};
+for(auto& i : m){
+cout << i++ << endl;
+}
+for(auto i : m){
+cout << i << endl;
+}
+```
+
+
