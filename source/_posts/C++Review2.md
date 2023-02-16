@@ -2,7 +2,7 @@
 title: C++ 复习2
 cover: /img/image-20230202174221474.png
 date: 2023-02-01 22:43:40
-updated: 2023-02-09 17:33:42
+updated: 2023-02-16 16:03:33
 top_img: false
 categories:
 - CPlusPlus
@@ -508,6 +508,7 @@ dequeue<T> c;
 ## 七、类关系-Delegation
 Composition by reference. 空心菱形指向目标对象。 
 如下则是String与StringRep委托关系，此种实现叫pImpl, pointer to implementation，或者Handle and Body。 String就是Handle，StringRep就是Body。
+
 ```c++
 class String{
 private:
@@ -1061,4 +1062,203 @@ cout << i << endl;
 }
 ```
 
+## 21. Reference
+引用可理解为一个代表关系，其自身与目标对象具有相同的大小和地址。 主要使用场景为函数参数和返回值。所谓“更优雅的指针”
 
+对于函数重载的情况，注意引用符不会被写入签名中，而const修饰的函数是会被入签名的，因此可以使用const对函数标识为重载方。 对于参数的const，只对引用和指针进行修饰，影响函数签名，对值拷贝的变量不会修饰。
+>这也可以理解，因为对值拷贝的参数的更改离开作用域后拷贝出来的值就会释放掉，因此重载const并没有意义。
+```c++
+class SmartPtr{
+...
+//****** 以下两个签名相同 ******
+void test_method_a(int a){}
+void test_method_a(int& a){} //报错，与上面一行的函数签名相同
+// **********
+void test_method_a(int& a)const{}
+
+//****** 以下三个签名相同 ******
+void test_method_b(int a){}
+void test_method_b(const int a){} //报错，与前一行函数签名相同
+void test_method_b(int& a){}
+// **********
+void test_method_b(const int& a){}
+void test_method_b(int* a){}
+void test_method_b(const int* a){}
+}
+
+int test_a = 1;
+int *test_ap = &test_a;
+int &test_ar = test_a;
+cout << test_ar << "," << &test_ar << endl; //1,010FF5A8
+int test_b = 2;
+test_ar = test_b;
+cout << test_ar << "," << &test_ar << endl; //2,010FF5A8
+int &test_br = test_ar;
+test_br = 5;
+cout << test_ar << "," << &test_ar << endl; //5,010FF5A8
+
+SmartPtr<int> test_smartptr_obj(test_a);
+const SmartPtr<int> test_smartptr_obj2(test_a);
+test_smartptr_obj.test_method_a(test_ar);  // void test_method_a(int a){}
+test_smartptr_obj2.test_method_a(test_ar); //void test_method_a(int& a)const{}
+
+test_smartptr_obj.test_method_b(test_a); //void test_method_b(int& a){}
+test_smartptr_obj.test_method_b(&test_a); //void test_method_b(int* a){}
+const int test_ac = test_a;
+test_smartptr_obj.test_method_b(test_ac); //void test_method_b(const int& a){}
+test_smartptr_obj.test_method_b(&test_ac);//void test_method_b(const int* a){}
+```
+
+## 22.vptr和vtbl
+虚指针与虚表
+
+![image-20230215162530686](/img/image-20230215162530686.png)
+
+* 相同函数签名的函数或虚函数会直接覆写父类的同签名函数。
+* **当类中有虚函数的时候，对象就会多一个指针。（有多少个虚函数，就多一个指针，即vptr）**，因此占用的内存，会多一个指针的空间（4字节）。
+* 继承函数的本质是继承父类的函数的调用权，而不应理解为实体内容
+* vptr只会关联到虚函数上，与一般函数无关。vtbl里放的都是函数指针，指向虚函数。
+* 调用函数则是动态绑定，通过指针p找到vptr，找到vtbl，再找到调用的函数。(*p->vptr[n])(p)，则调用第n个虚函数。
+* 这种用法又称为 多态
+
+## 23. 关于this指针
+通过对象来调用函数，这个对象的地址即是this pointer。
+对象在调用普通的函数时，实际上会在第一个参数隐式的传入this指针，这个机制被应用在lua和python的class设计上。
+```c++
+CMyDoc myDoc;
+myDoc.OnFileOpen(); // CMyDoc::OnFileOpen(&myDoc) 
+```
+扩展：
+结合9.1的Template Method设计模式，在父类设计虚函数，父类的任意地方“假设”这个虚函数已经实现，直接使用。在如下例子中，这里的this是实际上是子类的this，通过虚指针找到虚表中的函数地址，进行调用，第一个参数传入的也为this.
+```c++
+CDocument.h:
+class CDocument{
+public:
+	virtual void Serialize();
+	void OnFileOpen(){
+		...
+		this->Serialize(); // 这里解释为(*(this->vptr)[n])(this) 从虚表中找到此函数再执行。
+		...
+	};
+}
+Application.h
+class CMyDoc:public CDocument{
+public:
+	virtual void Serialize(){...}
+}
+main.cpp
+CMyDoc myDoc;
+myDoc.OnFileOpen();
+```
+## 24. 动态绑定
+通过虚函数实现用父类的指针调用到子类的函数。
+对于指针p调用虚函数的过程如下C代码：
+```c
+(*(p->vptr)[n])(p)
+```
+```c++
+class BaseClass{
+public:
+    virtual void vfunc1(){
+    	cout << "BaseClass vfunc1" << std::endl;
+    }
+};
+class SubClass: public BaseClass{
+public:
+    virtual void vfunc1(){
+        cout << "SubClass vfunc1" << std::endl;
+    }
+};
+BaseClass *db_baseclass = new SubClass;
+db_baseclass->vfunc1();// 这里实际调用的是子类
+```
+## 25. const
+除了顶层与底层const以外
+
+* 1. 需要注意const类实例只可以调用const标识的成员函数，但非const类实例则可以自由调用const成员函数和普通的成员函数。
+>主要的原因是const实例对象在调用非const成员函数时，此函数无法证明是否内部没有修改类中的数据成员。因此C++设计者直接制定了此规则。如 string::print() 需要指明const，这样const的对象就可以调用。
+
+* 2. 当const和非const的同名函数同时存在时，const对象只会调用const函数，而非const只会调用非const函数。
+
+扩展实例：
+字符串的中括号运算符重载：
+通过实现const与非const两个同函数名的重载，实现是否需要copy on write机制
+```c++
+chatT operator[] const{...}
+reference operator[] {...}
+```
+
+## 26. new与delete的重载
+当为[]数组，使用operator new[]与operator delete[]，此时new[]传入的大小为对象数组的总大小。
+
+### 26.1 全局重载：
+主要使用场景为内存池
+```c++
+inline void* my_alloc(size_t s){
+    return malloc(s);
+}
+
+inline void my_free(void * ptr){
+    free(ptr);
+}
+
+inline void* operator new(size_t s){
+    cout << "You alloc a size:" << s;
+    return my_alloc(s);
+}
+inline void operator delete(void * ptr){
+    cout << "You free a size:" << ptr;
+    my_free(ptr);
+}
+```
+
+### 26.2 函数体内的重载：
+注意delete[] 重载传入的size是数组的容量大小，而不是真正的内存大小。
+```c++
+inline void* operator new(size_t s){
+    cout << "Base Class Alloc size:" << s << std::endl;
+    return my_alloc(s);
+}
+
+inline void* operator new[](size_t s){
+    cout << "Base Class Alloc array size:" << s << std::endl;
+    return my_alloc(s);
+}
+
+inline void operator delete[](void* ptr, size_t s){
+    cout << "Base Class Delete array size:" << s << std::endl;
+    my_free(ptr);
+}
+
+BaseClass *db_baseclass = new SubClass;
+db_baseclass->vfunc1();
+delete db_baseclass;
+BaseClass *db_baseclasses = ::new BaseClass[10]; //强制使用全局的重载
+db_baseclasses[0].vfunc1();
+::delete[] db_baseclasses;//强制使用全局的重载
+```
+> 这里的sizeof在数组情况下，会多出4个字节，但实际测试并没有多出而是准确按照各个对象大小乘以数组大小得出。 这里存疑。
+> 
+
+### 26.3 扩充参数
+又叫placement new
+对于new的重载可以添加额外的参数， 这里在标准库的string中有所使用。
+要求就是new函数第一个参数必须为size_t类型，delete函数必须为void* 。
+以下是测试例子：
+```c++
+class BaseClass{
+...
+inline void* operator new(size_t s, int extra){
+	cout << "Base Class Alloc size:" << s << ",extra:" << extra << std::endl;
+	return my_alloc(s);
+}
+inline void operator delete(void* ptr, int extra){
+	cout << "Base Class Delete array extra:" << extra << std::endl;
+	my_free(ptr);
+}
+...
+}
+BaseClass *db_baseclass = new(23) SubClass;
+delete db_baseclass;
+```
+> delete的扩充参数形式的重载并不会被编译器调用，按候捷老师说的需要在构造函数的异常情况编译器才会调用对应的delete扩充参数函数，但实践无法显示这一结果。在此不纠结
