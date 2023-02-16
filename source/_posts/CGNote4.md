@@ -11,7 +11,6 @@ description: CG笔记4
 keywords: "CG, 图形学, opengl"
 date: 2022-09-14 18:23:51
 updated: 2022-09-15 16:33:44
-sticky: 1
 ---
 
 本笔记针对 GLSL-PathTracer源码学习

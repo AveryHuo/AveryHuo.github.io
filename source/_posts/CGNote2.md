@@ -11,7 +11,6 @@ description: CG笔记2
 keywords: "CG, 图形学"
 date: 2022-05-19 21:28:29
 updated: 2022-09-15 11:15:49
-sticky: 1
 ---
 
 #### 一、光线追踪

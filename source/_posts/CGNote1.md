@@ -11,7 +11,6 @@ description: CG笔记1
 keywords: "CG, 图形学"
 date: 2022-05-19 20:58:49
 updated: 2022-10-08 18:12:39
-sticky: 1
 ---
 
 #### 图形学概论

@@ -11,7 +11,6 @@ description: CG笔记3
 keywords: "CG, 图形学"
 date: 2022-08-12 18:31:18
 updated: 2022-08-24 10:56:47
-sticky: 1
 ---
 
 #### 一、材质
