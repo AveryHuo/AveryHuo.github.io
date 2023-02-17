@@ -1,8 +1,8 @@
 ---
 title: GAMES104-NOTE4
 cover: /img/image-20230106174810993.png
-date: 2023-01-01 22:36:20
-updated: 2023-02-01 22:36:20
+date: 2023-02-01 22:43:40
+updated: 2023-02-17 18:21:08
 top_img: false
 categories:
 - 引擎
@@ -334,9 +334,246 @@ BT的内存区，用K-V去存储数据，让行为树的结点去存取数据。
 每个TICK都从头就会有性能问题。交互条件越多就越多的消耗。
 
 
+# 3. 高级AI
+
+## 3.1 HTN 层次任务网络
+Hierarchical tasks
+人类的行为是有意图的，有一定的目标性的，有层次的完成最终的目标。当设计师在构建AI时，更多的希望AI完成某一件事。
+
+### 3.1.1 框架：
+
+![image-20230216182919512](/img/image-20230216182919512.png)
+
+1. World state: 包含一系列的属性，给计划者AI的一个状态。
+2. Sensors: 传感器，接收世界的变更来改变World state. Perception
+3. HTN Domain: 资源里加载进来，用于描述HT之间的关系。
+4. Planner: 从World State和HTN Domain中制定计划
+5. Plan Runner: 运行Plan，在任务完成后更新world state 
+
+### 3.1.2 任务：
+* 1. Primitive task: 原子任务
+先决条件Preconditions：  是否可以执行 + world properties的值是否可以满足。
+执行Action： 任务的执行内容
+影响Effects: 任务的执行会对world state properties的影响。 如改变某个数值
+
+* 2. Compound task: 复合任务
+包含多个methods， 每个method有自己优先级和先决条件，类似于BT的Selector的设定，按优先级找到满足先决条件的method执行。
+这里的method又会包含多个子的原子任务或复合任务，以此实现更加复杂的嵌套关系。
+> 通过这种方式的构建AI，更符合人类的思维方式
+
+### 3.1.3 HTN Domain：
+以Root Task为基，设定好各个method：
+
+![image-20230217112610021](/img/image-20230217112610021.png)
+
+### 3.1.4 Planing：
+第一步：
+* 从Root task开始进入整个HTN。
+* 按先决条件和优先级找到method
+第二步：
+* 执行原子任务，如果不满足条件就找下个任务，没有下个任务了则直接往上层返回失败。
+* 对于执行复合任务，解开任务内容，按先决条件和优先级进行执行
+> 这里需要注意的是，复合任务在执行过程中会对world state进行一个副本拷贝，在执行中的任务假设为成功完成且修改到这块值。
+
+不断的重复第二步以完成整个Plan的制定。
+
+### 3.1.5 Run Plan：
+执行结束： 有一个任务执行失败了。或者是所有的都执行成功了。
+成功则更新world state数据，否则返回失败，进入Replan的过程
+
+### 3.1.6 Replaning：
+三种情况触发replan
+* 当前闲置状态
+* 当前plan结束或失败了
+* 传感器响应触发world state变更
+
+### 3.1.7 总结：
+优点：
+与BT很类似，同时更高级别的抽象
+可以制定有长期影响的计划
+比BT更高效率
+缺点：
+玩家的行为难以预测，导致任务容易失败
+一些world state和任务的结果，对于设计者来说构建会有挑战性
 
 
+## 3.2 Goal-oriented Action Planning(GOAP)
+更加动态，backward planning而非forward
+### 3.2.1 框架
+* World State和Sensors: 与HTN类似
+* Goal set： 目标集
+* Action set: 行为集
+* Planning: 一系列的行为计划
+![image-20230217142637232](/img/image-20230217142637232.png)
 
+### 3.2.2 Goal set
+目标集是由所期望的最终的达成一个状态组成。
+每一个目标也可以表示为一系列的状态。
+* precondition: 先决条件，决定选哪一个goal
+* Priority: 决定从多个goal中应该选哪个
+
+### 3.2.3 Action set
+包含一系列的Action，这里的Action与HTN的原子任务类似。
+但多一个Cost概念，其中表示这一个Action所需的消耗值，由开发者设定。
+
+### 3.2.4 执行流程
+1. Goal Set中找到第一个执行的GOAL
+2. 从第一个GOAL里的precondition里的world state中，与当前world state比较，得出不满足的条件，放到Unsatisfied States列表中
+3. 从Unsatisfied State顶部取出一个state，从Action set找出可以得到此state的一个Action，如果找到了，则把这个state从unsatisfied State列表中取出，把Action加入Plan stack中。
+4. 从Plan stack中拿到此Action，检测他的precondition条件，如果不满足，同样执行2，3这两步。
+最终的目标是清空Stack of Unsatisfied States.
+
+### 3.2.5 Build States-Action-Cost Graph
+把GOAP转化为图的问题。 构建为有向图。
+图的结点：连接的各个States， 是一组state的condition值
+图的边：Action
+图的距离：Cost
+核心的问题： 从Goal到当前状态的一条最短路径！
+使用A*算法解决，这里的启发函数可以使用unsatisfied states的个数。 但A*并不保证找到最优解。但这不影响，实际上AI也可以更灵活
+
+### 3.2.6 总结
+优点：
+目标与行为分开了，较HTN更加灵活，同时HTN也容易犯precondition/effect不匹配的错误
+缺点：
+较BT/FSM/HTN来说，消耗更大了，计算更慢。
+也需要一个很好的制定world state和action effect
+
+## 3.3 Monte Carlo Tree Search
+蒙特卡洛树搜索
+2006年由Enrico Fermi 提出的方法，第一个要解决的目标就是围棋。
+> 把问题抽象成数学模型，因为计算机只能处理数学模型
+
+### 3.3.1 模型
+* State: 当前的状态，通过一个node表示
+* Action: AI的一步操作，表示为一个edge
+* State Transfer: 从一个State到另一个State的Action
+* State Space: A Tree Structured State Space。 一系列通过action与current state连通的states集合。根结点就是current state
+
+整个模型的输入就是current state，构建出State Space， 输出就是从这个State Space中找出从current state 到best state的
+
+### 3.3.2 模拟
+* 模拟
+根据默认策略从状态节点运行以产生结果
+
+* 以围棋为例
+从状态中随机移动直到游戏结束
+根据结果返回1(赢)或0(输)
+
+* 默认策略
+有意义但快速的游戏规则或神经网络
+
+### 3.3.3 对于state的评估
+评价因素
+•Q:模拟结果的累积
+•N:模拟次数
+
+评估的因素： Q/N 
+
+### 3.3.4 反向传播 Backpropagate
+对于当前模拟失败时，不仅仅要改自己的Q/N值，自己的父结点也要依次往上调整。 这样做了足够多的模拟时，所有探索过的结点都会有一组数据。
+
+### 3.3.5 迭代步骤
+选择: 选择最有希望的“可扩展”节点 （most urgent "expandable" node）
+展开: 通过选择操作展开树
+模拟: 从新节点进行模拟并产生一个结果
+反向传播: 从新节点反向传播模拟结果
+
+### 3.3.6 选择 Selection
+* "expandable" node： 
+未探索完的结点
+* Selection
+Exploitation: 开发型的
+寻找有前景的领域
+选择Q/N值较高的子节点
+* Exploration: 探索型的，选择N值较小
+查看尚未充分采样的区域
+选择访问次数较少的孩子
+* 如何平衡勘探与开发?
+使用UCB (Upper Confidence Bounds)公式
+𝑈𝐶𝐵𝑗:节点j的UCB值
+𝑄𝑗:通过节点j的所有播放的总奖励
+𝑁𝑗:节点j的访问次数
+𝑁:节点j的父节点被访问的次数
+𝐶:一个常数，调整以降低或增加探索执行的数量
+![image-20230217173155497](/img/image-20230217173155497.png)
+
+
+* 如何选择最紧急的可扩展节点?
+始终从根节点开始搜索
+查找当前节点UCB值最高的子节点(有希望的子节点)
+设置有希望的子节点为当前节点
+重复以上步骤，直到当前节点是可展开的。设置当前节点为所选节点
+
+* 扩展
+根据可用的操作，将一个或多个新的子节点添加到选定的节点
+子节点的值未知
+
+* 基于扩展，模拟和反向传播
+* 结束条件
+1. 设定内存大小以结束
+2. 设置计算时间
+
+* 如何选择最好的招式?
+当前状态节点的“最佳”子节点
+Max child: 选择Q值最高的root child
+Robust child: :选择N值最多的根节点
+Max-Robust子: 选择访问次数和奖励最高的根子。如果不存在，则继续搜索，直到达到可接受的访问数
+安全子: 选择LCB（Lower confidence bound）最大化的子
+![image-20230217173320726](/img/image-20230217173320726.png)
+
+### 3.3.7 总结
+优点：
+MCTS代理行为多样
+Agent完全由自己做出决策
+可解决搜索空间大的问题
+更加适合于回合制，结果比较明确的游戏结果
+
+缺点：
+对于复杂的游戏情况，如大多数即时游戏都很难设计动作和状态
+很难为大多数实时游戏建模
+
+## 3.4 Machine Learning
+### 3.4.1 分类：
+Supervised Learning: 监督式的学习
+Unsupervised Learning: 非监督式的学习
+Semi-supervised Learning: 半监督式的学习
+Reinforcement learning: 强化学习
+
+### 3.4.2 Supervised Learning
+给定一些样本，从样本式学习，让机器可以进行识别。
+
+### 3.4.3 Unsupervised Learning
+从无标签的数据中进行学习，进行分类操作。
+
+### 3.4.4 Semi-supervised Learning
+半监督式的，给定一系列的无标签数据，并加以做好标签的样本进行学习。
+
+### 3.4.5 Reinforcement learning
+强化学习，从与环境的交互过程中学习
+强化学习(RL)是机器学习的一个领域，研究智能代理在环境中应该如何采取行动，以最大化累积奖励的概念
+* 试错法搜索 Trial-and-error
+学习者必须通过尝试来发现哪些行为能产生最大的回报
+* 延迟奖励
+行为可能会影响即时奖励、下一个场合和所有后续奖励
+
+### 3.4.6 Markov Decision Process
+马尔可夫决策过程
+* 基本元素：
+1. Agent 代理
+学习者和决策者
+2. Environment 环境
+与代理交互的对象，包括代理外部的所有内容
+3. State
+Agent的观察，数据结构是人为设计的状态
+4. Action
+行动是代理在游戏中所能表现的最小元素
+5. Reward
+从环境传递到代理的每个时间步骤中接收的特殊信号
+
+* Mathematical Model 数学模型
+Probability of transition: 概率函数， 在采取行动a后，从s到s‘的转换概率
+Policy： AI系统的核心，类似于transition，policy也是一个随机变量。 AI的核心优化也是Policy， 无论是用神经网络还是
+Total reward： 从长远来看，它所获得的累积回报。 但是由于有一定的概率性，所以这里乘上一个系数。𝐺𝑡=𝑅𝑡+1+𝛾𝑅𝑡+2+𝛾2𝑅𝑡+3+⋯  这个系数平衡短期目标和长期目标，系数调大就是更偏向短期。
 
 
 
