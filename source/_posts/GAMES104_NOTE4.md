@@ -2,7 +2,7 @@
 title: GAMES104-NOTE4
 cover: /img/image-20230106174810993.png
 date: 2023-02-01 22:43:40
-updated: 2023-02-17 18:21:08
+updated: 2023-02-18 17:36:27
 top_img: false
 categories:
 - 引擎
@@ -532,7 +532,7 @@ Agent完全由自己做出决策
 对于复杂的游戏情况，如大多数即时游戏都很难设计动作和状态
 很难为大多数实时游戏建模
 
-## 3.4 Machine Learning
+## 3.4 Machine Learning Base
 ### 3.4.1 分类：
 Supervised Learning: 监督式的学习
 Unsupervised Learning: 非监督式的学习
@@ -576,7 +576,65 @@ Policy： AI系统的核心，类似于transition，policy也是一个随机变�
 Total reward： 从长远来看，它所获得的累积回报。 但是由于有一定的概率性，所以这里乘上一个系数。𝐺𝑡=𝑅𝑡+1+𝛾𝑅𝑡+2+𝛾2𝑅𝑡+3+⋯  这个系数平衡短期目标和长期目标，系数调大就是更偏向短期。
 
 
+## 3.5 构建高级游戏AI
+在游戏AI中使用Machine Learning概率
+> AlphaStar是DeepMind开发的一个电脑程序，可以玩电子游戏《星际争霸2》
 
+### 3.5.1 DRL example
+Deep Reinforcement Learning 深度强化学习， 需要定义如下概念：
+1. State： 地图 + 游戏统计数据 + 各个单位实体 + 玩家数据
+2. Action: 抽象化出来的行为， what+who+where+when
+3. Reward： 奖励机制。 对于AlphaStar的方法直接获得的奖励+1/-1，配合以伪奖励输出与评论网络，范围控制在+1/-1以匹配直接奖励。 不同的奖励设定能帮助训练不同类型的agent，类似于“性格特征”。
+4. NN design: neural network 神经网络，根据游戏的结构和逻辑，构建NN和网络选型
+5. Trainning Strategy: 训练策略
 
+### 3.5.2 NN
+* 整体结构- AlphaStar
+最下方的数据，往上放到不同的神经网络上，最终encode形成一个AI角色
+Decoder: 把结果翻译为人类可理解的行动
+![image-20230218170523513](/img/image-20230218170523513.png)
+
+* MLP Multi-Layer Perceptron 多层次感知器
+对于定长的数据，最简单的多层神经网络。给一个输入就有一个输出。
+
+* CNN Convolutional Neural Network 卷积神经网络
+如结构上的ResNet， 主要针对图像的识别，游戏中识别出哪里有角色（怪物或者敌方）。
+
+* Transfomer
+用于处理大量的时间上不定长的数据，持续处理变长的变量
+
+* LSTM Long-Short Term Memory
+像人类一样的思考，这里主要是使AI记录或删除旧的数据。 结构上，汇总上述三个网络处理完的数据。
+
+* NN Architecture Selection
+对于各类数据的选择，如定长数据使用MLP， 不定长使用LSTM，Transformer, 图像数据使用ResNet，Raycast或Mesh数据。
+
+### 3.5.3 Trainning Strategy
+* 使用Supervised Learning，先让AI模仿人类，当然首先得输入AI大量的数据。
+* Refeinforcement Learning
+* AlphaStar的方式：Self Play & Adversarial
+1. Main agents MA: 
+目标: 成为最健壮和输出
+35%与自己打，50%与各过去的agents打， 15%跟过去的MA打
+2. League exploiters LE:  
+目标： 发现过去所有代理(MA, LE, ME)的弱点
+与所有过去的代理商(MA, LE, ME)的对抗
+3. 主要剥削者[ME]
+目标:发现当前MA代理的弱点
+针对当前的MA代理
+
+### 3.5.4 RL与SL
+* SL： 监督式学习
+需要高质量的数据，有时也需要更明确的行为
+行为更像人类，但但可能不会超过人类专家数据， 往往也会有数据不足的问题
+
+* RL：强化学习
+强化学习通常被认为是最优的解决方案， 但RL model是困难的，而且算力的消耗较大，算出来的行为可能是不自然的。
+
+* 如何选择： 如果奖励是足够密集的，用增强学习RL更易训练出好AI， 如果一个动作与奖励关联不直接，使用RL更难，SL则更适合。
+
+* Hybrid: 全局观
+机器学习是强大的。但的确比较昂贵。例如，deepmind花费2.5亿美元来完成alpha star，而复制需要1300万美元， 我们经常需要权衡DNN在类人点上的位置(整个战斗的一部分)。
+因此在适当的场合，可以组合各种策略来制作AI。
 
 
