@@ -50,11 +50,11 @@ r = &i; //给r赋值，就是给p的地址赋值，因此此时 p的值指向了
 * const指针， 即指针指向的地址是不能改变的
 ```c++
 int *errNumb = 0;
-int *const curErr = &errNumb;//curErr指针的指向的地址不能改变
-const double pi = 3.14;
-const double *const pip = &pi;// pip指向常量pi的常量指针
+int *const curErr = &errNumb;//curErr指针的指向的地址不能改变， 顶层const
+const double pi = 3.14;//顶层const
+const double *const pip = &pi;// pip指向常量pi的常量指针, 底层const
 ```
-* 顶层const与底层const:　从变量名的左侧开始算，底层到高层。最右侧的为顶层const, 指针符左侧为底层const.
+* 顶层const与底层const:　顶层const描述一个变量或者指针本身是一个const， 即可以认为最上层是const， 而底层const描述多用于指针所向的对象自身是常量
 * 拷贝的操作必须两对象都具有相同的底层const
 * 一般来说非常量可转换为常量。
 
