@@ -638,3 +638,132 @@ Decoder: 把结果翻译为人类可理解的行动
 因此在适当的场合，可以组合各种策略来制作AI。
 
 
+# 4. 网络
+
+## 4.1 概述
+基础篇
+1. 网络协议
+2. TCP, UDP和可靠UDP
+3. Clock Synchronization
+4. 远程过程调用(RPC)
+5. 网络拓扑
+6. 游戏同步
+* 快照同步。
+* 帧同步。
+* 状态同步。
+
+## 4.2 网络分层
+Application 层
+•Provides functions to users
+Presentation 层
+•Converts different representations
+Session 层
+•Manages task dialogs
+Transport 层
+•Provides end-to-end delivery
+Network 层
+•Sends packets over multiple links
+Data Link 层
+•Sends frames of information
+Physical 层
+•Sends bits as signals
+
+## 4.3 TCP 与UDP
+### 4.3.1 相关概念
+TCP: 特点：
+•Connection-Oriented
+•Reliable and Ordered
+•Flow Control
+•Congestion Control
+包头10个字节。
+前面的操作如果没发出去，后面的消息就不会发。
+
+UDP:特点：
+•Connectionless
+•UnReliable and Unordered
+•NO Flow Control
+•NO Congerstion Control
+包头只需4个字节，更小。
+
+* Positive acknowledgment (ACK) 信号： 在通信过程中，接收方向发送方发送的信号，表示已经正确地接收到数据。
+* Negative ACK (NACK or NAK) 信号： 在通信过程中，接收方向发送方发送的信号，表示先前接收到的数据存在问题或出现了错误
+* Sequence number (SEQ)是一种计数器，用于跟踪由主机发送的每个字节。
+* Timeoutsspecified 是指在通信过程中等待接收方的确认信息的时间，如果在规定的时间内没有接收到确认信息，发送方会认为通信出现了问题，可能会尝试重新发送数据或采取其他措施来解决问题
+
+### 4.3.2 如何构建一个游戏里使用的网络协议 
+首先：对于游戏来说： 需要使用UDP，但又需要TCP的一些特性：
+•Keep-alivedconnection (TCP)
+•Need keep logic consistency in “order” (TCP)
+•High responsive & low latency (UDP)
+•Broadcast commonly used (UDP)
+> 在彼此不可靠的链接下，怎么建立一个可靠的通信
+
+
+1. 可靠性：（Auto Repeat Request）ARQ的策略：
+•Stop-and-Wait ARQ 停止等待每个窗口返回
+•Go-Back-N ARQ  检查到如果哪个丢了，就返回到对应窗口进行重传
+•Selective Repeat ARQ  接收者每帧发送ACK，当接收者收到破坏的包时，将发送nack，发送者将重新传
+
+2. 错误修正：在丢包的情况下让UDP变得可靠
+* Forward Error Correction
+算法1： XOR FEC
+可以处理较小的丢包率
+利用异或校验位的特点，额外在FEC Layer里存储异或位。
+在二进制位上，如果两者不一样才会返回1，否则返回0。 
+```
+C= A xorB
+A= Axor(BxorB) = (AxorB) xorB= CxorB
+B= (AxorA) xorB= AxorC
+```
+对于ABCD四个包传输时，额外传输一个E，E里存储异或值，这样在丢失一个包时，可以通过异或的特点自动找回。
+
+算法2： Reed-Solomon Codes（RS码）
+构建的一个矩阵，中间任意抽掉若干行之后，还是一个可逆的矩阵，这样拿到信息后只需要乘上抽掉行后的矩阵的逆，就可以得到修复的数据。
+
+3. 实时性：
+•Smaller RTO growth
+•No congestion control
+•Fast retransmission mechanism
+•No delay ACK
+
+4. 灵活性：
+灵活的设计协议
+UDP和TCP混合使用
+
+## 4.4 时钟同步
+RTT： Round Trip Time
+发送/接收 delay，传输 delay， 服务器响应时间
+与PIng值不同，ping更偏向于传输层，RTT则是应用层级别。
+与Latency对比，latency表示一个trip来回的从发送到接收的所需时间
+
+NTP算法：
+![image-20230330150449603](img/image-20230330150449603.png)
+
+对于游戏引擎时同步时，第一步需要把时针对上：
+Stream-Based Time Synchronization with Elimination of Higher Order Modes：
+（SHM）是一种时间同步算法，主要用于无线传感器网络中的节点之间时间同步。SHM算法通过采用相邻的时间差进行时间同步，并通过消除多项式高阶模式来提高同步精度。下面将详细描述SHM算法的实现过程。
+1. 首先进行一些N次NTP算法校准。
+2. 把N次NTP结果中的RTT过大的样本去除
+3. 再用2的结果的平均值，再进行一次NTP校准
+
+## 4.5 Remote Procedure Call（RPC）
+RPC的基本思想是在客户端和服务器之间建立一个虚拟的通道，使得客户端对远程服务器中的过程调用就像本地过程调用一样简单。
+RPC是一种简单而实用的远程过程调用协议，可以在不同的计算机上执行远程调用，使得客户端对远程服务器中的过程调用就像本地过程调用一样简单。RPC被广泛应用于分布式系统、云计算、微服务等领域。
+1. 定义接口
+在客户端和服务器之间进行RPC调用之前，需要定义接口（即服务契约），包括要调用的方法的名称、参数和返回值类型等。接口通常使用IDL（接口定义语言）进行定义。
+
+2. 序列化和反序列化
+在RPC调用期间，客户端将请求参数序列化为字节流，然后通过网络传输到服务器。服务器收到请求参数后，将其反序列化，并根据请求参数执行相应的过程调用。同样地，服务器将返回值序列化为字节流，并通过网络传输到客户端，客户端收到返回值后将其反序列化。
+
+3. 远程过程调用
+客户端通过调用本地代理方法来发起RPC调用。代理方法将调用信息打包并通过网络发送给远程服务器，服务器收到调用信息后执行相应的过程调用，然后将结果返回给客户端。
+
+4. 协议栈
+RPC的实现需要一组协议栈来支持基础通信功能，包括传输层协议（如TCP、UDP）、网络层协议（如IP）和数据链路层协议（如Ethernet）等。
+
+Interface Definition Language（IDL）是一种用于定义软件组件接口的语言。IDL通常用于分布式系统、远程过程调用、CORBA等场景中，可以帮助开发人员定义清晰、可扩展和跨平台的接口。下面将详细描述IDL的主要特点和应用场景。
+
+RPC Stubs：是在客户端和服务器端之间进行通信时生成的代理程序，主要用于隐藏远程过程调用的实现细节，使得客户端对远程服务器上的过程调用就像本地过程调用一样简单。
+使用Stub Compiler
+
+
