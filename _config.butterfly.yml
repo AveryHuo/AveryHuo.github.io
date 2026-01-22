@@ -56,8 +56,8 @@ social:
 favicon: /img/favicon.png
 
 avatar:
-  img: /img/butterfly-icon.png
-  effect: false
+  img: /img/my.jpeg
+  effect: true 
 
 # Disable all banner images
 disable_top_img: false
@@ -208,15 +208,15 @@ post_copyright:
 
 # Sponsor/reward
 reward:
-  enable: false
+  enable: true 
   text:
   QR_code:
     - img: /img/wechat.jpg
-    #   link:
-    #   text: wechat
-    # - img: /img/alipay.jpg
-    #   link:
-    #   text: alipay
+      link:
+      text: wechat
+    - img: /img/alipay.jpg
+      link:
+      text: alipay
 
 # Post edit
 # Easily browse and edit blog source code online.
